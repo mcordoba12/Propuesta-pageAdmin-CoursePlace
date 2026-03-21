@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Resultados de Aprendizaje · Panel Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --brand:      #0ea5e9;
+      --brand-dark: #0284c7;
+      --brand-light:#e0f4ff;
+      --brand-glow: rgba(14,165,233,.15);
+      --bg:         #f0f1fa;
+      --white:      #ffffff;
+      --text:       #12123a;
+      --muted:      #7878a0;
+      --border:     #e2e4f0;
+      --radius:     14px;
+      --shadow:     0 4px 20px rgba(14,165,233,.08);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 0 40px;
+      height: 66px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 2px 10px rgba(14,165,233,.06);
+      position: sticky; top: 0; z-index: 100;
+    }
+
+    .back-btn {
+      display: flex; align-items: center; gap: 7px;
+      text-decoration: none;
+      font-size: 13px; font-weight: 600;
+      color: var(--muted);
+      padding: 7px 12px;
+      border-radius: 9px;
+      border: 1px solid var(--border);
+      background: var(--white);
+      transition: all .2s;
+      white-space: nowrap;
+    }
+    .back-btn:hover { border-color: var(--brand); color: var(--brand); background: var(--brand-light); }
+
+    .header-logo { height: 38px; object-fit: contain; }
+    .header-divider { width: 1px; height: 28px; background: var(--border); }
+    .header-title { font-size: 15px; font-weight: 700; color: var(--text); }
+    .header-title span { color: var(--muted); font-weight: 400; }
+
+    /* ── VIEWS ── */
+    .view { display: none; flex: 1; padding: 36px 40px; }
+    .view.active { display: block; animation: fadeUp .22s ease; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ══ LISTA ══ */
+    .list-topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 28px; gap: 16px; flex-wrap: wrap;
+    }
+    .list-topbar h1 { font-size: 24px; font-weight: 700; }
+    .list-topbar p  { font-size: 13px; color: var(--muted); margin-top: 2px; }
+    .topbar-actions { display: flex; align-items: center; gap: 10px; }
+
+    .search-wrap { position: relative; display: flex; align-items: center; }
+    .search-icon { position: absolute; left: 12px; color: var(--muted); font-size: 15px; pointer-events: none; }
+    .search-input {
+      padding: 9px 14px 9px 36px;
+      border: 1.5px solid var(--border); border-radius: 10px;
+      font-family: inherit; font-size: 13.5px; color: var(--text);
+      background: var(--white); outline: none; width: 280px;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .search-input:focus { border-color: var(--brand); box-shadow: 0 0 0 3px var(--brand-glow); }
+    .search-input::placeholder { color: var(--muted); }
+
+    /* ── BTN ── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 9px 18px; border-radius: 10px;
+      font-family: inherit; font-size: 13.5px; font-weight: 600;
+      cursor: pointer; border: none; transition: all .2s;
+    }
+    .btn-primary { background: var(--brand); color: #fff; box-shadow: 0 4px 14px rgba(14,165,233,.35); }
+    .btn-primary:hover { background: var(--brand-dark); transform: translateY(-1px); }
+    .btn-ghost { background: var(--white); color: var(--text); border: 1.5px solid var(--border); }
+    .btn-ghost:hover { border-color: var(--brand); color: var(--brand); }
+
+    .count-bar { font-size: 12px; color: var(--muted); font-weight: 500; margin-bottom: 14px; }
+    .count-bar strong { color: var(--text); }
+
+    /* ── CARDS ── */
+    .ra-list-items { display: flex; flex-direction: column; gap: 10px; }
+
+    .ra-card {
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 22px;
+      display: flex; align-items: flex-start; justify-content: space-between;
+      gap: 16px;
+      transition: border-color .2s, box-shadow .2s, transform .18s;
+      box-shadow: var(--shadow);
+    }
+    .ra-card:hover {
+      border-color: var(--brand);
+      box-shadow: 0 6px 22px rgba(14,165,233,.12);
+      transform: translateY(-1px);
+    }
+
+    .ra-card-left { display: flex; align-items: flex-start; gap: 14px; flex: 1; min-width: 0; }
+
+    .ra-index {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px; font-weight: 500;
+      color: var(--brand); background: var(--brand-light);
+      padding: 3px 8px; border-radius: 6px;
+      white-space: nowrap; flex-shrink: 0; margin-top: 2px;
+    }
+
+    .ra-info { flex: 1; min-width: 0; }
+
+    .ra-name {
+      font-size: 14.5px; font-weight: 700; color: var(--text);
+      margin-bottom: 4px;
+    }
+    .ra-desc {
+      font-size: 12.5px; color: var(--muted); line-height: 1.5;
+      display: -webkit-box; -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .ra-comp-count {
+      margin-top: 8px;
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 11px; font-weight: 600;
+      color: #5454E9; background: #eeeeff;
+      padding: 2px 9px; border-radius: 20px;
+    }
+
+    .edit-btn {
+      display: flex; align-items: center; gap: 6px;
+      padding: 7px 14px; border-radius: 9px;
+      border: 1.5px solid var(--border); background: var(--white);
+      font-family: inherit; font-size: 12.5px; font-weight: 600;
+      color: var(--muted); cursor: pointer;
+      transition: all .2s; white-space: nowrap; flex-shrink: 0;
+    }
+    .edit-btn:hover { border-color: var(--brand); color: var(--brand); background: var(--brand-light); }
+
+    .empty-state { text-align: center; padding: 60px 20px; color: var(--muted); }
+    .empty-state .icon { font-size: 40px; margin-bottom: 12px; }
+    .empty-state p { font-size: 14px; }
+
+    /* ══ FORMULARIO ══ */
+    .form-layout {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .form-header { margin-bottom: 28px; }
+    .form-header h1 { font-size: 22px; font-weight: 700; }
+    .form-header p  { font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+    .form-card {
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .form-card-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px; font-weight: 700; color: var(--text);
+      display: flex; align-items: center; gap: 9px;
+    }
+    .form-card-header .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--brand); }
+
+    .form-card-body { padding: 24px; display: flex; flex-direction: column; gap: 20px; }
+
+    .field { display: flex; flex-direction: column; gap: 7px; }
+    .field label {
+      font-size: 11.5px; font-weight: 700;
+      color: var(--muted); text-transform: uppercase; letter-spacing: .6px;
+    }
+    .field input,
+    .field textarea {
+      padding: 11px 14px;
+      border: 1.5px solid var(--border); border-radius: 10px;
+      font-family: inherit; font-size: 14px; color: var(--text);
+      background: var(--white); outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .field input:focus,
+    .field textarea:focus { border-color: var(--brand); box-shadow: 0 0 0 3px var(--brand-glow); }
+    .field textarea { resize: vertical; min-height: 120px; line-height: 1.6; }
+    .field input::placeholder,
+    .field textarea::placeholder { color: #b0b2cc; }
+
+    /* ── COMPETENCIAS PANEL ── */
+    .comp-search-wrap { position: relative; margin-bottom: 14px; }
+    .comp-search {
+      width: 100%; padding: 9px 14px 9px 34px;
+      border: 1.5px solid var(--border); border-radius: 9px;
+      font-family: inherit; font-size: 13px; color: var(--text);
+      background: var(--bg); outline: none;
+      transition: border-color .2s;
+    }
+    .comp-search:focus { border-color: var(--brand); }
+    .comp-search::placeholder { color: var(--muted); }
+    .comp-search-icon {
+      position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+      color: var(--muted); font-size: 14px; pointer-events: none;
+    }
+
+    .comp-check-list {
+      display: flex; flex-direction: column; gap: 6px;
+      max-height: 340px; overflow-y: auto; padding-right: 4px;
+    }
+    .comp-check-list::-webkit-scrollbar { width: 4px; }
+    .comp-check-list::-webkit-scrollbar-thumb { background: #d0d2e8; border-radius: 4px; }
+
+    .comp-item {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 10px 12px;
+      border-radius: 9px; border: 1.5px solid var(--border);
+      background: var(--white); cursor: pointer;
+      transition: border-color .18s, background .18s;
+      user-select: none;
+    }
+    .comp-item:hover { border-color: var(--brand); background: var(--brand-light); }
+    .comp-item.selected { border-color: var(--brand); background: var(--brand-light); }
+
+    .comp-checkbox {
+      width: 18px; height: 18px;
+      border: 2px solid var(--border); border-radius: 5px;
+      display: grid; place-items: center;
+      flex-shrink: 0; margin-top: 1px;
+      transition: all .15s; background: var(--white);
+    }
+    .comp-item.selected .comp-checkbox {
+      background: var(--brand); border-color: var(--brand);
+      color: #fff; font-size: 11px;
+    }
+
+    .comp-item-text { font-size: 12.5px; color: var(--text); line-height: 1.4; }
+
+    .selected-count {
+      margin-top: 10px; text-align: right;
+      font-size: 11.5px; color: var(--brand); font-weight: 600;
+    }
+
+    /* ── FORM ACTIONS ── */
+    .form-actions {
+      display: flex; justify-content: flex-end; gap: 10px;
+      padding: 18px 24px;
+      border-top: 1px solid var(--border);
+      background: #fafbff;
+    }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed; bottom: 28px; right: 28px;
+      background: #12123a; color: #fff;
+      padding: 13px 20px; border-radius: 12px;
+      font-size: 13.5px; font-weight: 500;
+      display: flex; align-items: center; gap: 9px;
+      box-shadow: 0 8px 28px rgba(18,18,58,.35);
+      transform: translateY(80px); opacity: 0;
+      transition: all .3s cubic-bezier(.4,0,.2,1);
+      z-index: 999;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+
+    @media (max-width: 900px) {
+      .form-layout { grid-template-columns: 1fr; }
+      header { padding: 0 20px; }
+      .view  { padding: 24px 20px; }
+      .search-input { width: 200px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <a class="back-btn" href="../index.html">← Inicio</a>
+  <div class="header-divider"></div>
+  <img class="header-logo" src="../assets/img/logo.png" alt="Logo"/>
+  <div class="header-divider"></div>
+  <div class="header-title">Panel Admin <span>/ Resultados de Aprendizaje</span></div>
+</header>
+
+<!-- ═══ VIEW: LISTA ═══════════════════════════════════════ -->
+<div class="view active" id="view-lista">
+  <div class="list-topbar">
+    <div>
+      <h1>Resultados de Aprendizaje</h1>
+      <p>Gestiona los resultados y asócialos a las competencias del plan académico.</p>
+    </div>
+    <div class="topbar-actions">
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input class="search-input" type="text" id="searchInput"
+               placeholder="Buscar resultado…"
+               oninput="filterList()"/>
+      </div>
+      <button class="btn btn-primary" onclick="showView('view-crear')">
+        + Agregar resultado
+      </button>
+    </div>
+  </div>
+
+  <div class="count-bar" id="countBar"></div>
+  <div class="ra-list-items" id="raListEl"></div>
+  <div class="empty-state" id="emptyState" style="display:none;">
+    <div class="icon">🔍</div>
+    <p>No se encontraron resultados con ese nombre.</p>
+  </div>
+</div>
+
+<!-- ═══ VIEW: CREAR ═══════════════════════════════════════ -->
+<div class="view" id="view-crear">
+  <div class="form-header">
+    <h1>Agregar nuevo resultado de aprendizaje</h1>
+    <p>Completa los campos y asigna las competencias relacionadas.</p>
+  </div>
+  <div class="form-layout">
+    <div class="form-card">
+      <div class="form-card-header"><span class="dot"></span> Información del resultado</div>
+      <div class="form-card-body">
+        <div class="field">
+          <label>Nombre</label>
+          <input type="text" id="crear-nombre" placeholder="Ej: Liderar procesos de transformación digital"/>
+        </div>
+        <div class="field">
+          <label>Descripción</label>
+          <textarea id="crear-desc" placeholder="Describe en qué consiste este resultado de aprendizaje…"></textarea>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-ghost" onclick="showView('view-lista')">Cancelar</button>
+        <button class="btn btn-primary" onclick="guardarCrear()">✓ Guardar resultado</button>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <div class="form-card-header">
+        <span class="dot" style="background:#5454E9"></span> Asignar Competencias
+      </div>
+      <div class="form-card-body">
+        <div class="comp-search-wrap">
+          <span class="comp-search-icon">🔍</span>
+          <input class="comp-search" type="text" id="crear-comp-search"
+                 placeholder="Filtrar competencias…"
+                 oninput="filterComps('crear-comp-list', this.value)"/>
+        </div>
+        <div class="comp-check-list" id="crear-comp-list"></div>
+        <div class="selected-count" id="crear-comp-count">0 seleccionadas</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ VIEW: EDITAR ═══════════════════════════════════════ -->
+<div class="view" id="view-editar">
+  <div class="form-header">
+    <h1>Editar resultado de aprendizaje</h1>
+    <p>Modifica los campos y actualiza las competencias asociadas.</p>
+  </div>
+  <div class="form-layout">
+    <div class="form-card">
+      <div class="form-card-header"><span class="dot"></span> Información del resultado</div>
+      <div class="form-card-body">
+        <div class="field">
+          <label>Nombre</label>
+          <input type="text" id="editar-nombre" placeholder="Nombre del resultado"/>
+        </div>
+        <div class="field">
+          <label>Descripción</label>
+          <textarea id="editar-desc" placeholder="Descripción…"></textarea>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-ghost" onclick="showView('view-lista')">Cancelar</button>
+        <button class="btn btn-primary" onclick="guardarEditar()">✓ Guardar cambios</button>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <div class="form-card-header">
+        <span class="dot" style="background:#5454E9"></span> Asignar Competencias
+      </div>
+      <div class="form-card-body">
+        <div class="comp-search-wrap">
+          <span class="comp-search-icon">🔍</span>
+          <input class="comp-search" type="text" id="editar-comp-search"
+                 placeholder="Filtrar competencias…"
+                 oninput="filterComps('editar-comp-list', this.value)"/>
+        </div>
+        <div class="comp-check-list" id="editar-comp-list"></div>
+        <div class="selected-count" id="editar-comp-count">0 seleccionadas</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ── DATOS ──────────────────────────────────────────────────────────
+  const competencias = [
+    "Formulación y coordinación de proyectos",
+    "Gerencia de Proyectos",
+    "Certificación en Power Skills para Gerentes de Proyectos",
+    "Solución de problemas",
+    "Gestión de la Innovación Tecnológica",
+    "Transformación Digital",
+    "Metodologías Ágiles e Innovadoras",
+    "Evaluación de Tecnologías Emergentes",
+    "Emprendimiento Tecnológico",
+    "Gerencia de proyectos ágiles",
+    "Solución de problemas (avanzado)",
+    "Comunicación efectiva"
+  ];
+
+  let resultados = [
+    { id: 1,  nombre: "Desarrollar una estrategia de comunicación escrita",    desc: "Capacidad de estructurar y comunicar ideas de forma clara y efectiva por escrito en contextos académicos y profesionales.", comps: [1, 11] },
+    { id: 2,  nombre: "Desarrollar un framework de procesos ágiles",           desc: "Diseñar e implementar marcos de trabajo ágiles adaptados a las necesidades del equipo y del proyecto.",                        comps: [6, 9] },
+    { id: 3,  nombre: "Evaluar y diagnosticar el nivel de madurez digital",    desc: "Aplicar instrumentos de diagnóstico para medir el grado de transformación digital de una organización.",                       comps: [4, 5] },
+    { id: 4,  nombre: "Liderar procesos de transformación digital",            desc: "Conducir iniciativas de cambio tecnológico y cultural dentro de organizaciones en proceso de digitalización.",                  comps: [5] },
+    { id: 5,  nombre: "Aplicar técnicas de investigación cualitativa y cuantitativa", desc: "Usar metodologías de investigación mixtas para generar conocimiento válido y aplicable.",                             comps: [0, 3] },
+    { id: 6,  nombre: "Crear y validar prototipos de soluciones innovadoras",  desc: "Construir prototipos funcionales y someterlos a ciclos de validación con usuarios reales.",                                    comps: [3, 7] },
+    { id: 7,  nombre: "Facilitar sesiones creativas y de co-creación",        desc: "Moderar dinámicas colaborativas orientadas a la generación de ideas y soluciones en equipo.",                                  comps: [6] },
+    { id: 8,  nombre: "Diseñar e implementar programas de cultura innovadora", desc: "Crear estrategias organizacionales que fomenten la innovación como valor central.",                                            comps: [4, 8] },
+    { id: 9,  nombre: "Estructurar programas de emprendimiento corporativo",   desc: "Diseñar iniciativas de intraemprendimiento que impulsen la creación de valor desde adentro de la organización.",               comps: [8] },
+    { id: 10, nombre: "Crear y gestionar ecosistemas internos de innovación",  desc: "Establecer redes y comunidades internas que sostengan y escalen procesos de innovación continua.",                             comps: [4, 8, 5] }
+  ];
+
+  let nextId = 11;
+  let editingId = null;
+
+  // ── VIEWS ──────────────────────────────────────────────────────────
+  function showView(id) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    if (id === 'view-crear') {
+      document.getElementById('crear-nombre').value = '';
+      document.getElementById('crear-desc').value = '';
+      document.getElementById('crear-comp-search').value = '';
+      buildCompList('crear-comp-list', []);
+    }
+    if (id === 'view-lista') renderList();
+  }
+
+  // ── LISTA ──────────────────────────────────────────────────────────
+  function renderList(filter = '') {
+    const listEl  = document.getElementById('raListEl');
+    const emptyEl = document.getElementById('emptyState');
+    const countEl = document.getElementById('countBar');
+
+    const filtered = filter
+      ? resultados.filter(r => r.nombre.toLowerCase().includes(filter.toLowerCase()))
+      : resultados;
+
+    countEl.innerHTML = `Mostrando <strong>${filtered.length}</strong> de <strong>${resultados.length}</strong> resultados`;
+
+    if (!filtered.length) {
+      listEl.innerHTML = '';
+      emptyEl.style.display = 'block';
+      return;
+    }
+
+    emptyEl.style.display = 'none';
+    listEl.innerHTML = filtered.map(r => `
+      <div class="ra-card">
+        <div class="ra-card-left">
+          <span class="ra-index">RA-${String(r.id).padStart(3,'0')}</span>
+          <div class="ra-info">
+            <div class="ra-name">${esc(r.nombre)}</div>
+            <div class="ra-desc">${esc(r.desc)}</div>
+            ${r.comps.length
+              ? `<span class="ra-comp-count">🎯 ${r.comps.length} competencia${r.comps.length > 1 ? 's' : ''} asociada${r.comps.length > 1 ? 's' : ''}</span>`
+              : ''}
+          </div>
+        </div>
+        <button class="edit-btn" onclick="abrirEditar(${r.id})">✏️ Editar</button>
+      </div>
+    `).join('');
+  }
+
+  function filterList() {
+    renderList(document.getElementById('searchInput').value);
+  }
+
+  // ── COMP CHECK LIST ────────────────────────────────────────────────
+  function buildCompList(containerId, selected = [], filterText = '') {
+    const container = document.getElementById(containerId);
+    const countId   = containerId === 'crear-comp-list' ? 'crear-comp-count' : 'editar-comp-count';
+
+    const items = competencias
+      .map((c, i) => ({ c, i }))
+      .filter(({ c }) => !filterText || c.toLowerCase().includes(filterText.toLowerCase()));
+
+    container.innerHTML = items.map(({ c, i }) => {
+      const checked = selected.includes(i);
+      return `
+        <div class="comp-item ${checked ? 'selected' : ''}" data-idx="${i}"
+             onclick="toggleComp('${containerId}', ${i})">
+          <div class="comp-checkbox">${checked ? '✓' : ''}</div>
+          <div class="comp-item-text">${esc(c)}</div>
+        </div>
+      `;
+    }).join('');
+
+    updateCompCount(containerId);
+  }
+
+  function toggleComp(containerId, idx) {
+    const item = document.querySelector(`#${containerId} .comp-item[data-idx="${idx}"]`);
+    item.classList.toggle('selected');
+    item.querySelector('.comp-checkbox').textContent = item.classList.contains('selected') ? '✓' : '';
+    updateCompCount(containerId);
+  }
+
+  function getSelectedComps(containerId) {
+    return [...document.querySelectorAll(`#${containerId} .comp-item.selected`)]
+      .map(el => parseInt(el.dataset.idx));
+  }
+
+  function updateCompCount(containerId) {
+    const countId = containerId === 'crear-comp-list' ? 'crear-comp-count' : 'editar-comp-count';
+    const n = document.querySelectorAll(`#${containerId} .comp-item.selected`).length;
+    document.getElementById(countId).textContent = `${n} seleccionada${n !== 1 ? 's' : ''}`;
+  }
+
+  function filterComps(containerId, text) {
+    const selected = getSelectedComps(containerId);
+    buildCompList(containerId, selected, text);
+  }
+
+  // ── CREAR ──────────────────────────────────────────────────────────
+  function guardarCrear() {
+    const nombre = document.getElementById('crear-nombre').value.trim();
+    const desc   = document.getElementById('crear-desc').value.trim();
+    if (!nombre) { shake('crear-nombre'); return; }
+
+    const comps = getSelectedComps('crear-comp-list');
+    resultados.push({ id: nextId++, nombre, desc: desc || nombre, comps });
+    showToast('✅ Resultado de aprendizaje creado');
+    showView('view-lista');
+  }
+
+  // ── EDITAR ─────────────────────────────────────────────────────────
+  function abrirEditar(id) {
+    const r = resultados.find(x => x.id === id);
+    if (!r) return;
+    editingId = id;
+
+    document.getElementById('editar-nombre').value = r.nombre;
+    document.getElementById('editar-desc').value   = r.desc;
+    document.getElementById('editar-comp-search').value = '';
+    buildCompList('editar-comp-list', r.comps);
+
+    showView('view-editar');
+  }
+
+  function guardarEditar() {
+    const nombre = document.getElementById('editar-nombre').value.trim();
+    const desc   = document.getElementById('editar-desc').value.trim();
+    if (!nombre) { shake('editar-nombre'); return; }
+
+    const comps = getSelectedComps('editar-comp-list');
+    const idx = resultados.findIndex(r => r.id === editingId);
+    if (idx !== -1) resultados[idx] = { ...resultados[idx], nombre, desc: desc || nombre, comps };
+
+    showToast('✏️ Resultado actualizado correctamente');
+    showView('view-lista');
+  }
+
+  // ── UTILS ──────────────────────────────────────────────────────────
+  function esc(str) {
+    return String(str)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function shake(inputId) {
+    const el = document.getElementById(inputId);
+    el.style.borderColor = '#ef4444';
+    el.style.boxShadow   = '0 0 0 3px rgba(239,68,68,.2)';
+    el.focus();
+    setTimeout(() => { el.style.borderColor = ''; el.style.boxShadow = ''; }, 1800);
+  }
+
+  let toastTimer;
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  // ── INIT ───────────────────────────────────────────────────────────
+  renderList();
+  buildCompList('crear-comp-list', []);
+</script>
+</body>
+</html>
