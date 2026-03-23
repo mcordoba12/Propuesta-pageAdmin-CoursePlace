@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cursos · Panel Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root{
+      --brand:#5454E9;--brand-dark:#3a3acf;--brand-light:#eeeeff;
+      --brand-glow:rgba(84,84,233,.15);--bg:#f0f1fa;--white:#ffffff;
+      --text:#12123a;--muted:#7878a0;--border:#e2e4f0;
+      --radius:14px;--shadow:0 4px 20px rgba(84,84,233,.09);
+      --green:#10b981;--green-light:#d1fae5;--amber:#f59e0b;--amber-light:#fef3c7;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
+
+    header{background:var(--white);border-bottom:1px solid var(--border);padding:0 40px;height:66px;display:flex;align-items:center;gap:16px;box-shadow:0 2px 10px rgba(84,84,233,.06);position:sticky;top:0;z-index:100}
+    .back-btn{display:flex;align-items:center;gap:7px;text-decoration:none;font-size:13px;font-weight:600;color:var(--muted);padding:7px 12px;border-radius:9px;border:1px solid var(--border);background:var(--white);transition:all .2s;white-space:nowrap}
+    .back-btn:hover{border-color:var(--brand);color:var(--brand);background:var(--brand-light)}
+    .header-divider{width:1px;height:28px;background:var(--border)}
+    .header-title{font-size:15px;font-weight:700;color:var(--text)}
+    .header-title span{color:var(--muted);font-weight:400}
+
+    .view{display:none;padding:36px 40px}
+    .view.active{display:block;animation:fadeUp .22s ease}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+    .list-topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;gap:16px;flex-wrap:wrap}
+    .list-topbar h1{font-size:24px;font-weight:700}
+    .list-topbar p{font-size:13px;color:var(--muted);margin-top:2px}
+    .topbar-actions{display:flex;align-items:center;gap:10px}
+    .search-wrap{position:relative;display:flex;align-items:center}
+    .search-icon{position:absolute;left:12px;color:var(--muted);font-size:15px;pointer-events:none}
+    .search-input{padding:9px 14px 9px 36px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:13.5px;color:var(--text);background:var(--white);outline:none;width:280px;transition:border-color .2s,box-shadow .2s}
+    .search-input:focus{border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-glow)}
+    .search-input::placeholder{color:var(--muted)}
+
+    .btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:10px;font-family:inherit;font-size:13.5px;font-weight:600;cursor:pointer;border:none;transition:all .2s}
+    .btn-primary{background:var(--brand);color:#fff;box-shadow:0 4px 14px rgba(84,84,233,.35)}
+    .btn-primary:hover{background:var(--brand-dark);transform:translateY(-1px)}
+    .btn-ghost{background:var(--white);color:var(--text);border:1.5px solid var(--border)}
+    .btn-ghost:hover{border-color:var(--brand);color:var(--brand)}
+    .btn-sm{padding:6px 12px;font-size:12.5px}
+
+    .count-bar{font-size:12px;color:var(--muted);font-weight:500;margin-bottom:14px}
+    .count-bar strong{color:var(--text)}
+
+    /* TABLA LISTA CURSOS */
+    .table-card{background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+    .lista-table{width:100%;border-collapse:collapse;font-size:13.5px}
+    .lista-table th{text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;padding:12px 20px;border-bottom:1px solid var(--border);background:#fafbff}
+    .lista-table th.center{text-align:center}
+    .lista-table td{padding:14px 20px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle}
+    .lista-table td.center{text-align:center}
+    .lista-table tr:last-child td{border-bottom:none}
+    .lista-table tr:hover td{background:#fafbff}
+    .curso-nombre{font-weight:600;font-size:14px}
+    .curso-desc{font-size:12px;color:var(--muted);margin-top:2px}
+    .badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:2px 9px;border-radius:20px}
+    .badge-padre{color:#7c3aed;background:#ede9fe}
+    .badge-hijo{color:var(--muted);background:var(--bg);border:1px solid var(--border)}
+    .badge-credits{color:#0369a1;background:#e0f2fe}
+    .badge-ra{color:#047857;background:var(--green-light)}
+    .row-actions{display:flex;gap:6px;justify-content:center}
+    .icon-btn{display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:8px;border:1.5px solid var(--border);background:var(--white);cursor:pointer;font-size:14px;transition:all .15s}
+    .icon-btn:hover{border-color:var(--brand);background:var(--brand-light)}
+    .icon-btn.danger:hover{border-color:#ef4444;background:#fff1f1}
+    .empty-state{text-align:center;padding:60px 20px;color:var(--muted)}
+    .empty-state .icon{font-size:40px;margin-bottom:12px}
+
+    /* FORMULARIO */
+    .form-header{margin-bottom:28px}
+    .form-header h1{font-size:22px;font-weight:700}
+    .form-header p{font-size:13px;color:var(--muted);margin-top:4px}
+
+    .form-card{background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;margin-bottom:20px}
+    .form-card-header{padding:16px 24px;border-bottom:1px solid var(--border);font-size:14px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:9px}
+    .form-card-header .dot{width:8px;height:8px;border-radius:50%;background:var(--brand)}
+    .form-card-body{padding:24px;display:flex;flex-direction:column;gap:18px}
+
+    .field{display:flex;flex-direction:column;gap:7px}
+    .field label{font-size:11.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
+    .field input,.field textarea,.field select{padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:14px;color:var(--text);background:var(--white);outline:none;transition:border-color .2s,box-shadow .2s}
+    .field input:focus,.field textarea:focus,.field select:focus{border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-glow)}
+    .field textarea{resize:vertical;min-height:100px;line-height:1.6}
+    .field input::placeholder,.field textarea::placeholder{color:#b0b2cc}
+    .field-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+    .field-row-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+
+    /* TABLA COMP/RAs */
+    .comp-table{width:100%;border-collapse:collapse;font-size:13px}
+    .comp-table th{text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;padding:8px 14px;border-bottom:1px solid var(--border);background:#fafbff}
+    .comp-table th.center{text-align:center;width:50px}
+    .comp-table td{padding:10px 14px;border-bottom:1px solid var(--border);vertical-align:middle}
+    .comp-table td.center{text-align:center}
+    .comp-table tr:last-child td{border-bottom:none}
+    .comp-table tr:hover td{background:#fafbff}
+    .comp-nombre{font-weight:600;font-size:13px;color:var(--text)}
+    .comp-tipo{font-size:11px;color:var(--muted);margin-top:2px}
+
+    .check-cell{width:22px;height:22px;border-radius:5px;border:1.5px solid var(--border);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;background:var(--white);user-select:none}
+    .check-cell.on{background:var(--brand);border-color:var(--brand);color:#fff;font-size:12px}
+
+    .add-comp-btn{display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:9px;border:1.5px dashed var(--border);background:transparent;font-family:inherit;font-size:13px;color:var(--muted);cursor:pointer;width:100%;margin-top:4px;transition:all .2s}
+    .add-comp-btn:hover{border-color:var(--brand);color:var(--brand);background:var(--brand-light)}
+
+    /* MODAL selector Comp/RA */
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(18,18,58,.45);z-index:200;align-items:center;justify-content:center}
+    .modal-overlay.open{display:flex}
+    .modal{background:var(--white);border-radius:var(--radius);box-shadow:0 20px 60px rgba(18,18,58,.25);width:520px;max-height:80vh;display:flex;flex-direction:column;overflow:hidden}
+    .modal-header{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+    .modal-header h3{font-size:16px;font-weight:700}
+    .modal-close{background:none;border:none;font-size:20px;color:var(--muted);cursor:pointer;line-height:1}
+    .modal-close:hover{color:var(--text)}
+    .modal-search{padding:12px 20px;border-bottom:1px solid var(--border)}
+    .modal-search input{width:100%;padding:9px 14px;border:1.5px solid var(--border);border-radius:9px;font-family:inherit;font-size:13px;color:var(--text);background:var(--bg);outline:none;transition:border-color .2s}
+    .modal-search input:focus{border-color:var(--brand)}
+    .modal-search input::placeholder{color:var(--muted)}
+    .modal-list{overflow-y:auto;flex:1;padding:12px 20px;display:flex;flex-direction:column;gap:6px}
+    .modal-list::-webkit-scrollbar{width:4px}
+    .modal-list::-webkit-scrollbar-thumb{background:#d0d2e8;border-radius:4px}
+    .modal-item{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:9px;border:1.5px solid var(--border);background:var(--white);cursor:pointer;transition:all .15s;user-select:none}
+    .modal-item:hover{border-color:var(--brand);background:var(--brand-light)}
+    .modal-item.selected{border-color:var(--brand);background:var(--brand-light)}
+    .modal-checkbox{width:18px;height:18px;border:2px solid var(--border);border-radius:5px;display:grid;place-items:center;flex-shrink:0;margin-top:1px;transition:all .15s;background:var(--white)}
+    .modal-item.selected .modal-checkbox{background:var(--brand);border-color:var(--brand);color:#fff;font-size:11px}
+    .modal-item-info{flex:1}
+    .modal-item-name{font-size:13px;font-weight:600;color:var(--text)}
+    .modal-item-sub{font-size:11.5px;color:var(--muted);margin-top:2px}
+    .modal-footer{padding:16px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px}
+
+    /* Barra guardar */
+    .save-bar{background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 28px;display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:4px}
+    .save-bar p{font-size:13px;color:var(--muted)}
+    .save-bar-actions{display:flex;gap:10px}
+
+    .toast{position:fixed;bottom:28px;right:28px;background:#12123a;color:#fff;padding:13px 20px;border-radius:12px;font-size:13.5px;font-weight:500;display:flex;align-items:center;gap:9px;box-shadow:0 8px 28px rgba(18,18,58,.35);transform:translateY(80px);opacity:0;transition:all .3s cubic-bezier(.4,0,.2,1);z-index:999}
+    .toast.show{transform:translateY(0);opacity:1}
+
+    @media(max-width:900px){
+      header{padding:0 20px}
+      .view{padding:24px 20px}
+      .search-input{width:200px}
+      .field-row,.field-row-2{grid-template-columns:1fr}
+      .modal{width:90vw}
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <a class="back-btn" href="../index.html">← Inicio</a>
+  <div class="header-divider"></div>
+  <div class="header-title">Panel Admin <span>/ Cursos</span></div>
+</header>
+
+<!-- ═══ LISTA ═══ -->
+<div class="view active" id="view-lista">
+  <div class="list-topbar">
+    <div>
+      <h1>Cursos</h1>
+      <p>Gestiona los cursos del plan académico, sus competencias y resultados de aprendizaje.</p>
+    </div>
+    <div class="topbar-actions">
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input class="search-input" type="text" id="searchInput" placeholder="Buscar curso…" oninput="filterList()"/>
+      </div>
+      <button class="btn btn-primary" onclick="showView('view-crear')">+ Agregar curso</button>
+    </div>
+  </div>
+
+  <div class="count-bar" id="countBar"></div>
+
+  <div class="table-card">
+    <table class="lista-table" id="listaTable">
+      <thead>
+        <tr>
+          <th>Curso</th>
+          <th class="center" style="width:80px">Créditos</th>
+          <th class="center" style="width:80px">Horas</th>
+          <th class="center" style="width:90px">Tipo</th>
+          <th class="center" style="width:80px">Comp/RAs</th>
+          <th class="center" style="width:100px">Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="listaBody"></tbody>
+    </table>
+    <div class="empty-state" id="emptyState" style="display:none">
+      <div class="icon">🔍</div>
+      <p>No se encontraron cursos con ese nombre.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ CREAR ═══ -->
+<div class="view" id="view-crear">
+  <div class="form-header">
+    <h1>Agregar nuevo curso</h1>
+    <p>Completa la información del curso y asigna las competencias o resultados de aprendizaje con su nivel I/F/V.</p>
+  </div>
+
+  <div class="form-card">
+    <div class="form-card-header"><span class="dot"></span> Información del curso</div>
+    <div class="form-card-body">
+      <div class="field-row">
+        <div class="field">
+          <label>Nombre</label>
+          <input type="text" id="crear-nombre" placeholder="Ej: Liderazgo y Power Skills"/>
+        </div>
+        <div class="field">
+          <label>Créditos</label>
+          <input type="number" id="crear-creditos" placeholder="3" min="1"/>
+        </div>
+        <div class="field">
+          <label>Horas</label>
+          <input type="number" id="crear-horas" placeholder="48" min="1"/>
+        </div>
+      </div>
+      <div class="field-row-2">
+        <div class="field">
+          <label>Tipo de curso</label>
+          <select id="crear-tipo">
+            <option value="padre">Padre (is_father)</option>
+            <option value="hijo">Hijo / Electiva</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Modalidad</label>
+          <select id="crear-modalidad">
+            <option value="Virtual">Virtual</option>
+            <option value="Presencial">Presencial</option>
+            <option value="Híbrido">Híbrido</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>Descripción</label>
+        <textarea id="crear-desc" placeholder="Describe el propósito general del curso…"></textarea>
+      </div>
+      <div class="field">
+        <label>Objetivos terminales</label>
+        <textarea id="crear-obj" placeholder="Al finalizar el curso el estudiante será capaz de…"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabla Comp/RAs -->
+  <div class="form-card">
+    <div class="form-card-header">
+      <span class="dot" style="background:#10b981"></span> Competencias y Resultados de Aprendizaje
+      <span style="margin-left:auto;font-size:11.5px;color:var(--muted);font-weight:400">I = Introduce &nbsp;·&nbsp; F = Fortalece &nbsp;·&nbsp; V = Valora</span>
+    </div>
+    <div class="form-card-body" style="padding:0">
+      <table class="comp-table">
+        <thead>
+          <tr>
+            <th>Competencia / Resultado de aprendizaje</th>
+            <th>Tipo</th>
+            <th class="center">I</th>
+            <th class="center">F</th>
+            <th class="center">V</th>
+            <th style="width:40px"></th>
+          </tr>
+        </thead>
+        <tbody id="crear-comp-body"></tbody>
+      </table>
+      <div style="padding:12px 16px">
+        <button class="add-comp-btn" onclick="abrirModal('crear')">+ Agregar competencia / RA</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="save-bar">
+    <p>Revisa toda la información antes de guardar.</p>
+    <div class="save-bar-actions">
+      <button class="btn btn-ghost" onclick="showView('view-lista')">Cancelar</button>
+      <button class="btn btn-primary" onclick="guardarCrear()">✓ Guardar curso</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ EDITAR ═══ -->
+<div class="view" id="view-editar">
+  <div class="form-header">
+    <h1>Editar curso</h1>
+    <p>Modifica la información del curso y sus competencias o resultados de aprendizaje.</p>
+  </div>
+
+  <div class="form-card">
+    <div class="form-card-header"><span class="dot"></span> Información del curso</div>
+    <div class="form-card-body">
+      <div class="field-row">
+        <div class="field">
+          <label>Nombre</label>
+          <input type="text" id="editar-nombre" placeholder="Nombre del curso"/>
+        </div>
+        <div class="field">
+          <label>Créditos</label>
+          <input type="number" id="editar-creditos" placeholder="3" min="1"/>
+        </div>
+        <div class="field">
+          <label>Horas</label>
+          <input type="number" id="editar-horas" placeholder="48" min="1"/>
+        </div>
+      </div>
+      <div class="field-row-2">
+        <div class="field">
+          <label>Tipo de curso</label>
+          <select id="editar-tipo">
+            <option value="padre">Padre (is_father)</option>
+            <option value="hijo">Hijo / Electiva</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Modalidad</label>
+          <select id="editar-modalidad">
+            <option value="Virtual">Virtual</option>
+            <option value="Presencial">Presencial</option>
+            <option value="Híbrido">Híbrido</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>Descripción</label>
+        <textarea id="editar-desc" placeholder="Descripción…"></textarea>
+      </div>
+      <div class="field">
+        <label>Objetivos terminales</label>
+        <textarea id="editar-obj" placeholder="Objetivos terminales…"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-card">
+    <div class="form-card-header">
+      <span class="dot" style="background:#10b981"></span> Competencias y Resultados de Aprendizaje
+      <span style="margin-left:auto;font-size:11.5px;color:var(--muted);font-weight:400">I = Introduce &nbsp;·&nbsp; F = Fortalece &nbsp;·&nbsp; V = Valora</span>
+    </div>
+    <div class="form-card-body" style="padding:0">
+      <table class="comp-table">
+        <thead>
+          <tr>
+            <th>Competencia / Resultado de aprendizaje</th>
+            <th>Tipo</th>
+            <th class="center">I</th>
+            <th class="center">F</th>
+            <th class="center">V</th>
+            <th style="width:40px"></th>
+          </tr>
+        </thead>
+        <tbody id="editar-comp-body"></tbody>
+      </table>
+      <div style="padding:12px 16px">
+        <button class="add-comp-btn" onclick="abrirModal('editar')">+ Agregar competencia / RA</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="save-bar">
+    <p>Revisa los cambios antes de guardar.</p>
+    <div class="save-bar-actions">
+      <button class="btn btn-ghost" onclick="showView('view-lista')">Cancelar</button>
+      <button class="btn btn-primary" onclick="guardarEditar()">✓ Guardar cambios</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODAL selector Comp/RA ═══ -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Seleccionar Competencia / RA</h3>
+      <button class="modal-close" onclick="cerrarModal()">✕</button>
+    </div>
+    <div class="modal-search">
+      <input type="text" id="modal-search" placeholder="Buscar competencia o resultado…" oninput="filterModal()"/>
+    </div>
+    <div class="modal-list" id="modal-list"></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost btn-sm" onclick="cerrarModal()">Cancelar</button>
+      <button class="btn btn-primary btn-sm" onclick="confirmarModal()">✓ Agregar seleccionados</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ── DATOS ──────────────────────────────────────────────────────────
+  const catalogoComps = [
+    {id:'c1', nombre:'Formulación y coordinación de proyectos', tipo:'Competencia'},
+    {id:'c2', nombre:'Gerencia de Proyectos', tipo:'Competencia'},
+    {id:'c3', nombre:'Power Skills para Gerentes', tipo:'Competencia'},
+    {id:'c4', nombre:'Solución de problemas', tipo:'Competencia'},
+    {id:'c5', nombre:'Gestión de la Innovación Tecnológica', tipo:'Competencia'},
+    {id:'c6', nombre:'Transformación Digital', tipo:'Competencia'},
+    {id:'c7', nombre:'Metodologías Ágiles e Innovadoras', tipo:'Competencia'},
+    {id:'ra1', nombre:'Desarrollar una estrategia de comunicación escrita', tipo:'Resultado de Aprendizaje'},
+    {id:'ra2', nombre:'Desarrollar un framework de procesos ágiles', tipo:'Resultado de Aprendizaje'},
+    {id:'ra3', nombre:'Evaluar y diagnosticar el nivel de madurez digital', tipo:'Resultado de Aprendizaje'},
+    {id:'ra4', nombre:'Liderar procesos de transformación digital', tipo:'Resultado de Aprendizaje'},
+    {id:'ra5', nombre:'Formulación de proyectos', tipo:'Resultado de Aprendizaje'},
+    {id:'ra6', nombre:'Liderazgo, Power Skills y Cultura', tipo:'Resultado de Aprendizaje'},
+    {id:'ra7', nombre:'Herramientas digitales para la gerencia de proyectos', tipo:'Resultado de Aprendizaje'},
+    {id:'ra8', nombre:'Pensamiento sistémico', tipo:'Resultado de Aprendizaje'},
+    {id:'ra9', nombre:'Oralidad', tipo:'Resultado de Aprendizaje'},
+    {id:'ra10',nombre:'Escritura', tipo:'Resultado de Aprendizaje'},
+    {id:'ra11',nombre:'Decidir considerando impactos', tipo:'Resultado de Aprendizaje'},
+  ];
+
+  let cursos = [
+    {id:1, nombre:'Fundamentos de Gerencia de Proyectos', creditos:3, horas:48, tipo:'hijo', modalidad:'Virtual',
+     desc:'Introduce los conceptos fundamentales de la gerencia de proyectos según el estándar PMI.',
+     obj:'Al finalizar el estudiante identificará los grupos de proceso y áreas de conocimiento del PMBoK.',
+     comps:[
+       {id:'c2', nombre:'Gerencia de Proyectos', tipo:'Competencia', i:true, f:false, v:false},
+       {id:'ra5', nombre:'Formulación de proyectos', tipo:'Resultado de Aprendizaje', i:true, f:false, v:false},
+     ]},
+    {id:2, nombre:'Liderazgo, Power Skills y Cultura I', creditos:3, horas:48, tipo:'padre', modalidad:'Virtual',
+     desc:'Desarrolla habilidades de liderazgo, comunicación y gestión del talento humano.',
+     obj:'El estudiante aplicará técnicas de liderazgo adaptativo en contextos organizacionales complejos.',
+     comps:[
+       {id:'c3', nombre:'Power Skills para Gerentes', tipo:'Competencia', i:false, f:true, v:false},
+       {id:'ra6', nombre:'Liderazgo, Power Skills y Cultura', tipo:'Resultado de Aprendizaje', i:false, f:true, v:false},
+       {id:'ra9', nombre:'Oralidad', tipo:'Resultado de Aprendizaje', i:true, f:false, v:false},
+     ]},
+    {id:3, nombre:'Herramientas digitales para la gerencia I', creditos:2, horas:32, tipo:'padre', modalidad:'Virtual',
+     desc:'Introduce herramientas digitales para la gestión y seguimiento de proyectos.',
+     obj:'El estudiante utilizará herramientas como Jira, Trello y MS Project para gestionar proyectos.',
+     comps:[
+       {id:'ra7', nombre:'Herramientas digitales para la gerencia de proyectos', tipo:'Resultado de Aprendizaje', i:true, f:false, v:false},
+     ]},
+  ];
+
+  let nextId=4, editingId=null, modalContext=null, modalSelected=[];
+
+  // ── VISTAS ──────────────────────────────────────────────────────────
+  function showView(id){
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+    if(id==='view-crear'){
+      ['crear-nombre','crear-creditos','crear-horas','crear-desc','crear-obj'].forEach(x=>document.getElementById(x).value='');
+      document.getElementById('crear-tipo').value='hijo';
+      document.getElementById('crear-modalidad').value='Virtual';
+      document.getElementById('crear-comp-body').innerHTML='';
+    }
+    if(id==='view-lista') renderList();
+  }
+
+  // ── LISTA ──────────────────────────────────────────────────────────
+  function renderList(filter=''){
+    const tbody=document.getElementById('listaBody');
+    const empty=document.getElementById('emptyState');
+    const countEl=document.getElementById('countBar');
+    const filtered=filter?cursos.filter(c=>c.nombre.toLowerCase().includes(filter.toLowerCase())):cursos;
+    countEl.innerHTML=`Mostrando <strong>${filtered.length}</strong> de <strong>${cursos.length}</strong> cursos`;
+
+    if(!filtered.length){
+      tbody.innerHTML='';empty.style.display='block';
+      document.getElementById('listaTable').style.display='none';return;
+    }
+    empty.style.display='none';
+    document.getElementById('listaTable').style.display='table';
+
+    tbody.innerHTML=filtered.map(c=>`
+      <tr>
+        <td>
+          <div class="curso-nombre">${esc(c.nombre)}</div>
+          <div class="curso-desc">${esc(c.modalidad)} · ${esc(c.horas)} horas</div>
+        </td>
+        <td class="center"><span class="badge badge-credits">${c.creditos}</span></td>
+        <td class="center" style="color:var(--muted);font-size:13px">${c.horas}h</td>
+        <td class="center">
+          ${c.tipo==='padre'
+            ?'<span class="badge badge-padre">Padre</span>'
+            :'<span class="badge badge-hijo">Electiva</span>'}
+        </td>
+        <td class="center">
+          ${c.comps.length?`<span class="badge badge-ra">${c.comps.length} asoc.</span>`:'<span style="color:var(--muted);font-size:12px">—</span>'}
+        </td>
+        <td class="center">
+          <div class="row-actions">
+            <button class="icon-btn" onclick="abrirEditar(${c.id})" title="Editar">✏️</button>
+            <button class="icon-btn danger" onclick="eliminarCurso(${c.id})" title="Eliminar">🗑</button>
+          </div>
+        </td>
+      </tr>`).join('');
+  }
+
+  function filterList(){renderList(document.getElementById('searchInput').value)}
+
+  function eliminarCurso(id){
+    if(!confirm('¿Eliminar este curso?')) return;
+    cursos=cursos.filter(c=>c.id!==id);
+    renderList(document.getElementById('searchInput').value);
+    showToast('🗑 Curso eliminado');
+  }
+
+  // ── TABLA COMP/RA en formulario ─────────────────────────────────────
+  function renderCompRow(tbodyId, comp){
+    const tbody=document.getElementById(tbodyId);
+    const tr=document.createElement('tr');
+    const rowId='cr'+comp.id+Date.now();
+    tr.id=rowId;
+    tr.dataset.compId=comp.id;
+    tr.innerHTML=`
+      <td>
+        <div class="comp-nombre">${esc(comp.nombre)}</div>
+      </td>
+      <td>
+        <span class="badge" style="${comp.tipo==='Competencia'?'color:#5454E9;background:#eeeeff':'color:#047857;background:#d1fae5'}">${esc(comp.tipo)}</span>
+      </td>
+      <td class="center"><span class="check-cell ${comp.i?'on':''}" onclick="toggleCheck(this)">${comp.i?'✓':''}</span></td>
+      <td class="center"><span class="check-cell ${comp.f?'on':''}" onclick="toggleCheck(this)">${comp.f?'✓':''}</span></td>
+      <td class="center"><span class="check-cell ${comp.v?'on':''}" onclick="toggleCheck(this)">${comp.v?'✓':''}</span></td>
+      <td class="center"><button onclick="document.getElementById('${rowId}').remove()" style="background:none;border:none;cursor:pointer;font-size:15px;color:var(--muted)" title="Quitar">✕</button></td>`;
+    tbody.appendChild(tr);
+  }
+
+  function toggleCheck(el){
+    el.classList.toggle('on');
+    el.textContent=el.classList.contains('on')?'✓':'';
+  }
+
+  function getCompsDeTabla(tbodyId){
+    return Array.from(document.querySelectorAll(`#${tbodyId} tr`)).map(tr=>{
+      const compId=tr.dataset.compId;
+      const comp=catalogoComps.find(c=>c.id===compId);
+      const checks=tr.querySelectorAll('.check-cell');
+      return{
+        id:compId,
+        nombre:comp?.nombre||'',
+        tipo:comp?.tipo||'',
+        i:checks[0]?.classList.contains('on')||false,
+        f:checks[1]?.classList.contains('on')||false,
+        v:checks[2]?.classList.contains('on')||false,
+      };
+    });
+  }
+
+  function getIdsEnTabla(tbodyId){
+    return Array.from(document.querySelectorAll(`#${tbodyId} tr`)).map(tr=>tr.dataset.compId);
+  }
+
+  // ── MODAL ───────────────────────────────────────────────────────────
+  function abrirModal(context){
+    modalContext=context;
+    const yaAsignados=getIdsEnTabla(`${context}-comp-body`);
+    modalSelected=[...yaAsignados];
+    document.getElementById('modal-search').value='';
+    renderModal('');
+    document.getElementById('modal-overlay').classList.add('open');
+  }
+
+  function cerrarModal(){
+    document.getElementById('modal-overlay').classList.remove('open');
+    modalContext=null;
+    modalSelected=[];
+  }
+
+  function renderModal(filter){
+    const list=document.getElementById('modal-list');
+    const items=filter
+      ?catalogoComps.filter(c=>c.nombre.toLowerCase().includes(filter.toLowerCase()))
+      :catalogoComps;
+    list.innerHTML=items.map(c=>{
+      const sel=modalSelected.includes(c.id);
+      return`<div class="modal-item ${sel?'selected':''}" data-id="${c.id}" onclick="toggleModal('${c.id}')">
+        <div class="modal-checkbox">${sel?'✓':''}</div>
+        <div class="modal-item-info">
+          <div class="modal-item-name">${esc(c.nombre)}</div>
+          <div class="modal-item-sub">${esc(c.tipo)}</div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  function filterModal(){renderModal(document.getElementById('modal-search').value)}
+
+  function toggleModal(id){
+    const item=document.querySelector(`#modal-list .modal-item[data-id="${id}"]`);
+    if(modalSelected.includes(id)){
+      modalSelected=modalSelected.filter(x=>x!==id);
+      item.classList.remove('selected');
+      item.querySelector('.modal-checkbox').textContent='';
+    } else {
+      modalSelected.push(id);
+      item.classList.add('selected');
+      item.querySelector('.modal-checkbox').textContent='✓';
+    }
+  }
+
+  function confirmarModal(){
+    if(!modalContext) return;
+    const tbodyId=`${modalContext}-comp-body`;
+    const yaEnTabla=getIdsEnTabla(tbodyId);
+    // Quitar los que se desmarcaron
+    Array.from(document.querySelectorAll(`#${tbodyId} tr`)).forEach(tr=>{
+      if(!modalSelected.includes(tr.dataset.compId)) tr.remove();
+    });
+    // Agregar los nuevos
+    modalSelected.filter(id=>!yaEnTabla.includes(id)).forEach(id=>{
+      const comp=catalogoComps.find(c=>c.id===id);
+      if(comp) renderCompRow(tbodyId,{...comp,i:false,f:false,v:false});
+    });
+    cerrarModal();
+  }
+
+  // ── GUARDAR ─────────────────────────────────────────────────────────
+  function guardarCrear(){
+    const nombre=document.getElementById('crear-nombre').value.trim();
+    if(!nombre){shake('crear-nombre');return}
+    cursos.push({
+      id:nextId++, nombre,
+      creditos:parseInt(document.getElementById('crear-creditos').value)||0,
+      horas:parseInt(document.getElementById('crear-horas').value)||0,
+      tipo:document.getElementById('crear-tipo').value,
+      modalidad:document.getElementById('crear-modalidad').value,
+      desc:document.getElementById('crear-desc').value.trim(),
+      obj:document.getElementById('crear-obj').value.trim(),
+      comps:getCompsDeTabla('crear-comp-body'),
+    });
+    showToast('✅ Curso creado correctamente');
+    showView('view-lista');
+  }
+
+  function abrirEditar(id){
+    const c=cursos.find(x=>x.id===id);
+    if(!c) return;
+    editingId=id;
+    document.getElementById('editar-nombre').value=c.nombre;
+    document.getElementById('editar-creditos').value=c.creditos;
+    document.getElementById('editar-horas').value=c.horas;
+    document.getElementById('editar-tipo').value=c.tipo;
+    document.getElementById('editar-modalidad').value=c.modalidad;
+    document.getElementById('editar-desc').value=c.desc;
+    document.getElementById('editar-obj').value=c.obj;
+    const tbody=document.getElementById('editar-comp-body');
+    tbody.innerHTML='';
+    c.comps.forEach(comp=>renderCompRow('editar-comp-body',comp));
+    showView('view-editar');
+  }
+
+  function guardarEditar(){
+    const nombre=document.getElementById('editar-nombre').value.trim();
+    if(!nombre){shake('editar-nombre');return}
+    const idx=cursos.findIndex(c=>c.id===editingId);
+    if(idx!==-1) cursos[idx]={...cursos[idx],nombre,
+      creditos:parseInt(document.getElementById('editar-creditos').value)||0,
+      horas:parseInt(document.getElementById('editar-horas').value)||0,
+      tipo:document.getElementById('editar-tipo').value,
+      modalidad:document.getElementById('editar-modalidad').value,
+      desc:document.getElementById('editar-desc').value.trim(),
+      obj:document.getElementById('editar-obj').value.trim(),
+      comps:getCompsDeTabla('editar-comp-body'),
+    };
+    showToast('✏️ Curso actualizado correctamente');
+    showView('view-lista');
+  }
+
+  // ── UTILS ───────────────────────────────────────────────────────────
+  function esc(str){return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+  function shake(inputId){
+    const el=document.getElementById(inputId);
+    el.style.borderColor='#ef4444';
+    el.style.boxShadow='0 0 0 3px rgba(239,68,68,.2)';
+    el.focus();
+    setTimeout(()=>{el.style.borderColor='';el.style.boxShadow=''},1800);
+  }
+
+  let toastTimer;
+  function showToast(msg){
+    const t=document.getElementById('toast');
+    t.textContent=msg;t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer=setTimeout(()=>t.classList.remove('show'),3000);
+  }
+
+  // Cerrar modal al click fuera
+  document.getElementById('modal-overlay').addEventListener('click',function(e){
+    if(e.target===this) cerrarModal();
+  });
+
+  renderList();
+</script>
+</body>
+</html>
