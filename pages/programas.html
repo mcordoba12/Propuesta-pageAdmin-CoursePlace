@@ -228,6 +228,13 @@
           </div>
         </div>
       </div>
+      <div class="save-bar">
+          <p>Revisa toda la información antes de guardar.</p>
+          <div class="save-bar-actions">
+            <button class="btn btn-ghost" onclick="showView('view-lista')">Cancelar</button>
+            <button class="btn btn-primary" onclick="guardarCrear()">✓ Guardar programa</button>
+          </div>
+        </div>
     </div>
 
     <!-- derecha: solo RAs, sin botón guardar -->
@@ -246,14 +253,7 @@
     </div>
   </div>
 
-  <!-- Botón guardar FUERA y DESPUÉS del grid -->
-  <div class="save-bar">
-    <p>Revisa toda la información antes de guardar.</p>
-    <div class="save-bar-actions">
-      <button class="btn btn-ghost" onclick="showView('view-lista')">Cancelar</button>
-      <button class="btn btn-primary" onclick="guardarCrear()">✓ Guardar programa</button>
-    </div>
-  </div>
+
 </div>
 
 <!-- EDITAR -->
@@ -323,6 +323,13 @@
           </div>
         </div>
       </div>
+    <div class="save-bar">
+      <p>Revisa los cambios antes de guardar.</p>
+      <div class="save-bar-actions">
+        <button class="btn btn-ghost" onclick="showView('view-lista')">Cancelar</button>
+        <button class="btn btn-primary" onclick="guardarEditar()">✓ Guardar cambios</button>
+      </div>
+    </div>
     </div>
 
     <div>
@@ -337,15 +344,6 @@
           <div class="ra-selected-count" id="editar-ra-count">0 seleccionados</div>
         </div>
       </div>
-    </div>
-  </div>
-
-  <!-- Botón guardar FUERA y DESPUÉS del grid -->
-  <div class="save-bar">
-    <p>Revisa los cambios antes de guardar.</p>
-    <div class="save-bar-actions">
-      <button class="btn btn-ghost" onclick="showView('view-lista')">Cancelar</button>
-      <button class="btn btn-primary" onclick="guardarEditar()">✓ Guardar cambios</button>
     </div>
   </div>
 </div>
