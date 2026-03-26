@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Micro Aprendizajes · Panel Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --brand:      #8b5cf6;
+      --brand-dark: #7c3aed;
+      --brand-light:#ede9fe;
+      --brand-glow: rgba(139,92,246,.15);
+      --bg:         #f0f1fa;
+      --white:      #ffffff;
+      --text:       #12123a;
+      --muted:      #7878a0;
+      --border:     #e2e4f0;
+      --radius:     14px;
+      --shadow:     0 4px 20px rgba(139,92,246,.09);
+      --danger:     #ef4444;
+      --success:    #10b981;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ══ HEADER ══ */
+    header {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 0 40px;
+      height: 66px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 2px 10px rgba(139,92,246,.06);
+      position: sticky; top: 0; z-index: 200;
+    }
+
+    .back-btn {
+      display: flex; align-items: center; gap: 7px;
+      text-decoration: none; white-space: nowrap;
+      font-size: 13px; font-weight: 600; color: var(--muted);
+      padding: 7px 12px; border-radius: 9px;
+      border: 1px solid var(--border); background: var(--white);
+      transition: all .2s; cursor: pointer;
+    }
+    .back-btn:hover { border-color: var(--brand); color: var(--brand); background: var(--brand-light); }
+
+    .header-logo { height: 38px; object-fit: contain; }
+    .header-divider { width: 1px; height: 28px; background: var(--border); flex-shrink: 0; }
+    .header-title { font-size: 15px; font-weight: 700; color: var(--text); white-space: nowrap; }
+    .header-title span { color: var(--muted); font-weight: 400; }
+    #header-breadcrumb { font-size: 13px; color: var(--muted); }
+    #header-breadcrumb strong { color: var(--brand); }
+
+    /* ══ VIEWS ══ */
+    .view { display: none; flex: 1; padding: 36px 40px; }
+    .view.active { display: block; animation: fadeUp .22s ease; }
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(10px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    /* ══ BTNS ══ */
+    .btn {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 9px 18px; border-radius: 10px;
+      font-family: inherit; font-size: 13.5px; font-weight: 600;
+      cursor: pointer; border: none; transition: all .2s;
+    }
+    .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 8px; }
+    .btn-primary { background: var(--brand); color: #fff; box-shadow: 0 4px 14px rgba(139,92,246,.35); }
+    .btn-primary:hover { background: var(--brand-dark); transform: translateY(-1px); }
+    .btn-ghost { background: var(--white); color: var(--text); border: 1.5px solid var(--border); }
+    .btn-ghost:hover { border-color: var(--brand); color: var(--brand); }
+    .btn-danger { background: #fff1f1; color: var(--danger); border: 1.5px solid #fecaca; }
+    .btn-danger:hover { background: #fee2e2; }
+    .btn-success { background: #d1fae5; color: var(--success); border: 1.5px solid #a7f3d0; }
+    .btn-success:hover { background: #a7f3d0; }
+    .btn-warn { background: #fef3c7; color: #d97706; border: 1.5px solid #fde68a; }
+    .btn-warn:hover { background: #fde68a; }
+
+    .icon-btn {
+      width: 32px; height: 32px; border-radius: 8px;
+      border: 1.5px solid var(--border); background: var(--white);
+      font-size: 14px; cursor: pointer; display: grid; place-items: center;
+      transition: all .18s;
+    }
+    .icon-btn:hover.edit  { border-color: var(--brand); background: var(--brand-light); }
+    .icon-btn:hover.del   { border-color: var(--danger); background: #fff1f1; }
+    .icon-btn:hover.view  { border-color: var(--success); background: #d1fae5; }
+
+    /* ══════════════════════════════
+       VIEW 1 – LISTADO
+    ══════════════════════════════ */
+    .list-topbar {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      margin-bottom: 24px; gap: 16px; flex-wrap: wrap;
+    }
+    .list-topbar h1 { font-size: 24px; font-weight: 700; }
+    .list-topbar p  { font-size: 13px; color: var(--muted); margin-top: 2px; }
+    .topbar-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+
+    .search-wrap { position: relative; }
+    .search-icon { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 15px; pointer-events: none; }
+    .search-input {
+      padding: 9px 14px 9px 34px;
+      border: 1.5px solid var(--border); border-radius: 10px;
+      font-family: inherit; font-size: 13.5px; color: var(--text);
+      background: var(--white); outline: none; width: 240px;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .search-input:focus { border-color: var(--brand); box-shadow: 0 0 0 3px var(--brand-glow); }
+    .search-input::placeholder { color: var(--muted); }
+
+    .count-bar { font-size: 12px; color: var(--muted); font-weight: 500; margin-bottom: 14px; }
+    .count-bar strong { color: var(--text); }
+
+    /* TABLE */
+    .table-card {
+      background: var(--white); border: 1.5px solid var(--border);
+      border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden;
+    }
+
+    table { width: 100%; border-collapse: collapse; }
+    thead tr { background: #f8f8ff; }
+    th, td { padding: 13px 18px; text-align: left; font-size: 13px; }
+    th {
+      font-size: 10.5px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .8px; color: var(--muted); border-bottom: 1px solid var(--border);
+    }
+    td { border-bottom: 1px solid var(--border); vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+    tbody tr:hover td { background: #fafbff; }
+
+    .pill {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 3px 10px; border-radius: 20px;
+      font-size: 11px; font-weight: 700;
+    }
+    .pill-virtual    { background: #dbeafe; color: #1d4ed8; }
+    .pill-hibrido    { background: #fef3c7; color: #b45309; }
+    .pill-workshop   { background: #f3e8ff; color: #7c3aed; }
+    .pill-seminario  { background: #d1fae5; color: #065f46; }
+    .pill-taller     { background: #ffe4e6; color: #be123c; }
+    .pill-diplomado  { background: #e0f2fe; color: #0369a1; }
+    .pill-masterclass{ background: #fce7f3; color: #9d174d; }
+
+    .highlight-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 11px; font-weight: 700;
+    }
+    .highlight-badge.yes { color: #d97706; }
+    .highlight-badge.no  { color: #b0b2cc; }
+
+    .price-cell { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 600; color: var(--text); }
+
+    .actions-cell { display: flex; gap: 6px; align-items: center; }
+
+    .empty-state { text-align: center; padding: 60px 20px; color: var(--muted); }
+    .empty-state .icon { font-size: 44px; margin-bottom: 12px; }
+
+    /* ══════════════════════════════
+       VIEW 2 – FORMULARIO
+    ══════════════════════════════ */
+    .form-header { margin-bottom: 28px; }
+    .form-header h1 { font-size: 22px; font-weight: 700; }
+    .form-header p  { font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 24px; align-items: start;
+    }
+
+    .form-card {
+      background: var(--white); border: 1.5px solid var(--border);
+      border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden;
+    }
+    .form-card-header {
+      padding: 16px 24px; border-bottom: 1px solid var(--border);
+      font-size: 14px; font-weight: 700;
+      display: flex; align-items: center; gap: 9px;
+    }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--brand); flex-shrink: 0; }
+    .form-card-body { padding: 24px; display: flex; flex-direction: column; gap: 18px; }
+
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    .field label { font-size: 11.5px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .6px; }
+    .field input,
+    .field textarea,
+    .field select {
+      padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 10px;
+      font-family: inherit; font-size: 14px; color: var(--text);
+      background: var(--white); outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .field input:focus,
+    .field textarea:focus,
+    .field select:focus { border-color: var(--brand); box-shadow: 0 0 0 3px var(--brand-glow); }
+    .field input.error,
+    .field textarea.error,
+    .field select.error { border-color: var(--danger); box-shadow: 0 0 0 3px rgba(239,68,68,.15); }
+    .field textarea { resize: vertical; min-height: 110px; line-height: 1.6; }
+    .field input::placeholder, .field textarea::placeholder { color: #b0b2cc; }
+    .error-msg { font-size: 11px; color: var(--danger); font-weight: 600; display: none; }
+    .error-msg.show { display: block; }
+
+    .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    /* checkbox highlight */
+    .highlight-field {
+      display: flex; align-items: center; gap: 12px;
+      padding: 13px 16px; border-radius: 10px;
+      border: 1.5px solid var(--border); background: var(--bg);
+      cursor: pointer; transition: border-color .2s;
+    }
+    .highlight-field:hover { border-color: var(--brand); }
+    .highlight-field input[type="checkbox"] { display: none; }
+    .custom-check {
+      width: 22px; height: 22px; border-radius: 6px;
+      border: 2px solid var(--border); background: var(--white);
+      display: grid; place-items: center; flex-shrink: 0;
+      transition: all .15s; font-size: 12px;
+    }
+    .highlight-field.checked .custom-check { background: #f59e0b; border-color: #f59e0b; color: #fff; }
+    .highlight-field.checked { border-color: #f59e0b; background: #fffbeb; }
+    .highlight-label { font-size: 13.5px; font-weight: 600; color: var(--text); }
+    .highlight-label small { display: block; font-size: 11px; font-weight: 400; color: var(--muted); }
+
+    .form-actions {
+      display: flex; justify-content: flex-end; gap: 10px;
+      padding: 16px 24px; border-top: 1px solid var(--border); background: #fafbff;
+    }
+
+    /* ══════════════════════════════
+       VIEW 3 – ESTRUCTURA LECCIONES
+    ══════════════════════════════ */
+    .estructura-header {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      margin-bottom: 28px; gap: 16px; flex-wrap: wrap;
+    }
+
+    .micro-meta {
+      display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap;
+    }
+
+    .lecciones-list { display: flex; flex-direction: column; gap: 10px; max-width: 760px; }
+
+    .leccion-card {
+      background: var(--white); border: 1.5px solid var(--border);
+      border-radius: 12px; overflow: hidden;
+      box-shadow: 0 2px 10px rgba(139,92,246,.06);
+      transition: border-color .2s;
+    }
+    .leccion-card:hover { border-color: var(--brand); }
+
+    .leccion-row {
+      display: flex; align-items: center; gap: 14px;
+      padding: 14px 18px;
+    }
+
+    .leccion-num {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--brand-light); color: var(--brand);
+      display: grid; place-items: center;
+      font-size: 13px; font-weight: 700; flex-shrink: 0;
+    }
+
+    .leccion-info { flex: 1; min-width: 0; }
+
+    .leccion-name-input {
+      width: 100%; border: none; outline: none;
+      font-family: inherit; font-size: 14px; font-weight: 600;
+      color: var(--text); background: transparent;
+      padding: 0;
+    }
+    .leccion-name-input:focus {
+      background: var(--brand-light); border-radius: 6px; padding: 2px 6px;
+    }
+
+    .leccion-meta-input {
+      width: 100%; border: none; outline: none;
+      font-family: inherit; font-size: 12px; color: var(--muted);
+      background: transparent; padding: 0; margin-top: 2px;
+    }
+    .leccion-meta-input:focus {
+      background: #f0f1fa; border-radius: 4px; padding: 1px 4px;
+    }
+
+    .leccion-actions { display: flex; gap: 6px; flex-shrink: 0; }
+
+    .drag-handle {
+      color: var(--muted); font-size: 16px; cursor: grab;
+      padding: 0 4px; user-select: none;
+    }
+
+    /* ══════════════════════════════
+       VIEW 4 – EDITOR DE LECCIÓN
+    ══════════════════════════════ */
+    .editor-header {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      margin-bottom: 28px; gap: 16px; flex-wrap: wrap;
+    }
+
+    .editor-header h1 { font-size: 22px; font-weight: 700; }
+    .editor-header p  { font-size: 13px; color: var(--muted); margin-top: 3px; }
+
+    /* Toolbar agregar bloque */
+    .block-toolbar {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--white); border: 1.5px solid var(--border);
+      border-radius: 12px; padding: 14px 20px;
+      margin-bottom: 20px; flex-wrap: wrap;
+      box-shadow: var(--shadow);
+    }
+
+    .block-toolbar span {
+      font-size: 12px; font-weight: 700; color: var(--muted);
+      text-transform: uppercase; letter-spacing: .8px; margin-right: 4px;
+    }
+
+    .block-type-btn {
+      display: flex; align-items: center; gap: 7px;
+      padding: 8px 16px; border-radius: 9px;
+      border: 1.5px solid var(--border); background: var(--white);
+      font-family: inherit; font-size: 13px; font-weight: 600;
+      cursor: pointer; transition: all .2s; color: var(--text);
+    }
+    .block-type-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,.08); }
+    .block-type-btn.video     { border-color: #dc2626; color: #dc2626; }
+    .block-type-btn.video:hover { background: #fff1f1; }
+    .block-type-btn.texto     { border-color: var(--brand); color: var(--brand); }
+    .block-type-btn.texto:hover { background: var(--brand-light); }
+    .block-type-btn.quiz      { border-color: #f59e0b; color: #d97706; }
+    .block-type-btn.quiz:hover { background: #fffbeb; }
+
+    /* Bloques */
+    #blocks-container { display: flex; flex-direction: column; gap: 14px; max-width: 820px; }
+
+    .block {
+      background: var(--white); border: 1.5px solid var(--border);
+      border-radius: 14px; overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0,0,0,.05);
+      animation: blockIn .2s ease;
+    }
+    @keyframes blockIn {
+      from { opacity:0; transform:translateY(12px) scale(.98); }
+      to   { opacity:1; transform:translateY(0) scale(1); }
+    }
+
+    .block-header {
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px 18px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .block-type-label {
+      font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px;
+      padding: 3px 10px; border-radius: 20px;
+    }
+    .label-video      { background: #fee2e2; color: #dc2626; }
+    .label-texto      { background: var(--brand-light); color: var(--brand); }
+    .label-quiz       { background: #fef3c7; color: #d97706; }
+
+    .block-order { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); margin-right: auto; }
+
+    .block-del-btn {
+      width: 28px; height: 28px; border-radius: 7px;
+      border: 1.5px solid var(--border); background: var(--white);
+      font-size: 13px; cursor: pointer; display: grid; place-items: center;
+      transition: all .18s;
+    }
+    .block-del-btn:hover { border-color: var(--danger); background: #fff1f1; color: var(--danger); }
+
+    .block-body { padding: 20px 22px; }
+
+    /* ── VIDEO block ── */
+    .video-block .url-field {
+      display: flex; gap: 8px; margin-bottom: 12px;
+    }
+    .video-block .url-input {
+      flex: 1; padding: 9px 12px; border: 1.5px solid var(--border);
+      border-radius: 9px; font-family: inherit; font-size: 13px;
+      color: var(--text); outline: none; transition: border-color .2s;
+    }
+    .video-block .url-input:focus { border-color: #dc2626; }
+    .video-preview {
+      width: 100%; max-width: 480px; aspect-ratio: 16/9;
+      background: #f8f8f8; border-radius: 10px;
+      border: 1.5px dashed var(--border);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--muted); font-size: 13px; gap: 8px;
+      overflow: hidden;
+    }
+    .video-preview iframe { width: 100%; height: 100%; border: none; border-radius: 10px; }
+
+    /* ── TEXTO block ── */
+    .texto-block .rich-area {
+      width: 100%; min-height: 120px;
+      padding: 12px 16px; border: 1.5px solid var(--border);
+      border-radius: 10px; font-family: inherit; font-size: 14px;
+      color: var(--text); line-height: 1.7; outline: none; resize: vertical;
+      transition: border-color .2s;
+    }
+    .texto-block .rich-area:focus { border-color: var(--brand); box-shadow: 0 0 0 3px var(--brand-glow); }
+
+    .texto-toolbar {
+      display: flex; gap: 4px; margin-bottom: 8px; flex-wrap: wrap;
+    }
+    .fmt-btn {
+      padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border);
+      background: var(--white); font-family: inherit; font-size: 12px;
+      cursor: pointer; transition: all .15s; color: var(--text);
+    }
+    .fmt-btn:hover { background: var(--brand-light); border-color: var(--brand); }
+
+    /* ── QUIZ block ── */
+    .quiz-block .quiz-question {
+      width: 100%; padding: 10px 14px;
+      border: 1.5px solid var(--border); border-radius: 10px;
+      font-family: inherit; font-size: 14px; font-weight: 600;
+      color: var(--text); outline: none; margin-bottom: 14px;
+      transition: border-color .2s;
+    }
+    .quiz-block .quiz-question:focus { border-color: #f59e0b; box-shadow: 0 0 0 3px rgba(245,158,11,.15); }
+
+    .quiz-options { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+
+    .quiz-option {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 14px; border-radius: 9px;
+      border: 1.5px solid var(--border); background: var(--bg);
+    }
+
+    .option-radio {
+      width: 18px; height: 18px; border-radius: 50%;
+      border: 2px solid var(--border); background: var(--white);
+      cursor: pointer; flex-shrink: 0; transition: all .15s;
+      display: grid; place-items: center;
+    }
+    .option-radio.correct { border-color: var(--success); background: var(--success); }
+    .option-radio.correct::after { content: '✓'; color: #fff; font-size: 11px; font-weight: 700; }
+
+    .option-input {
+      flex: 1; border: none; background: transparent; outline: none;
+      font-family: inherit; font-size: 13.5px; color: var(--text);
+    }
+    .option-input::placeholder { color: #b0b2cc; }
+
+    .option-del {
+      background: none; border: none; cursor: pointer;
+      color: var(--muted); font-size: 16px; padding: 0 4px;
+      line-height: 1; transition: color .15s;
+    }
+    .option-del:hover { color: var(--danger); }
+
+    .quiz-hint {
+      font-size: 11px; color: var(--muted); font-style: italic;
+      margin-top: 4px;
+    }
+
+    /* Empty blocks */
+    .blocks-empty {
+      text-align: center; padding: 48px 20px;
+      background: var(--white); border: 2px dashed var(--border);
+      border-radius: 14px; color: var(--muted);
+    }
+    .blocks-empty .icon { font-size: 36px; margin-bottom: 10px; }
+    .blocks-empty p { font-size: 14px; }
+
+    /* ══ TOAST ══ */
+    .toast {
+      position: fixed; bottom: 28px; right: 28px;
+      background: #12123a; color: #fff;
+      padding: 13px 20px; border-radius: 12px;
+      font-size: 13.5px; font-weight: 500;
+      box-shadow: 0 8px 28px rgba(18,18,58,.35);
+      transform: translateY(80px); opacity: 0;
+      transition: all .3s cubic-bezier(.4,0,.2,1); z-index: 999;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+
+    /* ══ CONFIRM MODAL ══ */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(18,18,58,.5); backdrop-filter: blur(4px);
+      z-index: 500; display: none; place-items: center;
+    }
+    .modal-overlay.open { display: grid; }
+    .modal {
+      background: var(--white); border-radius: 16px;
+      width: min(420px, 95vw); padding: 32px;
+      box-shadow: 0 24px 60px rgba(0,0,0,.2);
+      animation: fadeUp .22s ease;
+      text-align: center;
+    }
+    .modal .modal-icon { font-size: 40px; margin-bottom: 12px; }
+    .modal h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+    .modal p  { font-size: 13.5px; color: var(--muted); margin-bottom: 24px; }
+    .modal-actions { display: flex; gap: 10px; justify-content: center; }
+
+    @media (max-width: 900px) {
+      .form-grid { grid-template-columns: 1fr; }
+      header { padding: 0 16px; }
+      .view  { padding: 24px 16px; }
+      .search-input { width: 180px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <a class="back-btn" href="../index.html">← Inicio</a>
+  <div class="header-divider"></div>
+  <img class="header-logo" src="../assets/img/logo.png" alt="Logo"/>
+  <div class="header-divider"></div>
+  <div class="header-title">Panel Admin <span>/ Micro Aprendizajes</span></div>
+  <div style="margin-left:12px;" id="header-breadcrumb"></div>
+</header>
+
+<!-- ══════════════════════════════════════════════════════
+     VIEW 1 – LISTADO
+══════════════════════════════════════════════════════ -->
+<div class="view active" id="view-lista">
+
+  <div class="list-topbar">
+    <div>
+      <h1>Micro Aprendizajes</h1>
+      <p>Gestiona los módulos cortos de conocimiento disponibles en la plataforma.</p>
+    </div>
+    <div class="topbar-right">
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input class="search-input" id="searchInput" type="text"
+               placeholder="Buscar…" oninput="filterList()"/>
+      </div>
+      <button class="btn btn-primary" onclick="abrirFormulario(null)">+ Crear microaprendizaje</button>
+    </div>
+  </div>
+
+  <div class="count-bar" id="countBar"></div>
+
+  <div class="table-card">
+    <table id="mainTable">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Modalidad</th>
+          <th>Tipo</th>
+          <th>Destacado</th>
+          <th>Precio</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+    <div class="empty-state" id="emptyState" style="display:none;">
+      <div class="icon">⚡</div>
+      <p>No se encontraron micro aprendizajes.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     VIEW 2 – FORMULARIO
+══════════════════════════════════════════════════════ -->
+<div class="view" id="view-formulario">
+
+  <div class="form-header">
+    <h1 id="form-title">Crear micro aprendizaje</h1>
+    <p>Completa todos los campos del módulo.</p>
+  </div>
+
+  <div class="form-grid">
+
+    <!-- Columna principal -->
+    <div style="display:flex;flex-direction:column;gap:20px;">
+
+      <div class="form-card">
+        <div class="form-card-header"><span class="dot"></span> Información general</div>
+        <div class="form-card-body">
+
+          <div class="field">
+            <label>Nombre *</label>
+            <input type="text" id="f-name" placeholder="Ej: Introducción al Design Thinking"/>
+            <span class="error-msg" id="err-name">El nombre es requerido.</span>
+          </div>
+
+          <div class="field">
+            <label>Descripción *</label>
+            <textarea id="f-desc" placeholder="Describe de qué trata este micro aprendizaje…"></textarea>
+            <span class="error-msg" id="err-desc">La descripción es requerida.</span>
+          </div>
+
+          <div class="row-2">
+            <div class="field">
+              <label>Modalidad *</label>
+              <select id="f-modality">
+                <option value="">— Seleccionar —</option>
+                <option value="VIRTUAL">Virtual</option>
+                <option value="HIBRIDO">Híbrido</option>
+              </select>
+              <span class="error-msg" id="err-modality">Selecciona una modalidad.</span>
+            </div>
+            <div class="field">
+              <label>Tipo *</label>
+              <select id="f-type">
+                <option value="">— Seleccionar —</option>
+                <option value="WORKSHOP">Workshop</option>
+                <option value="SEMINARIO">Seminario</option>
+                <option value="TALLER">Taller</option>
+                <option value="DIPLOMADO">Diplomado</option>
+                <option value="MASTERCLASS">Masterclass</option>
+              </select>
+              <span class="error-msg" id="err-type">Selecciona un tipo.</span>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Precio (COP) *</label>
+            <input type="number" id="f-price" placeholder="0" min="0" step="1000"/>
+            <span class="error-msg" id="err-price">Ingresa un precio válido.</span>
+          </div>
+
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-ghost" onclick="showView('view-lista')">Cancelar</button>
+          <button class="btn btn-primary" onclick="guardarFormulario()">✓ Guardar</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Columna lateral -->
+    <div style="display:flex;flex-direction:column;gap:20px;">
+
+      <div class="form-card">
+        <div class="form-card-header"><span class="dot" style="background:#10b981"></span> Categoría</div>
+        <div class="form-card-body">
+          <div class="field">
+            <label>Categoría</label>
+            <select id="f-category">
+              <option value="">— Sin categoría —</option>
+              <option value="cat-1">Gestión de Proyectos</option>
+              <option value="cat-2">Innovación y Tecnología</option>
+              <option value="cat-3">Liderazgo</option>
+              <option value="cat-4">Comunicación</option>
+              <option value="cat-5">Emprendimiento</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <div class="form-card-header"><span class="dot" style="background:#f59e0b"></span> Visibilidad</div>
+        <div class="form-card-body">
+          <div class="highlight-field" id="highlight-field" onclick="toggleHighlight()">
+            <input type="checkbox" id="f-highlight"/>
+            <div class="custom-check" id="custom-check"></div>
+            <div class="highlight-label">
+              Destacar módulo ⭐
+              <small>Aparecerá en la sección principal de la plataforma.</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     VIEW 3 – ESTRUCTURA (Lecciones)
+══════════════════════════════════════════════════════ -->
+<div class="view" id="view-estructura">
+
+  <div class="estructura-header">
+    <div>
+      <h1 id="est-title">Estructura del módulo</h1>
+      <p style="font-size:13px;color:var(--muted);margin-top:4px;">Organiza y edita las lecciones de este micro aprendizaje.</p>
+      <div class="micro-meta" id="est-meta"></div>
+    </div>
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-ghost" onclick="showView('view-lista')">← Volver</button>
+      <button class="btn btn-primary" onclick="agregarLeccion()">+ Agregar lección</button>
+    </div>
+  </div>
+
+  <div class="lecciones-list" id="lecciones-list"></div>
+
+  <div id="lecciones-empty" style="display:none;text-align:center;padding:48px 20px;color:var(--muted);">
+    <div style="font-size:36px;margin-bottom:10px;">📋</div>
+    <p style="font-size:14px;">Este módulo no tiene lecciones aún. Agrega la primera.</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     VIEW 4 – EDITOR DE LECCIÓN
+══════════════════════════════════════════════════════ -->
+<div class="view" id="view-editor">
+
+  <div class="editor-header">
+    <div>
+      <h1 id="editor-title">Editor de lección</h1>
+      <p id="editor-subtitle">Construye el contenido bloque a bloque.</p>
+    </div>
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-ghost" onclick="volverEstructura()">← Volver</button>
+      <button class="btn btn-primary" onclick="guardarLeccion()">✓ Guardar lección</button>
+    </div>
+  </div>
+
+  <!-- Toolbar de tipos -->
+  <div class="block-toolbar">
+    <span>+ Agregar bloque</span>
+    <button class="block-type-btn video" onclick="addBlock('video')">▶ Video</button>
+    <button class="block-type-btn texto" onclick="addBlock('texto')">📝 Texto</button>
+    <button class="block-type-btn quiz"  onclick="addBlock('quiz')">❓ Quiz</button>
+  </div>
+
+  <!-- Contenedor de bloques -->
+  <div id="blocks-container"></div>
+  <div id="blocks-empty" class="blocks-empty">
+    <div class="icon">🧱</div>
+    <p>No hay bloques aún. Usa los botones de arriba para agregar contenido.</p>
+  </div>
+
+</div>
+
+<!-- MODAL CONFIRM DELETE -->
+<div class="modal-overlay" id="confirm-modal">
+  <div class="modal">
+    <div class="modal-icon">🗑️</div>
+    <h3>¿Eliminar?</h3>
+    <p id="confirm-msg">Esta acción no se puede deshacer.</p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeConfirm()">Cancelar</button>
+      <button class="btn btn-danger" id="confirm-ok">Sí, eliminar</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- ══════════════════════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════════════════════ -->
+<script>
+// ═══════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════
+let microlearnings = [
+  { id: uid(), name: 'Gestión ágil de proyectos', description: 'Fundamentos y aplicación de metodologías ágiles en contextos reales.', modality: 'VIRTUAL',  type: 'WORKSHOP',    category_id: 'cat-1', highlight: true,  price: 250000, lecciones: [] },
+  { id: uid(), name: 'Design Thinking aplicado',  description: 'Proceso creativo de innovación centrado en el usuario.',             modality: 'HIBRIDO',  type: 'TALLER',      category_id: 'cat-2', highlight: true,  price: 180000, lecciones: [] },
+  { id: uid(), name: 'Comunicación asertiva',     description: 'Técnicas para comunicar ideas con claridad y empatía.',             modality: 'VIRTUAL',  type: 'MASTERCLASS', category_id: 'cat-4', highlight: false, price: 120000, lecciones: [] },
+  { id: uid(), name: 'Emprendimiento digital',    description: 'Creación y validación de modelos de negocio digitales.',            modality: 'VIRTUAL',  type: 'DIPLOMADO',   category_id: 'cat-5', highlight: false, price: 350000, lecciones: [] },
+  { id: uid(), name: 'Liderazgo transformacional',description: 'Desarrolla habilidades para liderar equipos en entornos cambiantes.', modality: 'HIBRIDO', type: 'SEMINARIO',  category_id: 'cat-3', highlight: true,  price: 200000, lecciones: [] },
+];
+
+let blocks   = [];      // bloques del editor actual
+let editingMicroId   = null;  // id del micro en formulario
+let currentMicroId   = null;  // id del micro en estructura
+let currentLeccionId = null;  // id de la lección en editor
+let confirmCallback  = null;
+
+const CATEGORIES = {
+  'cat-1': 'Gestión de Proyectos',
+  'cat-2': 'Innovación y Tecnología',
+  'cat-3': 'Liderazgo',
+  'cat-4': 'Comunicación',
+  'cat-5': 'Emprendimiento',
+};
+
+function uid() {
+  return 'id_' + Math.random().toString(36).substr(2, 9);
+}
+
+// ═══════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════
+function showView(id) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.getElementById('header-breadcrumb').innerHTML = '';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (id === 'view-lista') renderList();
+}
+
+// ═══════════════════════════════════════════
+// VIEW 1 – LISTADO
+// ═══════════════════════════════════════════
+function renderList(filter = '') {
+  const tbody   = document.getElementById('tableBody');
+  const empty   = document.getElementById('emptyState');
+  const countEl = document.getElementById('countBar');
+
+  const filtered = filter
+    ? microlearnings.filter(m => m.name.toLowerCase().includes(filter.toLowerCase()))
+    : microlearnings;
+
+  countEl.innerHTML = `Mostrando <strong>${filtered.length}</strong> de <strong>${microlearnings.length}</strong> módulos`;
+
+  if (!filtered.length) {
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+    document.getElementById('mainTable').style.display = 'none';
+    return;
+  }
+
+  empty.style.display = 'none';
+  document.getElementById('mainTable').style.display = 'table';
+
+  tbody.innerHTML = filtered.map(m => `
+    <tr>
+      <td><strong>${esc(m.name)}</strong></td>
+      <td>${pillModality(m.modality)}</td>
+      <td>${pillType(m.type)}</td>
+      <td class="highlight-badge ${m.highlight ? 'yes' : 'no'}">
+        ${m.highlight ? '⭐ Destacado' : '— —'}
+      </td>
+      <td class="price-cell">$${Number(m.price).toLocaleString('es-CO')}</td>
+      <td>
+        <div class="actions-cell">
+          <button class="icon-btn edit" title="Editar"    onclick="abrirFormulario('${m.id}')">✏️</button>
+          <button class="icon-btn del"  title="Eliminar"  onclick="confirmarEliminar('${m.id}')">🗑️</button>
+          <button class="icon-btn view" title="Lecciones" onclick="abrirEstructura('${m.id}')">📋</button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function filterList() {
+  renderList(document.getElementById('searchInput').value);
+}
+
+function pillModality(m) {
+  const map = { VIRTUAL: 'pill-virtual', HIBRIDO: 'pill-hibrido' };
+  const label = { VIRTUAL: '🌐 Virtual', HIBRIDO: '🏫 Híbrido' };
+  return `<span class="pill ${map[m]||''}">${label[m]||m}</span>`;
+}
+
+function pillType(t) {
+  const map = { WORKSHOP:'pill-workshop', SEMINARIO:'pill-seminario', TALLER:'pill-taller', DIPLOMADO:'pill-diplomado', MASTERCLASS:'pill-masterclass' };
+  const cap = t.charAt(0) + t.slice(1).toLowerCase();
+  return `<span class="pill ${map[t]||''}">${cap}</span>`;
+}
+
+// ═══════════════════════════════════════════
+// VIEW 2 – FORMULARIO
+// ═══════════════════════════════════════════
+function abrirFormulario(id) {
+  editingMicroId = id;
+  limpiarErrores();
+
+  if (id) {
+    const m = microlearnings.find(x => x.id === id);
+    document.getElementById('form-title').textContent  = 'Editar micro aprendizaje';
+    document.getElementById('f-name').value            = m.name;
+    document.getElementById('f-desc').value            = m.description;
+    document.getElementById('f-modality').value        = m.modality;
+    document.getElementById('f-type').value            = m.type;
+    document.getElementById('f-category').value        = m.category_id || '';
+    document.getElementById('f-price').value           = m.price;
+    setHighlight(m.highlight);
+  } else {
+    document.getElementById('form-title').textContent  = 'Crear micro aprendizaje';
+    document.getElementById('f-name').value            = '';
+    document.getElementById('f-desc').value            = '';
+    document.getElementById('f-modality').value        = '';
+    document.getElementById('f-type').value            = '';
+    document.getElementById('f-category').value        = '';
+    document.getElementById('f-price').value           = '';
+    setHighlight(false);
+  }
+
+  showView('view-formulario');
+}
+
+function guardarFormulario() {
+  if (!validarFormulario()) return;
+
+  const data = {
+    name:        document.getElementById('f-name').value.trim(),
+    description: document.getElementById('f-desc').value.trim(),
+    modality:    document.getElementById('f-modality').value,
+    type:        document.getElementById('f-type').value,
+    category_id: document.getElementById('f-category').value,
+    highlight:   document.getElementById('f-highlight').checked,
+    price:       parseFloat(document.getElementById('f-price').value) || 0,
+  };
+
+  if (editingMicroId) {
+    const idx = microlearnings.findIndex(m => m.id === editingMicroId);
+    microlearnings[idx] = { ...microlearnings[idx], ...data };
+    showToast('✏️ Micro aprendizaje actualizado');
+  } else {
+    microlearnings.push({ id: uid(), lecciones: [], ...data });
+    showToast('✅ Micro aprendizaje creado');
+  }
+
+  showView('view-lista');
+}
+
+function validarFormulario() {
+  limpiarErrores();
+  let ok = true;
+  const req = [
+    ['f-name',     'err-name',     v => v.trim().length > 0],
+    ['f-desc',     'err-desc',     v => v.trim().length > 0],
+    ['f-modality', 'err-modality', v => v !== ''],
+    ['f-type',     'err-type',     v => v !== ''],
+    ['f-price',    'err-price',    v => v !== '' && parseFloat(v) >= 0],
+  ];
+  req.forEach(([fieldId, errId, check]) => {
+    const el = document.getElementById(fieldId);
+    if (!check(el.value)) {
+      el.classList.add('error');
+      document.getElementById(errId).classList.add('show');
+      ok = false;
+    }
+  });
+  return ok;
+}
+
+function limpiarErrores() {
+  document.querySelectorAll('.error').forEach(e => e.classList.remove('error'));
+  document.querySelectorAll('.error-msg').forEach(e => e.classList.remove('show'));
+}
+
+function toggleHighlight() {
+  const cb = document.getElementById('f-highlight');
+  cb.checked = !cb.checked;
+  setHighlight(cb.checked);
+}
+
+function setHighlight(val) {
+  document.getElementById('f-highlight').checked = val;
+  document.getElementById('highlight-field').classList.toggle('checked', val);
+  document.getElementById('custom-check').textContent = val ? '⭐' : '';
+}
+
+// ═══════════════════════════════════════════
+// VIEW 3 – ESTRUCTURA (Lecciones)
+// ═══════════════════════════════════════════
+function abrirEstructura(id) {
+  currentMicroId = id;
+  const m = microlearnings.find(x => x.id === id);
+
+  document.getElementById('est-title').textContent = m.name;
+  document.getElementById('est-meta').innerHTML = `
+    ${pillModality(m.modality)}
+    ${pillType(m.type)}
+  `;
+  document.getElementById('header-breadcrumb').innerHTML = `<strong>/ ${esc(m.name)}</strong>`;
+
+  renderLecciones();
+  showView('view-estructura');
+}
+
+function renderLecciones() {
+  const m    = microlearnings.find(x => x.id === currentMicroId);
+  const list = document.getElementById('lecciones-list');
+  const emp  = document.getElementById('lecciones-empty');
+
+  if (!m.lecciones.length) {
+    list.innerHTML = '';
+    emp.style.display = 'block';
+    return;
+  }
+
+  emp.style.display = 'none';
+  list.innerHTML = m.lecciones.map((l, i) => `
+    <div class="leccion-card" id="lec-${l.id}">
+      <div class="leccion-row">
+        <span class="drag-handle">⠿</span>
+        <div class="leccion-num">${i + 1}</div>
+        <div class="leccion-info">
+          <input class="leccion-name-input" value="${esc(l.name)}"
+                 onchange="updateLeccion('${l.id}', 'name', this.value)"
+                 placeholder="Nombre de la lección"/>
+          <input class="leccion-meta-input" value="${esc(l.desc || '')}"
+                 onchange="updateLeccion('${l.id}', 'desc', this.value)"
+                 placeholder="Descripción breve…"/>
+        </div>
+        <div class="leccion-actions">
+          <button class="btn btn-sm btn-warn" onclick="abrirEditor('${l.id}')">✏️ Editar contenido</button>
+          <button class="icon-btn del" onclick="eliminarLeccion('${l.id}')">🗑️</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function agregarLeccion() {
+  const m = microlearnings.find(x => x.id === currentMicroId);
+  m.lecciones.push({
+    id:     uid(),
+    name:   `Lección ${m.lecciones.length + 1}`,
+    desc:   '',
+    blocks: []
+  });
+  renderLecciones();
+  showToast('📋 Lección agregada');
+}
+
+function updateLeccion(lid, field, value) {
+  const m = microlearnings.find(x => x.id === currentMicroId);
+  const l = m.lecciones.find(x => x.id === lid);
+  if (l) l[field] = value;
+}
+
+function eliminarLeccion(lid) {
+  openConfirm('¿Eliminar esta lección y su contenido?', () => {
+    const m = microlearnings.find(x => x.id === currentMicroId);
+    m.lecciones = m.lecciones.filter(l => l.id !== lid);
+    renderLecciones();
+    showToast('🗑️ Lección eliminada');
+  });
+}
+
+// ═══════════════════════════════════════════
+// VIEW 4 – EDITOR DE LECCIÓN
+// ═══════════════════════════════════════════
+function abrirEditor(lid) {
+  const m = microlearnings.find(x => x.id === currentMicroId);
+  const l = m.lecciones.find(x => x.id === lid);
+  currentLeccionId = lid;
+
+  // Cargar bloques de la lección
+  blocks = JSON.parse(JSON.stringify(l.blocks || []));
+
+  document.getElementById('editor-title').textContent    = l.name;
+  document.getElementById('editor-subtitle').textContent = `Módulo: ${m.name}`;
+  document.getElementById('header-breadcrumb').innerHTML =
+    `<strong>/ ${esc(m.name)} / ${esc(l.name)}</strong>`;
+
+  renderBlocks();
+  showView('view-editor');
+}
+
+function volverEstructura() {
+  document.getElementById('header-breadcrumb').innerHTML = '';
+  showView('view-estructura');
+}
+
+function guardarLeccion() {
+  const m = microlearnings.find(x => x.id === currentMicroId);
+  const l = m.lecciones.find(x => x.id === currentLeccionId);
+  l.blocks = JSON.parse(JSON.stringify(blocks));
+  showToast('✅ Lección guardada');
+  volverEstructura();
+}
+
+// ─── BLOCK ENGINE ─────────────────────────────────
+function addBlock(type) {
+  const b = { id: uid(), type, order: blocks.length };
+
+  if (type === 'video') {
+    b.url = '';
+  } else if (type === 'texto') {
+    b.content = '';
+  } else if (type === 'quiz') {
+    b.question = '';
+    b.options  = [
+      { id: uid(), text: '', correct: true },
+      { id: uid(), text: '', correct: false },
+    ];
+  }
+
+  blocks.push(b);
+  renderBlocks();
+  // scroll al nuevo bloque
+  setTimeout(() => {
+    const el = document.getElementById('block-' + b.id);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 100);
+}
+
+function removeBlock(id) {
+  blocks = blocks.filter(b => b.id !== id);
+  renderBlocks();
+}
+
+function renderBlocks() {
+  const container = document.getElementById('blocks-container');
+  const empty     = document.getElementById('blocks-empty');
+
+  if (!blocks.length) {
+    container.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+
+  empty.style.display = 'none';
+  container.innerHTML = blocks.map((b, i) => buildBlockHTML(b, i)).join('');
+  attachBlockEvents();
+}
+
+function buildBlockHTML(b, i) {
+  const labelClass = { video:'label-video', texto:'label-texto', quiz:'label-quiz' }[b.type];
+  const typeIcon   = { video:'▶', texto:'📝', quiz:'❓' }[b.type];
+  const typeName   = { video:'Video', texto:'Texto', quiz:'Quiz' }[b.type];
+
+  return `
+    <div class="block" id="block-${b.id}">
+      <div class="block-header">
+        <span class="block-type-label ${labelClass}">${typeIcon} ${typeName}</span>
+        <span class="block-order">Bloque ${i + 1}</span>
+        ${i > 0 ? `<button class="icon-btn" title="Subir" onclick="moveBlock('${b.id}', -1)">↑</button>` : ''}
+        ${i < blocks.length - 1 ? `<button class="icon-btn" title="Bajar" onclick="moveBlock('${b.id}', 1)">↓</button>` : ''}
+        <button class="block-del-btn" title="Eliminar bloque" onclick="removeBlock('${b.id}')">✕</button>
+      </div>
+      <div class="block-body">
+        ${buildBlockBody(b)}
+      </div>
+    </div>
+  `;
+}
+
+function buildBlockBody(b) {
+  if (b.type === 'video') {
+    return `
+      <div class="video-block">
+        <div class="url-field">
+          <input class="url-input" id="url-${b.id}" type="text"
+                 placeholder="Pega aquí la URL del video (YouTube, Vimeo…)"
+                 value="${esc(b.url)}"
+                 onchange="updateBlockField('${b.id}','url',this.value)"
+                 oninput="previewVideo('${b.id}', this.value)"/>
+          <button class="btn btn-sm btn-danger" onclick="clearVideo('${b.id}')">✕</button>
+        </div>
+        <div class="video-preview" id="vprev-${b.id}">
+          ${b.url ? videoEmbed(b.url) : '<span>🎬 Vista previa del video</span>'}
+        </div>
+      </div>
+    `;
+  }
+
+  if (b.type === 'texto') {
+    return `
+      <div class="texto-block">
+        <div class="texto-toolbar">
+          <button class="fmt-btn" onclick="fmt('textarea-${b.id}','bold')"><b>B</b></button>
+          <button class="fmt-btn" onclick="fmt('textarea-${b.id}','italic')"><i>I</i></button>
+          <button class="fmt-btn" onclick="fmt('textarea-${b.id}','ul')">• Lista</button>
+        </div>
+        <textarea class="rich-area" id="textarea-${b.id}"
+                  placeholder="Escribe el contenido de este bloque…"
+                  oninput="updateBlockField('${b.id}','content',this.value)">${esc(b.content)}</textarea>
+      </div>
+    `;
+  }
+
+  if (b.type === 'quiz') {
+    const opts = b.options.map(o => `
+      <div class="quiz-option" id="opt-${o.id}">
+        <div class="option-radio ${o.correct ? 'correct' : ''}"
+             onclick="setCorrectOption('${b.id}','${o.id}')"
+             title="Marcar como correcta"></div>
+        <input class="option-input" type="text"
+               value="${esc(o.text)}"
+               placeholder="Opción de respuesta…"
+               onchange="updateOption('${b.id}','${o.id}',this.value)"/>
+        <button class="option-del" onclick="removeOption('${b.id}','${o.id}')" title="Eliminar opción">×</button>
+      </div>
+    `).join('');
+
+    return `
+      <div class="quiz-block">
+        <input class="quiz-question" type="text"
+               value="${esc(b.question)}"
+               placeholder="Escribe la pregunta del quiz…"
+               onchange="updateBlockField('${b.id}','question',this.value)"/>
+        <div class="quiz-options" id="opts-${b.id}">${opts}</div>
+        <p class="quiz-hint">💡 Haz clic en el círculo para marcar la respuesta correcta.</p>
+        <button class="btn btn-sm btn-ghost" style="margin-top:10px"
+                onclick="addOption('${b.id}')">+ Agregar opción</button>
+      </div>
+    `;
+  }
+}
+
+function attachBlockEvents() {
+  // noop — all events are inline
+}
+
+// ─── VIDEO HELPERS ─────────────────────────────────
+function previewVideo(bid, url) {
+  updateBlockField(bid, 'url', url);
+  const prev = document.getElementById('vprev-' + bid);
+  if (prev) prev.innerHTML = url ? videoEmbed(url) : '<span>🎬 Vista previa del video</span>';
+}
+
+function clearVideo(bid) {
+  updateBlockField(bid, 'url', '');
+  const input = document.getElementById('url-' + bid);
+  if (input) input.value = '';
+  const prev = document.getElementById('vprev-' + bid);
+  if (prev) prev.innerHTML = '<span>🎬 Vista previa del video</span>';
+}
+
+function videoEmbed(url) {
+  const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/);
+  if (ytMatch) return `<iframe src="https://www.youtube.com/embed/${ytMatch[1]}" allowfullscreen></iframe>`;
+  const viMatch = url.match(/vimeo\.com\/(\d+)/);
+  if (viMatch) return `<iframe src="https://player.vimeo.com/video/${viMatch[1]}" allowfullscreen></iframe>`;
+  return `<span>🔗 <a href="${esc(url)}" target="_blank" style="color:var(--brand)">${esc(url)}</a></span>`;
+}
+
+// ─── TEXTO HELPERS ─────────────────────────────────
+function fmt(id, type) {
+  const ta = document.getElementById(id);
+  if (!ta) return;
+  const start = ta.selectionStart, end = ta.selectionEnd;
+  const sel = ta.value.substring(start, end);
+  let insert = '';
+  if (type === 'bold')   insert = `**${sel}**`;
+  if (type === 'italic') insert = `_${sel}_`;
+  if (type === 'ul')     insert = `\n• ${sel || 'Ítem'}`;
+  ta.value = ta.value.substring(0, start) + insert + ta.value.substring(end);
+  ta.focus();
+  // sync to state
+  const b = blocks.find(x => x.id === id.replace('textarea-',''));
+  if (b) b.content = ta.value;
+}
+
+// ─── QUIZ HELPERS ──────────────────────────────────
+function addOption(bid) {
+  const b = blocks.find(x => x.id === bid);
+  if (!b) return;
+  b.options.push({ id: uid(), text: '', correct: false });
+  renderBlocks();
+}
+
+function removeOption(bid, oid) {
+  const b = blocks.find(x => x.id === bid);
+  if (!b || b.options.length <= 2) { showToast('⚠️ Mínimo 2 opciones'); return; }
+  b.options = b.options.filter(o => o.id !== oid);
+  renderBlocks();
+}
+
+function setCorrectOption(bid, oid) {
+  const b = blocks.find(x => x.id === bid);
+  if (!b) return;
+  b.options.forEach(o => o.correct = (o.id === oid));
+  // update UI without full re-render
+  b.options.forEach(o => {
+    const el = document.querySelector(`#opt-${o.id} .option-radio`);
+    if (el) {
+      el.classList.toggle('correct', o.id === oid);
+    }
+  });
+}
+
+function updateOption(bid, oid, value) {
+  const b = blocks.find(x => x.id === bid);
+  if (!b) return;
+  const o = b.options.find(x => x.id === oid);
+  if (o) o.text = value;
+}
+
+function updateBlockField(bid, field, value) {
+  const b = blocks.find(x => x.id === bid);
+  if (b) b[field] = value;
+}
+
+function moveBlock(bid, dir) {
+  const i = blocks.findIndex(b => b.id === bid);
+  const j = i + dir;
+  if (j < 0 || j >= blocks.length) return;
+  [blocks[i], blocks[j]] = [blocks[j], blocks[i]];
+  renderBlocks();
+}
+
+// ═══════════════════════════════════════════
+// DELETE MICRO
+// ═══════════════════════════════════════════
+function confirmarEliminar(id) {
+  const m = microlearnings.find(x => x.id === id);
+  openConfirm(`¿Eliminar "${m.name}"? Esta acción no se puede deshacer.`, () => {
+    microlearnings = microlearnings.filter(x => x.id !== id);
+    renderList(document.getElementById('searchInput').value);
+    showToast('🗑️ Módulo eliminado');
+  });
+}
+
+// ═══════════════════════════════════════════
+// CONFIRM MODAL
+// ═══════════════════════════════════════════
+function openConfirm(msg, cb) {
+  document.getElementById('confirm-msg').textContent = msg;
+  confirmCallback = cb;
+  document.getElementById('confirm-modal').classList.add('open');
+}
+
+function closeConfirm() {
+  document.getElementById('confirm-modal').classList.remove('open');
+  confirmCallback = null;
+}
+
+document.getElementById('confirm-ok').addEventListener('click', () => {
+  if (confirmCallback) confirmCallback();
+  closeConfirm();
+});
+
+document.getElementById('confirm-modal').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeConfirm();
+});
+
+// ═══════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ═══════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════
+function esc(str) {
+  return String(str || '')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
+renderList();
+</script>
+</body>
+</html>
