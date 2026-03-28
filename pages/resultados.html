@@ -219,58 +219,147 @@
     .field input::placeholder,
     .field textarea::placeholder { color: #b0b2cc; }
 
-    /* ── COMPETENCIAS PANEL ── */
-    .comp-search-wrap { position: relative; margin-bottom: 14px; }
-    .comp-search {
-      width: 100%; padding: 9px 14px 9px 34px;
-      border: 1.5px solid var(--border); border-radius: 9px;
-      font-family: inherit; font-size: 13px; color: var(--text);
-      background: var(--bg); outline: none;
-      transition: border-color .2s;
-    }
-    .comp-search:focus { border-color: var(--brand); }
-    .comp-search::placeholder { color: var(--muted); }
-    .comp-search-icon {
-      position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
-      color: var(--muted); font-size: 14px; pointer-events: none;
+    /* ── ASSIGNED COMP ── */
+    .assigned-comp-list {
+      display: flex; flex-direction: column; gap: 7px;
     }
 
-    .comp-check-list {
-      display: flex; flex-direction: column; gap: 6px;
-      max-height: 340px; overflow-y: auto; padding-right: 4px;
+    .assigned-comp-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1.5px solid var(--border);
+      background: var(--white);
+      box-shadow: 0 2px 8px rgba(14,165,233,.05);
+      transition: border-color .2s, box-shadow .2s;
     }
-    .comp-check-list::-webkit-scrollbar { width: 4px; }
-    .comp-check-list::-webkit-scrollbar-thumb { background: #d0d2e8; border-radius: 4px; }
-
-    .comp-item {
-      display: flex; align-items: flex-start; gap: 10px;
-      padding: 10px 12px;
-      border-radius: 9px; border: 1.5px solid var(--border);
-      background: var(--white); cursor: pointer;
-      transition: border-color .18s, background .18s;
-      user-select: none;
-    }
-    .comp-item:hover { border-color: var(--brand); background: var(--brand-light); }
-    .comp-item.selected { border-color: var(--brand); background: var(--brand-light); }
-
-    .comp-checkbox {
-      width: 18px; height: 18px;
-      border: 2px solid var(--border); border-radius: 5px;
-      display: grid; place-items: center;
-      flex-shrink: 0; margin-top: 1px;
-      transition: all .15s; background: var(--white);
-    }
-    .comp-item.selected .comp-checkbox {
-      background: var(--brand); border-color: var(--brand);
-      color: #fff; font-size: 11px;
+    .assigned-comp-item:hover {
+      border-color: var(--brand);
+      box-shadow: 0 4px 14px rgba(14,165,233,.1);
     }
 
-    .comp-item-text { font-size: 12.5px; color: var(--text); line-height: 1.4; }
+    .assigned-comp-badge {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px; font-weight: 500;
+      color: #5454E9; background: #eeeeff;
+      padding: 2px 7px; border-radius: 5px;
+      white-space: nowrap; flex-shrink: 0;
+    }
+
+    .assigned-comp-text {
+      font-size: 12.5px; color: var(--text); line-height: 1.4; flex: 1;
+    }
+
+    .remove-comp-btn {
+      width: 24px; height: 24px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: none; border: 1.5px solid var(--border);
+      border-radius: 6px; cursor: pointer;
+      color: var(--muted); font-size: 11px;
+      transition: all .15s;
+    }
+    .remove-comp-btn:hover {
+      border-color: #ef4444; background: #fff1f1; color: #ef4444;
+    }
+
+    .assigned-comp-empty {
+      display: flex; flex-direction: column; align-items: center;
+      padding: 22px 16px; gap: 7px;
+      border: 1.5px dashed var(--border);
+      border-radius: 10px; text-align: center;
+    }
+    .assigned-comp-empty-icon { font-size: 24px; }
+    .assigned-comp-empty-text {
+      font-size: 12px; color: var(--muted); line-height: 1.5;
+    }
+
+    .add-comp-btn {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 10px 16px; border-radius: 10px;
+      border: 1.5px solid #5454E9;
+      background: #eeeeff;
+      font-family: inherit; font-size: 13px; font-weight: 600;
+      color: #5454E9;
+      cursor: pointer; width: 100%; margin-top: 8px;
+      transition: all .2s;
+    }
+    .add-comp-btn:hover { background: #5454E9; color: #fff; }
 
     .selected-count {
-      margin-top: 10px; text-align: right;
+      margin-top: 8px; text-align: right;
       font-size: 11.5px; color: var(--brand); font-weight: 600;
     }
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(18,18,58,.45); z-index: 200;
+      align-items: center; justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+
+    .modal {
+      background: var(--white); border-radius: var(--radius);
+      box-shadow: 0 20px 60px rgba(18,18,58,.25);
+      width: 480px; max-height: 80vh;
+      display: flex; flex-direction: column; overflow: hidden;
+    }
+
+    .modal-header {
+      padding: 20px 24px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .modal-header h3 { font-size: 16px; font-weight: 700; }
+
+    .modal-close {
+      background: none; border: none; font-size: 20px;
+      color: var(--muted); cursor: pointer; line-height: 1;
+    }
+    .modal-close:hover { color: var(--text); }
+
+    .modal-search { padding: 12px 20px; border-bottom: 1px solid var(--border); }
+    .modal-search input {
+      width: 100%; padding: 9px 14px;
+      border: 1.5px solid var(--border); border-radius: 9px;
+      font-family: inherit; font-size: 13px; color: var(--text);
+      background: var(--bg); outline: none; transition: border-color .2s;
+    }
+    .modal-search input:focus { border-color: var(--brand); }
+    .modal-search input::placeholder { color: var(--muted); }
+
+    .modal-list {
+      overflow-y: auto; flex: 1;
+      padding: 12px 20px; display: flex; flex-direction: column; gap: 6px;
+    }
+    .modal-list::-webkit-scrollbar { width: 4px; }
+    .modal-list::-webkit-scrollbar-thumb { background: #d0d2e8; border-radius: 4px; }
+
+    .modal-item {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 10px 12px; border-radius: 9px;
+      border: 1.5px solid var(--border); background: var(--white);
+      cursor: pointer; transition: all .15s; user-select: none;
+    }
+    .modal-item:hover { border-color: #5454E9; background: #eeeeff; }
+    .modal-item.selected { border-color: #5454E9; background: #eeeeff; }
+
+    .modal-checkbox {
+      width: 18px; height: 18px; border: 2px solid var(--border);
+      border-radius: 5px; display: grid; place-items: center;
+      flex-shrink: 0; margin-top: 1px; transition: all .15s; background: var(--white);
+    }
+    .modal-item.selected .modal-checkbox {
+      background: #5454E9; border-color: #5454E9; color: #fff; font-size: 11px;
+    }
+
+    .modal-item-text { font-size: 12.5px; color: var(--text); line-height: 1.4; flex: 1; }
+
+    .modal-footer {
+      padding: 16px 20px; border-top: 1px solid var(--border);
+      display: flex; justify-content: flex-end; gap: 10px;
+    }
+
+    .btn-sm { padding: 7px 14px; font-size: 12.5px; }
 
     /* ── FORM ACTIONS ── */
     .form-actions {
@@ -370,13 +459,8 @@
         <span class="dot" style="background:#5454E9"></span> Asignar Competencias
       </div>
       <div class="form-card-body">
-        <div class="comp-search-wrap">
-          <span class="comp-search-icon">🔍</span>
-          <input class="comp-search" type="text" id="crear-comp-search"
-                 placeholder="Filtrar competencias…"
-                 oninput="filterComps('crear-comp-list', this.value)"/>
-        </div>
-        <div class="comp-check-list" id="crear-comp-list"></div>
+        <div class="assigned-comp-list" id="crear-assigned-comp"></div>
+        <button class="add-comp-btn" onclick="abrirModalComp('crear')">+ Agregar competencia</button>
         <div class="selected-count" id="crear-comp-count">0 seleccionadas</div>
       </div>
     </div>
@@ -413,15 +497,30 @@
         <span class="dot" style="background:#5454E9"></span> Asignar Competencias
       </div>
       <div class="form-card-body">
-        <div class="comp-search-wrap">
-          <span class="comp-search-icon">🔍</span>
-          <input class="comp-search" type="text" id="editar-comp-search"
-                 placeholder="Filtrar competencias…"
-                 oninput="filterComps('editar-comp-list', this.value)"/>
-        </div>
-        <div class="comp-check-list" id="editar-comp-list"></div>
+        <div class="assigned-comp-list" id="editar-assigned-comp"></div>
+        <button class="add-comp-btn" onclick="abrirModalComp('editar')">+ Agregar competencia</button>
         <div class="selected-count" id="editar-comp-count">0 seleccionadas</div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Agregar Competencia -->
+<div class="modal-overlay" id="modal-comp-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Agregar Competencia</h3>
+      <button class="modal-close" onclick="cerrarModalComp()">✕</button>
+    </div>
+    <div class="modal-search">
+      <input type="text" id="modal-comp-search"
+             placeholder="Buscar competencia…"
+             oninput="filterModalComp()"/>
+    </div>
+    <div class="modal-list" id="modal-comp-list"></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost btn-sm" onclick="cerrarModalComp()">Cancelar</button>
+      <button class="btn btn-primary btn-sm" onclick="confirmarModalComp()">✓ Agregar seleccionadas</button>
     </div>
   </div>
 </div>
@@ -446,20 +545,136 @@
   ];
 
   let resultados = [
-    { id: 1,  nombre: "Desarrollar una estrategia de comunicación escrita",    desc: "Capacidad de estructurar y comunicar ideas de forma clara y efectiva por escrito en contextos académicos y profesionales.", comps: [1, 11] },
-    { id: 2,  nombre: "Desarrollar un framework de procesos ágiles",           desc: "Diseñar e implementar marcos de trabajo ágiles adaptados a las necesidades del equipo y del proyecto.",                        comps: [6, 9] },
-    { id: 3,  nombre: "Evaluar y diagnosticar el nivel de madurez digital",    desc: "Aplicar instrumentos de diagnóstico para medir el grado de transformación digital de una organización.",                       comps: [4, 5] },
-    { id: 4,  nombre: "Liderar procesos de transformación digital",            desc: "Conducir iniciativas de cambio tecnológico y cultural dentro de organizaciones en proceso de digitalización.",                  comps: [5] },
-    { id: 5,  nombre: "Aplicar técnicas de investigación cualitativa y cuantitativa", desc: "Usar metodologías de investigación mixtas para generar conocimiento válido y aplicable.",                             comps: [0, 3] },
-    { id: 6,  nombre: "Crear y validar prototipos de soluciones innovadoras",  desc: "Construir prototipos funcionales y someterlos a ciclos de validación con usuarios reales.",                                    comps: [3, 7] },
-    { id: 7,  nombre: "Facilitar sesiones creativas y de co-creación",        desc: "Moderar dinámicas colaborativas orientadas a la generación de ideas y soluciones en equipo.",                                  comps: [6] },
-    { id: 8,  nombre: "Diseñar e implementar programas de cultura innovadora", desc: "Crear estrategias organizacionales que fomenten la innovación como valor central.",                                            comps: [4, 8] },
-    { id: 9,  nombre: "Estructurar programas de emprendimiento corporativo",   desc: "Diseñar iniciativas de intraemprendimiento que impulsen la creación de valor desde adentro de la organización.",               comps: [8] },
-    { id: 10, nombre: "Crear y gestionar ecosistemas internos de innovación",  desc: "Establecer redes y comunidades internas que sostengan y escalen procesos de innovación continua.",                             comps: [4, 8, 5] }
+    { id: 1,  nombre: "Desarrollar una estrategia de comunicación escrita",          desc: "Capacidad de estructurar y comunicar ideas de forma clara y efectiva por escrito en contextos académicos y profesionales.", comps: [1, 11] },
+    { id: 2,  nombre: "Desarrollar un framework de procesos ágiles",                 desc: "Diseñar e implementar marcos de trabajo ágiles adaptados a las necesidades del equipo y del proyecto.",                        comps: [6, 9] },
+    { id: 3,  nombre: "Evaluar y diagnosticar el nivel de madurez digital",          desc: "Aplicar instrumentos de diagnóstico para medir el grado de transformación digital de una organización.",                       comps: [4, 5] },
+    { id: 4,  nombre: "Liderar procesos de transformación digital",                  desc: "Conducir iniciativas de cambio tecnológico y cultural dentro de organizaciones en proceso de digitalización.",                  comps: [5] },
+    { id: 5,  nombre: "Aplicar técnicas de investigación cualitativa y cuantitativa",desc: "Usar metodologías de investigación mixtas para generar conocimiento válido y aplicable.",                                       comps: [0, 3] },
+    { id: 6,  nombre: "Crear y validar prototipos de soluciones innovadoras",        desc: "Construir prototipos funcionales y someterlos a ciclos de validación con usuarios reales.",                                    comps: [3, 7] },
+    { id: 7,  nombre: "Facilitar sesiones creativas y de co-creación",              desc: "Moderar dinámicas colaborativas orientadas a la generación de ideas y soluciones en equipo.",                                  comps: [6] },
+    { id: 8,  nombre: "Diseñar e implementar programas de cultura innovadora",       desc: "Crear estrategias organizacionales que fomenten la innovación como valor central.",                                            comps: [4, 8] },
+    { id: 9,  nombre: "Estructurar programas de emprendimiento corporativo",         desc: "Diseñar iniciativas de intraemprendimiento que impulsen la creación de valor desde adentro de la organización.",               comps: [8] },
+    { id: 10, nombre: "Crear y gestionar ecosistemas internos de innovación",        desc: "Establecer redes y comunidades internas que sostengan y escalen procesos de innovación continua.",                             comps: [4, 8, 5] }
   ];
 
   let nextId = 11;
   let editingId = null;
+
+  // ── COMP STATE ─────────────────────────────────────────────────────
+  let crearSelectedComps = [];
+  let editarSelectedComps = [];
+
+  function getContextComp(ctx) {
+    return ctx === 'crear' ? crearSelectedComps : editarSelectedComps;
+  }
+
+  function setContextComp(ctx, arr) {
+    if (ctx === 'crear') crearSelectedComps = arr;
+    else editarSelectedComps = arr;
+  }
+
+  // ── RENDER ASSIGNED COMP ───────────────────────────────────────────
+  function renderAssignedComp(ctx) {
+    const container = document.getElementById(ctx + '-assigned-comp');
+    const countEl   = document.getElementById(ctx + '-comp-count');
+    const selected  = getContextComp(ctx);
+
+    if (selected.length === 0) {
+      container.innerHTML = `
+        <div class="assigned-comp-empty">
+          <div class="assigned-comp-empty-icon">🎯</div>
+          <div class="assigned-comp-empty-text">Sin competencias asignadas aún.<br>Usa el botón para agregar.</div>
+        </div>`;
+    } else {
+      container.innerHTML = selected.map((i, pos) => `
+        <div class="assigned-comp-item">
+          <span class="assigned-comp-badge">C-${String(pos + 1).padStart(2, '0')}</span>
+          <div class="assigned-comp-text">${esc(competencias[i])}</div>
+          <button class="remove-comp-btn" onclick="removeComp('${ctx}', ${i})" title="Quitar">✕</button>
+        </div>
+      `).join('');
+    }
+
+    const n = selected.length;
+    countEl.textContent = `${n} seleccionada${n !== 1 ? 's' : ''}`;
+  }
+
+  function removeComp(ctx, idx) {
+    setContextComp(ctx, getContextComp(ctx).filter(i => i !== idx));
+    renderAssignedComp(ctx);
+  }
+
+  // ── MODAL COMP ─────────────────────────────────────────────────────
+  let modalCompContext   = null;
+  let modalCompSelection = [];
+
+  function abrirModalComp(ctx) {
+    modalCompContext   = ctx;
+    modalCompSelection = [];
+    document.getElementById('modal-comp-search').value = '';
+    buildModalCompList('');
+    document.getElementById('modal-comp-overlay').classList.add('open');
+  }
+
+  function cerrarModalComp() {
+    document.getElementById('modal-comp-overlay').classList.remove('open');
+    modalCompContext   = null;
+    modalCompSelection = [];
+  }
+
+  function buildModalCompList(filterText) {
+    const assigned = getContextComp(modalCompContext);
+    const list     = document.getElementById('modal-comp-list');
+
+    const items = competencias
+      .map((c, i) => ({ c, i }))
+      .filter(({ c, i }) =>
+        !assigned.includes(i) &&
+        (!filterText || c.toLowerCase().includes(filterText.toLowerCase()))
+      );
+
+    if (!items.length) {
+      list.innerHTML = '<p style="font-size:12.5px;color:var(--muted);text-align:center;padding:20px 0">No hay más competencias disponibles.</p>';
+      return;
+    }
+
+    list.innerHTML = items.map(({ c, i }) => {
+      const sel = modalCompSelection.includes(i);
+      return `
+        <div class="modal-item ${sel ? 'selected' : ''}" data-idx="${i}" onclick="toggleModalComp(${i})">
+          <div class="modal-checkbox">${sel ? '✓' : ''}</div>
+          <div class="modal-item-text">${esc(c)}</div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function toggleModalComp(idx) {
+    if (modalCompSelection.includes(idx)) {
+      modalCompSelection = modalCompSelection.filter(i => i !== idx);
+    } else {
+      modalCompSelection.push(idx);
+    }
+    const item = document.querySelector(`#modal-comp-list .modal-item[data-idx="${idx}"]`);
+    if (item) {
+      const sel = modalCompSelection.includes(idx);
+      item.classList.toggle('selected', sel);
+      item.querySelector('.modal-checkbox').textContent = sel ? '✓' : '';
+    }
+  }
+
+  function filterModalComp() {
+    buildModalCompList(document.getElementById('modal-comp-search').value);
+  }
+
+  function confirmarModalComp() {
+    if (modalCompSelection.length === 0) { cerrarModalComp(); return; }
+    const updated = [...getContextComp(modalCompContext), ...modalCompSelection];
+    setContextComp(modalCompContext, updated);
+    const ctx = modalCompContext;
+    cerrarModalComp();
+    renderAssignedComp(ctx);
+  }
 
   // ── VIEWS ──────────────────────────────────────────────────────────
   function showView(id) {
@@ -469,9 +684,9 @@
 
     if (id === 'view-crear') {
       document.getElementById('crear-nombre').value = '';
-      document.getElementById('crear-desc').value = '';
-      document.getElementById('crear-comp-search').value = '';
-      buildCompList('crear-comp-list', []);
+      document.getElementById('crear-desc').value   = '';
+      setContextComp('crear', []);
+      renderAssignedComp('crear');
     }
     if (id === 'view-lista') renderList();
   }
@@ -516,60 +731,14 @@
     renderList(document.getElementById('searchInput').value);
   }
 
-  // ── COMP CHECK LIST ────────────────────────────────────────────────
-  function buildCompList(containerId, selected = [], filterText = '') {
-    const container = document.getElementById(containerId);
-    const countId   = containerId === 'crear-comp-list' ? 'crear-comp-count' : 'editar-comp-count';
-
-    const items = competencias
-      .map((c, i) => ({ c, i }))
-      .filter(({ c }) => !filterText || c.toLowerCase().includes(filterText.toLowerCase()));
-
-    container.innerHTML = items.map(({ c, i }) => {
-      const checked = selected.includes(i);
-      return `
-        <div class="comp-item ${checked ? 'selected' : ''}" data-idx="${i}"
-             onclick="toggleComp('${containerId}', ${i})">
-          <div class="comp-checkbox">${checked ? '✓' : ''}</div>
-          <div class="comp-item-text">${esc(c)}</div>
-        </div>
-      `;
-    }).join('');
-
-    updateCompCount(containerId);
-  }
-
-  function toggleComp(containerId, idx) {
-    const item = document.querySelector(`#${containerId} .comp-item[data-idx="${idx}"]`);
-    item.classList.toggle('selected');
-    item.querySelector('.comp-checkbox').textContent = item.classList.contains('selected') ? '✓' : '';
-    updateCompCount(containerId);
-  }
-
-  function getSelectedComps(containerId) {
-    return [...document.querySelectorAll(`#${containerId} .comp-item.selected`)]
-      .map(el => parseInt(el.dataset.idx));
-  }
-
-  function updateCompCount(containerId) {
-    const countId = containerId === 'crear-comp-list' ? 'crear-comp-count' : 'editar-comp-count';
-    const n = document.querySelectorAll(`#${containerId} .comp-item.selected`).length;
-    document.getElementById(countId).textContent = `${n} seleccionada${n !== 1 ? 's' : ''}`;
-  }
-
-  function filterComps(containerId, text) {
-    const selected = getSelectedComps(containerId);
-    buildCompList(containerId, selected, text);
-  }
-
   // ── CREAR ──────────────────────────────────────────────────────────
   function guardarCrear() {
     const nombre = document.getElementById('crear-nombre').value.trim();
     const desc   = document.getElementById('crear-desc').value.trim();
     if (!nombre) { shake('crear-nombre'); return; }
 
-    const comps = getSelectedComps('crear-comp-list');
-    resultados.push({ id: nextId++, nombre, desc: desc || nombre, comps });
+    const comps = getContextComp('crear');
+    resultados.push({ id: nextId++, nombre, desc: desc || nombre, comps: [...comps] });
     showToast('✅ Resultado de aprendizaje creado');
     showView('view-lista');
   }
@@ -582,8 +751,8 @@
 
     document.getElementById('editar-nombre').value = r.nombre;
     document.getElementById('editar-desc').value   = r.desc;
-    document.getElementById('editar-comp-search').value = '';
-    buildCompList('editar-comp-list', r.comps);
+    setContextComp('editar', [...r.comps]);
+    renderAssignedComp('editar');
 
     showView('view-editar');
   }
@@ -593,9 +762,9 @@
     const desc   = document.getElementById('editar-desc').value.trim();
     if (!nombre) { shake('editar-nombre'); return; }
 
-    const comps = getSelectedComps('editar-comp-list');
-    const idx = resultados.findIndex(r => r.id === editingId);
-    if (idx !== -1) resultados[idx] = { ...resultados[idx], nombre, desc: desc || nombre, comps };
+    const comps = getContextComp('editar');
+    const idx   = resultados.findIndex(r => r.id === editingId);
+    if (idx !== -1) resultados[idx] = { ...resultados[idx], nombre, desc: desc || nombre, comps: [...comps] };
 
     showToast('✏️ Resultado actualizado correctamente');
     showView('view-lista');
@@ -626,7 +795,7 @@
 
   // ── INIT ───────────────────────────────────────────────────────────
   renderList();
-  buildCompList('crear-comp-list', []);
+  renderAssignedComp('crear');
 </script>
 </body>
 </html>

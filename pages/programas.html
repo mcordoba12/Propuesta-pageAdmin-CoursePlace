@@ -11,19 +11,27 @@
       --brand-glow:rgba(84,84,233,.15); --bg:#f0f1fa; --white:#ffffff;
       --text:#12123a; --muted:#7878a0; --border:#e2e4f0;
       --radius:14px; --shadow:0 4px 20px rgba(84,84,233,.09);
-      --green:#10b981; --green-light:#d1fae5; --amber:#f59e0b; --amber-light:#fef3c7;
+      --amber:#f59e0b; --amber-light:#fef3c7;
+      --green:#10b981; --green-light:#d1fae5;
+      --purple:#8b5cf6; --purple-light:#ede9fe;
+      --rose:#f43f5e; --rose-light:#fff1f2;
+      --sky:#0ea5e9; --sky-light:#e0f2fe;
     }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
+
     header{background:var(--white);border-bottom:1px solid var(--border);padding:0 40px;height:66px;display:flex;align-items:center;gap:16px;box-shadow:0 2px 10px rgba(84,84,233,.06);position:sticky;top:0;z-index:100}
     .back-btn{display:flex;align-items:center;gap:7px;text-decoration:none;font-size:13px;font-weight:600;color:var(--muted);padding:7px 12px;border-radius:9px;border:1px solid var(--border);background:var(--white);transition:all .2s;white-space:nowrap}
     .back-btn:hover{border-color:var(--brand);color:var(--brand);background:var(--brand-light)}
     .header-divider{width:1px;height:28px;background:var(--border)}
     .header-title{font-size:15px;font-weight:700;color:var(--text)}
     .header-title span{color:var(--muted);font-weight:400}
+
     .view{display:none;flex:1;padding:36px 40px}
     .view.active{display:block;animation:fadeUp .22s ease}
     @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+    /* ── LISTA ── */
     .list-topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;gap:16px;flex-wrap:wrap}
     .list-topbar h1{font-size:24px;font-weight:700}
     .list-topbar p{font-size:13px;color:var(--muted);margin-top:2px}
@@ -33,40 +41,65 @@
     .search-input{padding:9px 14px 9px 36px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:13.5px;color:var(--text);background:var(--white);outline:none;width:280px;transition:border-color .2s,box-shadow .2s}
     .search-input:focus{border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-glow)}
     .search-input::placeholder{color:var(--muted)}
+
     .btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:10px;font-family:inherit;font-size:13.5px;font-weight:600;cursor:pointer;border:none;transition:all .2s;text-decoration:none}
     .btn-primary{background:var(--brand);color:#fff;box-shadow:0 4px 14px rgba(84,84,233,.35)}
     .btn-primary:hover{background:var(--brand-dark);transform:translateY(-1px)}
     .btn-ghost{background:var(--white);color:var(--text);border:1.5px solid var(--border)}
     .btn-ghost:hover{border-color:var(--brand);color:var(--brand)}
+    .btn-sm{padding:7px 14px;font-size:12.5px}
+
     .count-bar{font-size:12px;color:var(--muted);font-weight:500;margin-bottom:14px}
     .count-bar strong{color:var(--text)}
-    .prog-list{display:flex;flex-direction:column;gap:10px}
-    .prog-card{background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius);padding:18px 22px;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;transition:border-color .2s,box-shadow .2s,transform .18s;box-shadow:var(--shadow)}
+
+    .prog-list{display:flex;flex-direction:column;gap:12px}
+
+    /* ── PROG CARD ── */
+    .prog-card{background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius);padding:0;display:flex;align-items:stretch;overflow:hidden;transition:border-color .2s,box-shadow .2s,transform .18s;box-shadow:var(--shadow)}
     .prog-card:hover{border-color:var(--brand);box-shadow:0 6px 22px rgba(84,84,233,.12);transform:translateY(-1px)}
-    .prog-left{display:flex;align-items:flex-start;gap:14px;flex:1;min-width:0}
+    .prog-card.is-highlight{border-color:var(--amber)}
+    .prog-card-img{width:88px;flex-shrink:0;background:var(--brand-light);position:relative;overflow:hidden}
+    .prog-card-img img{width:100%;height:100%;object-fit:cover}
+    .prog-card-img-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:28px;background:linear-gradient(135deg,var(--brand-light),#dde0ff)}
+    .prog-card-body{flex:1;padding:16px 20px;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;min-width:0}
+    .prog-left{display:flex;align-items:flex-start;gap:12px;flex:1;min-width:0}
     .prog-index{font-family:'DM Mono',monospace;font-size:10px;font-weight:500;color:var(--brand);background:var(--brand-light);padding:3px 8px;border-radius:6px;white-space:nowrap;flex-shrink:0;margin-top:2px}
     .prog-info{flex:1;min-width:0}
-    .prog-name{font-size:14.5px;font-weight:700;color:var(--text);margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .prog-desc{font-size:12.5px;color:var(--muted);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-    .prog-meta{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
-    .badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:2px 9px;border-radius:20px}
+    .prog-name-row{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+    .prog-name{font-size:14.5px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .highlight-star{font-size:13px;flex-shrink:0}
+    .prog-desc{font-size:12.5px;color:var(--muted);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:8px}
+    .prog-meta{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+    .badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px}
     .badge-type{color:var(--brand);background:var(--brand-light)}
-    .badge-credits{color:#0369a1;background:#e0f2fe}
+    .badge-credits{color:#0369a1;background:var(--sky-light)}
     .badge-semesters{color:#047857;background:var(--green-light)}
     .badge-courses{color:#92400e;background:var(--amber-light)}
-    .edit-btn{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:9px;border:1.5px solid var(--border);background:var(--white);font-family:inherit;font-size:12.5px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .2s;white-space:nowrap;flex-shrink:0}
+    .badge-modalidad-presencial{color:#047857;background:var(--green-light)}
+    .badge-modalidad-hibrida{color:#6d28d9;background:var(--purple-light)}
+    .badge-modalidad-virtual{color:#0369a1;background:var(--sky-light)}
+    .badge-snies{color:var(--muted);background:var(--bg);border:1px solid var(--border)}
+    .badge-price{color:#b45309;background:var(--amber-light)}
+    .prog-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px}
+    .prog-tag{font-size:10.5px;font-weight:500;color:var(--brand);background:var(--brand-light);padding:2px 8px;border-radius:20px}
+    .prog-actions{display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0}
+    .edit-btn{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:9px;border:1.5px solid var(--border);background:var(--white);font-family:inherit;font-size:12.5px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .2s;white-space:nowrap}
     .edit-btn:hover{border-color:var(--brand);color:var(--brand);background:var(--brand-light)}
+
     .empty-state{text-align:center;padding:60px 20px;color:var(--muted)}
     .empty-state .icon{font-size:40px;margin-bottom:12px}
     .empty-state p{font-size:14px}
+
+    /* ── FORMULARIO ── */
     .form-header{margin-bottom:28px}
     .form-header h1{font-size:22px;font-weight:700}
     .form-header p{font-size:13px;color:var(--muted);margin-top:4px}
-    .form-layout{display:grid;grid-template-columns:1fr 400px;gap:24px;align-items:start}
+
     .form-card{background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;margin-bottom:20px}
     .form-card-header{padding:16px 24px;border-bottom:1px solid var(--border);font-size:14px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:9px}
     .form-card-header .dot{width:8px;height:8px;border-radius:50%;background:var(--brand)}
     .form-card-body{padding:24px;display:flex;flex-direction:column;gap:18px}
+
     .field{display:flex;flex-direction:column;gap:7px}
     .field label{font-size:11.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
     .field input,.field textarea,.field select{padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:14px;color:var(--text);background:var(--white);outline:none;transition:border-color .2s,box-shadow .2s}
@@ -74,46 +107,97 @@
     .field textarea{resize:vertical;min-height:100px;line-height:1.6}
     .field input::placeholder,.field textarea::placeholder{color:#b0b2cc}
     .field-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
-    .cursos-table{width:100%;border-collapse:collapse;font-size:13px}
-    .cursos-table th{text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;padding:8px 12px;border-bottom:1px solid var(--border);background:#fafbff}
-    .cursos-table th.center{text-align:center}
-    .cursos-table td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text)}
-    .cursos-table td.center{text-align:center}
-    .cursos-table tr:last-child td{border-bottom:none}
-    .cursos-table tr:hover td{background:#fafbff}
-    .check-cell{width:22px;height:22px;border-radius:5px;border:1.5px solid var(--border);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;background:var(--white)}
-    .check-cell.on{background:var(--brand);border-color:var(--brand);color:#fff;font-size:12px}
-    .add-curso-btn{display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:9px;border:1.5px dashed var(--border);background:transparent;font-family:inherit;font-size:13px;color:var(--muted);cursor:pointer;width:100%;margin-top:4px;transition:all .2s}
-    .add-curso-btn:hover{border-color:var(--brand);color:var(--brand);background:var(--brand-light)}
-    .ra-search-wrap{position:relative;margin-bottom:14px}
-    .ra-search{width:100%;padding:9px 14px 9px 34px;border:1.5px solid var(--border);border-radius:9px;font-family:inherit;font-size:13px;color:var(--text);background:var(--bg);outline:none;transition:border-color .2s}
-    .ra-search:focus{border-color:var(--brand)}
-    .ra-search::placeholder{color:var(--muted)}
-    .ra-search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:14px;pointer-events:none}
-    .ra-list{display:flex;flex-direction:column;gap:6px;max-height:400px;overflow-y:auto;padding-right:4px}
-    .ra-list::-webkit-scrollbar{width:4px}
-    .ra-list::-webkit-scrollbar-thumb{background:#d0d2e8;border-radius:4px}
-    .ra-item{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:9px;border:1.5px solid var(--border);background:var(--white);cursor:pointer;transition:border-color .18s,background .18s;user-select:none}
-    .ra-item:hover{border-color:var(--brand);background:var(--brand-light)}
-    .ra-item.selected{border-color:var(--brand);background:var(--brand-light)}
-    .ra-checkbox{width:18px;height:18px;border:2px solid var(--border);border-radius:5px;display:grid;place-items:center;flex-shrink:0;margin-top:1px;transition:all .15s;background:var(--white)}
-    .ra-item.selected .ra-checkbox{background:var(--brand);border-color:var(--brand);color:#fff;font-size:11px}
-    .ra-text{font-size:12.5px;color:var(--text);line-height:1.4}
-    .ra-selected-count{margin-top:10px;font-size:11.5px;color:var(--brand);font-weight:600}
+    .field-row-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 
-    /* Barra guardar — separada del grid, al final de todo */
-    .save-bar{
-      background:var(--white);
-      border:1.5px solid var(--border);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      padding:20px 28px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:16px;
-      margin-top:4px;
-    }
+    /* ── TAG CHIP INPUT ── */
+    .tag-input-wrap{display:flex;flex-wrap:wrap;gap:6px;padding:8px 12px;border:1.5px solid var(--border);border-radius:10px;background:var(--white);min-height:46px;align-items:center;cursor:text;transition:border-color .2s,box-shadow .2s}
+    .tag-input-wrap:focus-within{border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-glow)}
+    .tag-chip{display:inline-flex;align-items:center;gap:5px;padding:3px 5px 3px 10px;background:var(--brand-light);color:var(--brand);border-radius:20px;font-size:12px;font-weight:600;white-space:nowrap}
+    .tag-chip-remove{background:none;border:none;cursor:pointer;color:var(--brand);font-size:13px;line-height:1;padding:0 2px;display:flex;align-items:center;opacity:.7;border-radius:50%;transition:opacity .15s,background .15s}
+    .tag-chip-remove:hover{opacity:1;background:rgba(84,84,233,.15)}
+    .tag-real-input{border:none;outline:none;font-family:inherit;font-size:13.5px;color:var(--text);flex:1;min-width:100px;background:transparent;padding:2px 0}
+    .tag-real-input::placeholder{color:#b0b2cc}
+    .tag-hint{font-size:11px;color:var(--muted);margin-top:4px}
+
+    /* ── TOGGLE HIGHLIGHT ── */
+    .toggle-field{display:flex;align-items:center;gap:14px;padding:14px 18px;border:1.5px solid var(--border);border-radius:10px;background:var(--white);cursor:pointer;transition:border-color .2s,background .2s;user-select:none}
+    .toggle-field:hover{border-color:var(--amber);background:#fffdf5}
+    .toggle-field.on{border-color:var(--amber);background:#fffdf5}
+    .toggle{position:relative;width:46px;height:26px;flex-shrink:0}
+    .toggle input{opacity:0;width:0;height:0;position:absolute}
+    .toggle-slider{position:absolute;inset:0;background:#d0d2e8;border-radius:26px;cursor:pointer;transition:.28s}
+    .toggle-slider::before{content:'';position:absolute;width:20px;height:20px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.28s;box-shadow:0 1px 5px rgba(0,0,0,.2)}
+    .toggle input:checked + .toggle-slider{background:var(--amber)}
+    .toggle input:checked + .toggle-slider::before{transform:translateX(20px)}
+    .toggle-text{flex:1}
+    .toggle-text strong{font-size:14px;font-weight:600;color:var(--text);display:block}
+    .toggle-text span{font-size:12px;color:var(--muted)}
+    .toggle-star{font-size:20px;transition:transform .2s}
+    .toggle-field.on .toggle-star{transform:scale(1.2)}
+
+    /* ── IMAGE UPLOAD ── */
+    .img-drop-zone{border:2px dashed var(--border);border-radius:12px;padding:0;display:flex;align-items:stretch;overflow:hidden;transition:border-color .2s,background .2s;background:var(--bg);cursor:pointer;min-height:96px}
+    .img-drop-zone:hover,.img-drop-zone.dragover{border-color:var(--brand);background:var(--brand-light)}
+    .img-drop-zone input[type=file]{display:none}
+    .img-preview-side{width:96px;flex-shrink:0;background:linear-gradient(135deg,var(--brand-light),#dde0ff);display:flex;align-items:center;justify-content:center;font-size:28px;border-right:1.5px solid var(--border);overflow:hidden;position:relative}
+    .img-preview-side img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+    .img-drop-text{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:20px}
+    .img-drop-icon{font-size:22px;line-height:1}
+    .img-drop-label{font-size:13px;font-weight:600;color:var(--text)}
+    .img-drop-sub{font-size:11.5px;color:var(--muted)}
+    .img-filename{font-size:12px;color:var(--brand);font-weight:600;margin-top:2px;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .img-clear-btn{background:none;border:1.5px solid var(--border);border-radius:7px;padding:4px 10px;font-family:inherit;font-size:11.5px;color:var(--muted);cursor:pointer;margin-top:4px;transition:all .15s}
+    .img-clear-btn:hover{border-color:#ef4444;color:#ef4444;background:#fff1f1}
+
+    /* ── CURSOS POR SEMESTRE (columnas) ── */
+    .sem-cols-wrap{overflow-x:auto;padding-bottom:4px}
+    .sem-cols{display:flex;gap:12px;min-width:min-content}
+    .sem-col{min-width:200px;width:200px;display:flex;flex-direction:column;border-radius:12px;border:1.5px solid var(--border);background:var(--bg);overflow:hidden}
+    .sem-col-header{padding:9px 13px;background:linear-gradient(135deg,var(--amber-light),#fffbf0);border-bottom:1.5px solid #f3d99a;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+    .sem-col-title{font-size:11px;font-weight:700;color:#92400e;text-transform:uppercase;letter-spacing:.6px}
+    .sem-col-pill{font-size:10px;font-weight:700;color:#92400e;background:rgba(255,255,255,.7);padding:1px 7px;border-radius:20px;border:1px solid #f3d99a}
+    .sem-col-body{flex:1;padding:8px;display:flex;flex-direction:column;gap:6px;min-height:60px}
+    .sem-col-course{background:var(--white);border:1.5px solid var(--border);border-radius:9px;padding:8px 10px;display:flex;flex-direction:column;gap:4px;box-shadow:0 1px 4px rgba(84,84,233,.04);transition:border-color .18s,box-shadow .18s}
+    .sem-col-course:hover{border-color:var(--amber);box-shadow:0 3px 10px rgba(245,158,11,.1)}
+    .sem-col-course-row{display:flex;align-items:center;justify-content:space-between;gap:6px}
+    .curso-badge{font-family:'DM Mono',monospace;font-size:9px;font-weight:500;color:var(--amber);background:var(--amber-light);padding:2px 6px;border-radius:4px;white-space:nowrap;flex-shrink:0}
+    .remove-curso-btn{width:20px;height:20px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:none;border:1.5px solid var(--border);border-radius:5px;cursor:pointer;color:var(--muted);font-size:10px;transition:all .15s}
+    .remove-curso-btn:hover{border-color:#ef4444;background:#fff1f1;color:#ef4444}
+    .sem-col-course-name{font-size:12px;color:var(--text);line-height:1.35;font-weight:500}
+    .sem-col-add-btn{display:flex;align-items:center;justify-content:center;gap:5px;padding:7px 10px;border-radius:8px;border:1.5px dashed #f3d99a;background:transparent;font-family:inherit;font-size:11.5px;font-weight:600;color:#b45309;cursor:pointer;width:100%;margin-top:2px;transition:all .2s;flex-shrink:0}
+    .sem-col-add-btn:hover{border-color:var(--amber);background:var(--amber-light)}
+    .sem-cols-empty{display:flex;flex-direction:column;align-items:center;padding:28px 16px;gap:7px;border:1.5px dashed var(--border);border-radius:10px;text-align:center}
+    .sem-cols-empty-icon{font-size:28px}
+    .sem-cols-empty-text{font-size:12px;color:var(--muted);line-height:1.5}
+    .cursos-count{margin-top:10px;text-align:right;font-size:11.5px;color:var(--brand);font-weight:600}
+
+    /* ── MODAL ── */
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(18,18,58,.45);z-index:200;align-items:center;justify-content:center}
+    .modal-overlay.open{display:flex}
+    .modal{background:var(--white);border-radius:var(--radius);box-shadow:0 20px 60px rgba(18,18,58,.25);width:520px;max-height:80vh;display:flex;flex-direction:column;overflow:hidden}
+    .modal-header{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+    .modal-header h3{font-size:16px;font-weight:700}
+    .modal-close{background:none;border:none;font-size:20px;color:var(--muted);cursor:pointer;line-height:1}
+    .modal-close:hover{color:var(--text)}
+    .modal-search{padding:12px 20px;border-bottom:1px solid var(--border)}
+    .modal-search input{width:100%;padding:9px 14px;border:1.5px solid var(--border);border-radius:9px;font-family:inherit;font-size:13px;color:var(--text);background:var(--bg);outline:none;transition:border-color .2s}
+    .modal-search input:focus{border-color:var(--brand)}
+    .modal-search input::placeholder{color:var(--muted)}
+    .modal-list{overflow-y:auto;flex:1;padding:12px 20px;display:flex;flex-direction:column;gap:6px}
+    .modal-list::-webkit-scrollbar{width:4px}
+    .modal-list::-webkit-scrollbar-thumb{background:#d0d2e8;border-radius:4px}
+    .modal-item{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:9px;border:1.5px solid var(--border);background:var(--white);cursor:pointer;transition:all .15s;user-select:none}
+    .modal-item:hover{border-color:var(--brand);background:var(--brand-light)}
+    .modal-item.selected{border-color:var(--brand);background:var(--brand-light)}
+    .modal-checkbox{width:18px;height:18px;border:2px solid var(--border);border-radius:5px;display:grid;place-items:center;flex-shrink:0;margin-top:1px;transition:all .15s;background:var(--white)}
+    .modal-item.selected .modal-checkbox{background:var(--brand);border-color:var(--brand);color:#fff;font-size:11px}
+    .modal-item-info{flex:1}
+    .modal-item-name{font-size:13px;font-weight:600;color:var(--text)}
+    .modal-item-badge{font-family:'DM Mono',monospace;font-size:10px;color:var(--amber);background:var(--amber-light);padding:1px 6px;border-radius:4px;margin-bottom:4px;display:inline-block}
+    .modal-footer{padding:16px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px}
+
+    /* ── SAVE BAR ── */
+    .save-bar{background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 28px;display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:4px}
     .save-bar p{font-size:13px;color:var(--muted)}
     .save-bar-actions{display:flex;gap:10px}
 
@@ -121,11 +205,11 @@
     .toast.show{transform:translateY(0);opacity:1}
 
     @media(max-width:900px){
-      .form-layout{grid-template-columns:1fr}
-      .field-row{grid-template-columns:1fr 1fr}
+      .field-row,.field-row-2{grid-template-columns:1fr 1fr}
       header{padding:0 20px}
       .view{padding:24px 20px}
       .search-input{width:200px}
+      .modal{width:90vw}
     }
   </style>
 </head>
@@ -137,12 +221,12 @@
   <div class="header-title">Panel Admin <span>/ Programas</span></div>
 </header>
 
-<!-- LISTA -->
+<!-- ═══ LISTA ═══ -->
 <div class="view active" id="view-lista">
   <div class="list-topbar">
     <div>
       <h1>Programas académicos</h1>
-      <p>Gestiona los programas de posgrado, sus cursos y resultados de aprendizaje.</p>
+      <p>Gestiona los programas de posgrado y los cursos que los conforman.</p>
     </div>
     <div class="topbar-actions">
       <div class="search-wrap">
@@ -160,190 +244,300 @@
   </div>
 </div>
 
-<!-- CREAR -->
+<!-- ═══ CREAR ═══ -->
 <div class="view" id="view-crear">
   <div class="form-header">
     <h1>Agregar nuevo programa</h1>
-    <p>Completa la información, agrega los cursos por semestre y selecciona los resultados de aprendizaje.</p>
+    <p>Completa la información del programa y agrega los cursos por semestre.</p>
   </div>
 
-  <div class="form-layout">
-    <!-- izquierda -->
-    <div>
-      <div class="form-card">
-        <div class="form-card-header"><span class="dot"></span> Información básica</div>
-        <div class="form-card-body">
-          <div class="field">
-            <label>Nombre del programa</label>
-            <input type="text" id="crear-nombre" placeholder="Ej: Maestría en Gerencia de Proyectos"/>
-          </div>
-          <div class="field-row">
-            <div class="field">
-              <label>Tipo</label>
-              <select id="crear-tipo">
-                <option value="MAESTRIA">Maestría</option>
-                <option value="ESPECIALIZACION">Especialización</option>
-                <option value="CERTIFICACION">Certificación</option>
-                <option value="DOCTORADO">Doctorado</option>
-              </select>
-            </div>
-            <div class="field">
-              <label>Créditos</label>
-              <input type="number" id="crear-creditos" placeholder="45" min="1"/>
-            </div>
-            <div class="field">
-              <label>Semestres</label>
-              <input type="number" id="crear-semestres" placeholder="4" min="1"/>
-            </div>
-          </div>
-          <div class="field">
-            <label>Descripción</label>
-            <textarea id="crear-desc" placeholder="Describe el programa académico…"></textarea>
-          </div>
-          <div class="field">
-            <label>Tags (separados por coma)</label>
-            <input type="text" id="crear-tags" placeholder="agile, scrum, liderazgo, proyectos"/>
-          </div>
+  <div class="form-card">
+    <div class="form-card-header"><span class="dot"></span> Información básica</div>
+    <div class="form-card-body">
+      <div class="field">
+        <label>Nombre del programa</label>
+        <input type="text" id="crear-nombre" placeholder="Ej: Maestría en Gerencia de Proyectos"/>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Tipo</label>
+          <select id="crear-tipo">
+            <option value="MAESTRIA">Maestría</option>
+            <option value="ESPECIALIZACION">Especialización</option>
+            <option value="CERTIFICACION">Certificación</option>
+            <option value="DOCTORADO">Doctorado</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Créditos</label>
+          <input type="number" id="crear-creditos" placeholder="45" min="1"/>
+        </div>
+        <div class="field">
+          <label>Semestres</label>
+          <input type="number" id="crear-semestres" placeholder="4" min="1"/>
         </div>
       </div>
-
-      <div class="form-card">
-        <div class="form-card-header"><span class="dot" style="background:#f59e0b"></span> Cursos por semestre</div>
-        <div class="form-card-body" style="padding:0">
-          <table class="cursos-table">
-            <thead>
-              <tr>
-                <th style="width:60px">Sem.</th>
-                <th>Curso</th>
-                <th class="center" style="width:50px" title="Introduce">I</th>
-                <th class="center" style="width:50px" title="Fortalece">F</th>
-                <th class="center" style="width:50px" title="Valora">V</th>
-                <th style="width:40px"></th>
-              </tr>
-            </thead>
-            <tbody id="crear-cursos-body"></tbody>
-          </table>
-          <div style="padding:12px 16px">
-            <button class="add-curso-btn" onclick="agregarCursoFila('crear-cursos-body')">+ Agregar curso</button>
-          </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Modalidad</label>
+          <select id="crear-modalidad">
+            <option value="presencial">Presencial</option>
+            <option value="hibrida">Híbrida</option>
+            <option value="virtual">Virtual</option>
+          </select>
         </div>
-      </div>
-      <div class="save-bar">
-          <p>Revisa toda la información antes de guardar.</p>
-          <div class="save-bar-actions">
-            <button class="btn btn-ghost" onclick="showView('view-lista')">Cancelar</button>
-            <button class="btn btn-primary" onclick="guardarCrear()">✓ Guardar programa</button>
-          </div>
+        <div class="field">
+          <label>Código SNIES</label>
+          <input type="text" id="crear-snies" placeholder="Ej: 110956"/>
         </div>
-    </div>
-
-    <!-- derecha: solo RAs, sin botón guardar -->
-    <div>
-      <div class="form-card" style="margin-bottom:0">
-        <div class="form-card-header"><span class="dot" style="background:#10b981"></span> Resultados de aprendizaje</div>
-        <div class="form-card-body">
-          <div class="ra-search-wrap">
-            <span class="ra-search-icon">🔍</span>
-            <input class="ra-search" type="text" id="crear-ra-search" placeholder="Filtrar resultados…" oninput="filterRA('crear-ra-list', this.value)"/>
-          </div>
-          <div class="ra-list" id="crear-ra-list"></div>
-          <div class="ra-selected-count" id="crear-ra-count">0 seleccionados</div>
+        <div class="field">
+          <label>Precio (COP)</label>
+          <input type="number" id="crear-precio" placeholder="15000000" min="0"/>
         </div>
       </div>
     </div>
   </div>
 
+  <div class="form-card">
+    <div class="form-card-header"><span class="dot" style="background:#8b5cf6"></span> Contenido del programa</div>
+    <div class="form-card-body">
+      <div class="field">
+        <label>Descripción</label>
+        <textarea id="crear-desc" placeholder="Describe el programa académico…"></textarea>
+      </div>
+      <div class="field">
+        <label>Perfil del egresado</label>
+        <textarea id="crear-graduate" placeholder="Describe las competencias y capacidades del egresado…" style="min-height:120px"></textarea>
+      </div>
+    </div>
+  </div>
 
+  <div class="form-card">
+    <div class="form-card-header"><span class="dot" style="background:#0ea5e9"></span> Imagen del programa</div>
+    <div class="form-card-body">
+      <div class="field">
+        <label>Imagen</label>
+        <div class="img-drop-zone" id="crear-drop-zone" onclick="document.getElementById('crear-imagen').click()"
+          ondragover="dragOver(event,'crear')" ondragleave="dragLeave('crear')" ondrop="dropFile(event,'crear')">
+          <input type="file" id="crear-imagen" accept="image/*" onchange="handleFile(event,'crear')"/>
+          <div class="img-preview-side" id="crear-img-preview"><span id="crear-img-emoji">🎓</span></div>
+          <div class="img-drop-text">
+            <span class="img-drop-icon">📁</span>
+            <span class="img-drop-label">Haz clic o arrastra una imagen aquí</span>
+            <span class="img-drop-sub">PNG, JPG, WEBP — máx. 5 MB</span>
+            <span class="img-filename" id="crear-img-name"></span>
+            <button class="img-clear-btn" id="crear-img-clear" style="display:none" onclick="clearImg(event,'crear')">✕ Quitar imagen</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-card">
+    <div class="form-card-header"><span class="dot" style="background:#10b981"></span> Etiquetas</div>
+    <div class="form-card-body">
+      <div class="field">
+        <label>Tags del programa</label>
+        <div class="tag-input-wrap" id="crear-tags-wrap" onclick="focusTagInput('crear')">
+          <input class="tag-real-input" type="text" id="crear-tag-input" placeholder="Escribe un tag y presiona Enter…"
+            onkeydown="tagKeydown(event,'crear')" onblur="tagBlur(event,'crear')"/>
+        </div>
+        <span class="tag-hint">Presiona Enter o coma para agregar · Click en la × para eliminar</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-card">
+    <div class="form-card-header"><span class="dot" style="background:var(--amber)"></span> Destacado</div>
+    <div class="form-card-body">
+      <label class="toggle-field" id="crear-highlight-field" onclick="toggleHighlight('crear')">
+        <label class="toggle" onclick="event.stopPropagation()">
+          <input type="checkbox" id="crear-highlight" onchange="syncHighlightUI('crear')"/>
+          <span class="toggle-slider"></span>
+        </label>
+        <div class="toggle-text">
+          <strong>Programa destacado</strong>
+          <span>Aparecerá resaltado en el catálogo público</span>
+        </div>
+        <span class="toggle-star">⭐</span>
+      </label>
+    </div>
+  </div>
+
+  <div class="form-card">
+    <div class="form-card-header">
+      <span class="dot" style="background:var(--amber)"></span> Cursos por semestre
+      <span style="margin-left:auto;font-size:11.5px;color:var(--muted);font-weight:400">Las columnas se generan según los semestres del programa</span>
+    </div>
+    <div class="form-card-body">
+      <div id="crear-cursos-list"></div>
+      <div class="cursos-count" id="crear-cursos-count"></div>
+    </div>
+  </div>
+
+  <div class="save-bar">
+    <p>Revisa toda la información antes de guardar.</p>
+    <div class="save-bar-actions">
+      <button class="btn btn-ghost" onclick="showView('view-lista')">Cancelar</button>
+      <button class="btn btn-primary" onclick="guardarCrear()">✓ Guardar programa</button>
+    </div>
+  </div>
 </div>
 
-<!-- EDITAR -->
+<!-- ═══ EDITAR ═══ -->
 <div class="view" id="view-editar">
   <div class="form-header">
     <h1>Editar programa</h1>
-    <p>Modifica la información, cursos y resultados de aprendizaje del programa.</p>
+    <p>Modifica la información del programa y sus cursos.</p>
   </div>
 
-  <div class="form-layout">
-    <div>
-      <div class="form-card">
-        <div class="form-card-header"><span class="dot"></span> Información básica</div>
-        <div class="form-card-body">
-          <div class="field">
-            <label>Nombre del programa</label>
-            <input type="text" id="editar-nombre" placeholder="Nombre del programa"/>
-          </div>
-          <div class="field-row">
-            <div class="field">
-              <label>Tipo</label>
-              <select id="editar-tipo">
-                <option value="MAESTRIA">Maestría</option>
-                <option value="ESPECIALIZACION">Especialización</option>
-                <option value="CERTIFICACION">Certificación</option>
-                <option value="DOCTORADO">Doctorado</option>
-              </select>
-            </div>
-            <div class="field">
-              <label>Créditos</label>
-              <input type="number" id="editar-creditos" placeholder="45" min="1"/>
-            </div>
-            <div class="field">
-              <label>Semestres</label>
-              <input type="number" id="editar-semestres" placeholder="4" min="1"/>
-            </div>
-          </div>
-          <div class="field">
-            <label>Descripción</label>
-            <textarea id="editar-desc" placeholder="Descripción…"></textarea>
-          </div>
-          <div class="field">
-            <label>Tags</label>
-            <input type="text" id="editar-tags" placeholder="agile, scrum…"/>
-          </div>
+  <div class="form-card">
+    <div class="form-card-header"><span class="dot"></span> Información básica</div>
+    <div class="form-card-body">
+      <div class="field">
+        <label>Nombre del programa</label>
+        <input type="text" id="editar-nombre" placeholder="Nombre del programa"/>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Tipo</label>
+          <select id="editar-tipo">
+            <option value="MAESTRIA">Maestría</option>
+            <option value="ESPECIALIZACION">Especialización</option>
+            <option value="CERTIFICACION">Certificación</option>
+            <option value="DOCTORADO">Doctorado</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Créditos</label>
+          <input type="number" id="editar-creditos" placeholder="45" min="1"/>
+        </div>
+        <div class="field">
+          <label>Semestres</label>
+          <input type="number" id="editar-semestres" placeholder="4" min="1"/>
         </div>
       </div>
-
-      <div class="form-card">
-        <div class="form-card-header"><span class="dot" style="background:#f59e0b"></span> Cursos por semestre</div>
-        <div class="form-card-body" style="padding:0">
-          <table class="cursos-table">
-            <thead>
-              <tr>
-                <th style="width:60px">Sem.</th>
-                <th>Curso</th>
-                <th class="center" style="width:50px" title="Introduce">I</th>
-                <th class="center" style="width:50px" title="Fortalece">F</th>
-                <th class="center" style="width:50px" title="Valora">V</th>
-                <th style="width:40px"></th>
-              </tr>
-            </thead>
-            <tbody id="editar-cursos-body"></tbody>
-          </table>
-          <div style="padding:12px 16px">
-            <button class="add-curso-btn" onclick="agregarCursoFila('editar-cursos-body')">+ Agregar curso</button>
-          </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Modalidad</label>
+          <select id="editar-modalidad">
+            <option value="presencial">Presencial</option>
+            <option value="hibrida">Híbrida</option>
+            <option value="virtual">Virtual</option>
+          </select>
         </div>
-      </div>
-    <div class="save-bar">
-      <p>Revisa los cambios antes de guardar.</p>
-      <div class="save-bar-actions">
-        <button class="btn btn-ghost" onclick="showView('view-lista')">Cancelar</button>
-        <button class="btn btn-primary" onclick="guardarEditar()">✓ Guardar cambios</button>
+        <div class="field">
+          <label>Código SNIES</label>
+          <input type="text" id="editar-snies" placeholder="Ej: 110956"/>
+        </div>
+        <div class="field">
+          <label>Precio (COP)</label>
+          <input type="number" id="editar-precio" placeholder="15000000" min="0"/>
+        </div>
       </div>
     </div>
-    </div>
+  </div>
 
-    <div>
-      <div class="form-card" style="margin-bottom:0">
-        <div class="form-card-header"><span class="dot" style="background:#10b981"></span> Resultados de aprendizaje</div>
-        <div class="form-card-body">
-          <div class="ra-search-wrap">
-            <span class="ra-search-icon">🔍</span>
-            <input class="ra-search" type="text" id="editar-ra-search" placeholder="Filtrar resultados…" oninput="filterRA('editar-ra-list', this.value)"/>
+  <div class="form-card">
+    <div class="form-card-header"><span class="dot" style="background:#8b5cf6"></span> Contenido del programa</div>
+    <div class="form-card-body">
+      <div class="field">
+        <label>Descripción</label>
+        <textarea id="editar-desc" placeholder="Descripción…"></textarea>
+      </div>
+      <div class="field">
+        <label>Perfil del egresado</label>
+        <textarea id="editar-graduate" placeholder="Competencias y capacidades del egresado…" style="min-height:120px"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-card">
+    <div class="form-card-header"><span class="dot" style="background:#0ea5e9"></span> Imagen del programa</div>
+    <div class="form-card-body">
+      <div class="field">
+        <label>Imagen</label>
+        <div class="img-drop-zone" id="editar-drop-zone" onclick="document.getElementById('editar-imagen').click()"
+          ondragover="dragOver(event,'editar')" ondragleave="dragLeave('editar')" ondrop="dropFile(event,'editar')">
+          <input type="file" id="editar-imagen" accept="image/*" onchange="handleFile(event,'editar')"/>
+          <div class="img-preview-side" id="editar-img-preview"><span id="editar-img-emoji">🎓</span></div>
+          <div class="img-drop-text">
+            <span class="img-drop-icon">📁</span>
+            <span class="img-drop-label">Haz clic o arrastra una imagen aquí</span>
+            <span class="img-drop-sub">PNG, JPG, WEBP — máx. 5 MB</span>
+            <span class="img-filename" id="editar-img-name"></span>
+            <button class="img-clear-btn" id="editar-img-clear" style="display:none" onclick="clearImg(event,'editar')">✕ Quitar imagen</button>
           </div>
-          <div class="ra-list" id="editar-ra-list"></div>
-          <div class="ra-selected-count" id="editar-ra-count">0 seleccionados</div>
         </div>
       </div>
+    </div>
+  </div>
+
+  <div class="form-card">
+    <div class="form-card-header"><span class="dot" style="background:#10b981"></span> Etiquetas</div>
+    <div class="form-card-body">
+      <div class="field">
+        <label>Tags del programa</label>
+        <div class="tag-input-wrap" id="editar-tags-wrap" onclick="focusTagInput('editar')">
+          <input class="tag-real-input" type="text" id="editar-tag-input" placeholder="Escribe un tag y presiona Enter…"
+            onkeydown="tagKeydown(event,'editar')" onblur="tagBlur(event,'editar')"/>
+        </div>
+        <span class="tag-hint">Presiona Enter o coma para agregar · Click en la × para eliminar</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-card">
+    <div class="form-card-header"><span class="dot" style="background:var(--amber)"></span> Destacado</div>
+    <div class="form-card-body">
+      <label class="toggle-field" id="editar-highlight-field" onclick="toggleHighlight('editar')">
+        <label class="toggle" onclick="event.stopPropagation()">
+          <input type="checkbox" id="editar-highlight" onchange="syncHighlightUI('editar')"/>
+          <span class="toggle-slider"></span>
+        </label>
+        <div class="toggle-text">
+          <strong>Programa destacado</strong>
+          <span>Aparecerá resaltado en el catálogo público</span>
+        </div>
+        <span class="toggle-star">⭐</span>
+      </label>
+    </div>
+  </div>
+
+  <div class="form-card">
+    <div class="form-card-header">
+      <span class="dot" style="background:var(--amber)"></span> Cursos por semestre
+      <span style="margin-left:auto;font-size:11.5px;color:var(--muted);font-weight:400">Las columnas se generan según los semestres del programa</span>
+    </div>
+    <div class="form-card-body">
+      <div id="editar-cursos-list"></div>
+      <div class="cursos-count" id="editar-cursos-count"></div>
+    </div>
+  </div>
+
+  <div class="save-bar">
+    <p>Revisa los cambios antes de guardar.</p>
+    <div class="save-bar-actions">
+      <button class="btn btn-ghost" onclick="showView('view-lista')">Cancelar</button>
+      <button class="btn btn-primary" onclick="guardarEditar()">✓ Guardar cambios</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODAL: Agregar curso ═══ -->
+<div class="modal-overlay" id="modal-curso-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modal-curso-title">Agregar curso — Semestre 1</h3>
+      <button class="modal-close" onclick="cerrarModalCurso()">✕</button>
+    </div>
+    <div class="modal-search">
+      <input type="text" id="modal-curso-search" placeholder="Buscar curso por nombre…" oninput="filterModalCurso()"/>
+    </div>
+    <div class="modal-list" id="modal-curso-list"></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost btn-sm" onclick="cerrarModalCurso()">Cancelar</button>
+      <button class="btn btn-primary btn-sm" onclick="confirmarModalCurso()">✓ Agregar seleccionados</button>
     </div>
   </div>
 </div>
@@ -351,247 +545,535 @@
 <div class="toast" id="toast"></div>
 
 <script>
-  const resultadosAprendizaje = [
-    "Desarrollar una estrategia de comunicación escrita",
-    "Desarrollar un framework de procesos ágiles",
-    "Evaluar y diagnosticar el nivel de madurez digital",
-    "Liderar procesos de transformación digital",
-    "Aplicar técnicas de investigación cualitativa y cuantitativa",
-    "Crear y validar prototipos de soluciones innovadoras",
-    "Facilitar sesiones creativas y de co-creación",
-    "Diseñar e implementar programas de cultura innovadora",
-    "Estructurar programas de emprendimiento corporativo",
-    "Crear y gestionar ecosistemas internos de innovación",
-    "Formulación de proyectos",
-    "Liderazgo, Power Skills y Cultura",
-    "Herramientas digitales para la gerencia de proyectos",
-    "Pensamiento sistémico","Oralidad","Escritura","Decidir considerando impactos"
+  // ── CATÁLOGO DE CURSOS ──────────────────────────────────────────────
+  const catalogoCursos = [
+    { id:0,  nombre:'Fundamentos de Gerencia de Proyectos' },
+    { id:1,  nombre:'Ética y Conducta Profesional' },
+    { id:2,  nombre:'Herramientas Digitales para la Gerencia I' },
+    { id:3,  nombre:'Liderazgo, Power Skills y Cultura I' },
+    { id:4,  nombre:'Formulación de Proyectos' },
+    { id:5,  nombre:'Curso Integrador Final' },
+    { id:6,  nombre:'Análisis de Datos con Python' },
+    { id:7,  nombre:'Fundamentos de Python' },
+    { id:8,  nombre:'Madurez Digital Organizacional' },
+    { id:9,  nombre:'Gestión del Cambio Digital' },
+    { id:10, nombre:'Ecosistemas de Innovación' },
+    { id:11, nombre:'Liderazgo y Power Skills II' },
+    { id:12, nombre:'Comunicación Profesional y Oralidad' },
+    { id:13, nombre:'Transformación Digital Empresarial' },
+    { id:14, nombre:'Emprendimiento e Innovación' },
+    { id:15, nombre:'Metodologías Ágiles Avanzadas' },
+    { id:16, nombre:'Pensamiento Sistémico' },
+    { id:17, nombre:'Ética en la Toma de Decisiones' },
+    { id:18, nombre:'Gerencia de Riesgos' },
+    { id:19, nombre:'Evaluación de Proyectos' },
   ];
 
-  const tipoLabel={MAESTRIA:'Maestría',ESPECIALIZACION:'Especialización',CERTIFICACION:'Certificación',DOCTORADO:'Doctorado'};
+  const tipoLabel = { MAESTRIA:'Maestría', ESPECIALIZACION:'Especialización', CERTIFICACION:'Certificación', DOCTORADO:'Doctorado' };
+  const modalidadLabel = { presencial:'Presencial', hibrida:'Híbrida', virtual:'Virtual' };
+  const modalidadBadge = { presencial:'badge-modalidad-presencial', hibrida:'badge-modalidad-hibrida', virtual:'badge-modalidad-virtual' };
 
-  let programas=[
-    {id:1,nombre:'Maestría en Gerencia de Proyectos',tipo:'MAESTRIA',creditos:45,semestres:4,
-     desc:'Forma líderes capaces de gestionar proyectos complejos con metodologías ágiles y tradicionales.',
-     tags:'project management, scrum, agile, pmi, leadership',
-     cursos:[
-       {sem:1,nombre:'Fundamentos de Gerencia de Proyectos',i:true,f:false,v:false},
-       {sem:1,nombre:'Ética y Conducta Profesional',i:true,f:false,v:false},
-       {sem:2,nombre:'Herramientas digitales para la gerencia I',i:false,f:true,v:false},
-       {sem:2,nombre:'Liderazgo, Power Skills y Cultura I',i:false,f:true,v:false},
-       {sem:3,nombre:'Formulación de proyectos 2',i:false,f:false,v:true},
-       {sem:4,nombre:'Curso Integrador Final',i:false,f:false,v:true},
-     ],ras:[0,1,10,11,12,13]},
-    {id:2,nombre:'Especialización en Analítica de Datos',tipo:'ESPECIALIZACION',creditos:20,semestres:2,
-     desc:'Programa enfocado en el análisis de datos con Python y herramientas de visualización.',
-     tags:'data science, python, analytics, big data',
-     cursos:[
-       {sem:1,nombre:'Análisis de Datos con Python',i:true,f:false,v:false},
-       {sem:2,nombre:'Fundamentos de Python',i:false,f:true,v:false},
-     ],ras:[2,3]},
-    {id:3,nombre:'Maestría en Innovación Empresarial',tipo:'MAESTRIA',creditos:50,semestres:4,
-     desc:'Desarrolla competencias para liderar procesos de innovación y transformación en organizaciones.',
-     tags:'emprendimiento, innovación, estrategia',
-     cursos:[
-       {sem:1,nombre:'Madurez Digital Organizacional',i:true,f:false,v:false},
-       {sem:2,nombre:'Gestión del Cambio Digital',i:false,f:true,v:false},
-       {sem:3,nombre:'Ecosistemas de Innovación',i:false,f:true,v:true},
-     ],ras:[5,6,7,8,9]}
+  let programas = [
+    { id:1, nombre:'Maestría en Gerencia de Proyectos', tipo:'MAESTRIA', creditos:45, semestres:4,
+      modalidad:'hibrida', snies:'110956', precio:16500000, highlight:true,
+      image:'',
+      desc:'Forma líderes capaces de gestionar proyectos complejos con metodologías ágiles y tradicionales.',
+      graduate_profile:'El egresado analiza requerimientos, formula proyectos completos y coordina equipos para asegurar entregables oportunos.',
+      tags:['project management','scrum','agile','pmi','leadership'],
+      cursos:[{catalogId:0,sem:1},{catalogId:1,sem:1},{catalogId:2,sem:2},{catalogId:3,sem:2},{catalogId:4,sem:3},{catalogId:5,sem:4}] },
+    { id:2, nombre:'Especialización en Analítica de Datos', tipo:'ESPECIALIZACION', creditos:20, semestres:2,
+      modalidad:'virtual', snies:'102847', precio:8900000, highlight:false,
+      image:'',
+      desc:'Programa enfocado en el análisis de datos con Python y herramientas de visualización.',
+      graduate_profile:'Profesional capaz de liderar proyectos de analítica avanzada, diseñar modelos predictivos y tomar decisiones basadas en datos.',
+      tags:['data science','python','analytics','big data'],
+      cursos:[{catalogId:6,sem:1},{catalogId:7,sem:2}] },
+    { id:3, nombre:'Maestría en Innovación Empresarial', tipo:'MAESTRIA', creditos:50, semestres:4,
+      modalidad:'presencial', snies:'115673', precio:18200000, highlight:false,
+      image:'',
+      desc:'Desarrolla competencias para liderar procesos de innovación y transformación en organizaciones.',
+      graduate_profile:'El egresado de la Maestría en Innovación Tecnológica estará en capacidad de: liderar procesos de transformación digital en organizaciones; diseñar e implementar estrategias de innovación tecnológica; gestionar proyectos de desarrollo tecnológico con metodologías ágiles.',
+      tags:['emprendimiento','innovación','estrategia'],
+      cursos:[{catalogId:8,sem:1},{catalogId:9,sem:2},{catalogId:10,sem:3}] },
   ];
 
-  let nextId=4, editingId=null;
+  let nextId = 4, editingId = null;
 
-  function showView(id){
-    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    window.scrollTo({top:0,behavior:'smooth'});
-    if(id==='view-crear'){
-      ['crear-nombre','crear-creditos','crear-semestres','crear-desc','crear-tags'].forEach(x=>document.getElementById(x).value='');
-      document.getElementById('crear-tipo').value='MAESTRIA';
-      document.getElementById('crear-cursos-body').innerHTML='';
-      document.getElementById('crear-ra-search').value='';
-      buildRAList('crear-ra-list',[]);
-    }
-    if(id==='view-lista') renderList();
+  // ── ESTADO DE CURSOS Y TAGS POR CONTEXTO ───────────────────────────
+  let crearCursos  = [];
+  let editarCursos = [];
+  let crearTags    = [];
+  let editarTags   = [];
+
+  function getCtxCursos(ctx) { return ctx === 'crear' ? crearCursos : editarCursos; }
+  function setCtxCursos(ctx, arr) { if(ctx === 'crear') crearCursos = arr; else editarCursos = arr; }
+  function getCtxTags(ctx) { return ctx === 'crear' ? crearTags : editarTags; }
+  function setCtxTags(ctx, arr) { if(ctx === 'crear') crearTags = arr; else editarTags = arr; }
+
+  // ── TAG INPUT ──────────────────────────────────────────────────────
+  function focusTagInput(ctx) {
+    document.getElementById(ctx + '-tag-input').focus();
   }
 
-  function renderList(filter=''){
-    const list=document.getElementById('progList');
-    const empty=document.getElementById('emptyState');
-    const countEl=document.getElementById('countBar');
-    const filtered=filter?programas.filter(p=>p.nombre.toLowerCase().includes(filter.toLowerCase())):programas;
-    countEl.innerHTML=`Mostrando <strong>${filtered.length}</strong> de <strong>${programas.length}</strong> programas`;
-    if(!filtered.length){list.innerHTML='';empty.style.display='block';return}
-    empty.style.display='none';
-    list.innerHTML=filtered.map(p=>`
-      <div class="prog-card">
-        <div class="prog-left">
-          <span class="prog-index">P-${String(p.id).padStart(3,'0')}</span>
-          <div class="prog-info">
-            <div class="prog-name">${esc(p.nombre)}</div>
-            <div class="prog-desc">${esc(p.desc)}</div>
-            <div class="prog-meta">
-              <span class="badge badge-type">${tipoLabel[p.tipo]||p.tipo}</span>
-              <span class="badge badge-credits">📚 ${p.creditos} créditos</span>
-              <span class="badge badge-semesters">🗓 ${p.semestres} semestres</span>
-              <span class="badge badge-courses">📋 ${p.cursos.length} curso${p.cursos.length!==1?'s':''}</span>
-              ${p.ras.length?`<span class="badge" style="color:#047857;background:#d1fae5">✓ ${p.ras.length} RA${p.ras.length!==1?'s':''}</span>`:''}
-            </div>
-          </div>
-        </div>
-        <button class="edit-btn" onclick="abrirEditar(${p.id})">✏️ Editar</button>
-      </div>`).join('');
-  }
-
-  function filterList(){renderList(document.getElementById('searchInput').value)}
-
-  function agregarCursoFila(tbodyId){
-    const tr=document.createElement('tr');
-    const rowId='r'+Date.now();
-    tr.id=rowId;
-    tr.innerHTML=`
-      <td><input type="number" min="1" max="10" placeholder="1" style="width:50px;padding:6px 8px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:13px;text-align:center;color:var(--text);background:var(--white)"/></td>
-      <td><input type="text" placeholder="Nombre del curso" style="width:100%;padding:6px 10px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:13px;color:var(--text);background:var(--white)"/></td>
-      <td class="center"><span class="check-cell" onclick="toggleCheck(this)"></span></td>
-      <td class="center"><span class="check-cell" onclick="toggleCheck(this)"></span></td>
-      <td class="center"><span class="check-cell" onclick="toggleCheck(this)"></span></td>
-      <td class="center"><button onclick="document.getElementById('${rowId}').remove()" style="background:none;border:none;cursor:pointer;font-size:16px;color:var(--muted)">✕</button></td>`;
-    document.getElementById(tbodyId).appendChild(tr);
-  }
-
-  function toggleCheck(el){
-    el.classList.toggle('on');
-    el.textContent=el.classList.contains('on')?'✓':'';
-  }
-
-  function renderCursosEnTabla(tbodyId,cursos){
-    const tbody=document.getElementById(tbodyId);
-    tbody.innerHTML='';
-    cursos.forEach((c,idx)=>{
-      const tr=document.createElement('tr');
-      const rowId='row'+idx+Date.now();
-      tr.id=rowId;
-      tr.innerHTML=`
-        <td><input type="number" min="1" max="10" value="${c.sem}" style="width:50px;padding:6px 8px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:13px;text-align:center;color:var(--text);background:var(--white)"/></td>
-        <td><input type="text" value="${esc(c.nombre)}" style="width:100%;padding:6px 10px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:13px;color:var(--text);background:var(--white)"/></td>
-        <td class="center"><span class="check-cell ${c.i?'on':''}" onclick="toggleCheck(this)">${c.i?'✓':''}</span></td>
-        <td class="center"><span class="check-cell ${c.f?'on':''}" onclick="toggleCheck(this)">${c.f?'✓':''}</span></td>
-        <td class="center"><span class="check-cell ${c.v?'on':''}" onclick="toggleCheck(this)">${c.v?'✓':''}</span></td>
-        <td class="center"><button onclick="document.getElementById('${rowId}').remove()" style="background:none;border:none;cursor:pointer;font-size:16px;color:var(--muted)">✕</button></td>`;
-      tbody.appendChild(tr);
+  function renderTags(ctx) {
+    const wrap  = document.getElementById(ctx + '-tags-wrap');
+    const input = document.getElementById(ctx + '-tag-input');
+    const tags  = getCtxTags(ctx);
+    // Remove existing chips (keep the input)
+    wrap.querySelectorAll('.tag-chip').forEach(c => c.remove());
+    tags.forEach((tag, i) => {
+      const chip = document.createElement('span');
+      chip.className = 'tag-chip';
+      chip.innerHTML = `${esc(tag)}<button class="tag-chip-remove" onclick="removeTag('${ctx}',${i})" title="Eliminar tag">×</button>`;
+      wrap.insertBefore(chip, input);
     });
   }
 
-  function getCursosDeTabla(tbodyId){
-    return Array.from(document.querySelectorAll(`#${tbodyId} tr`)).map(tr=>{
-      const inputs=tr.querySelectorAll('input');
-      const checks=tr.querySelectorAll('.check-cell');
-      return{sem:parseInt(inputs[0]?.value)||1,nombre:inputs[1]?.value||'',
-             i:checks[0]?.classList.contains('on')||false,
-             f:checks[1]?.classList.contains('on')||false,
-             v:checks[2]?.classList.contains('on')||false};
-    }).filter(c=>c.nombre.trim());
+  function addTag(ctx, value) {
+    const tag = value.trim().replace(/,/g, '').trim();
+    if (!tag) return;
+    const tags = getCtxTags(ctx);
+    if (!tags.includes(tag)) {
+      tags.push(tag);
+      renderTags(ctx);
+    }
   }
 
-  function buildRAList(containerId,selected=[],filterText=''){
-    const container=document.getElementById(containerId);
-    const items=resultadosAprendizaje.map((ra,i)=>({ra,i}))
-      .filter(({ra})=>!filterText||ra.toLowerCase().includes(filterText.toLowerCase()));
-    container.innerHTML=items.map(({ra,i})=>{
-      const checked=selected.includes(i);
-      return`<div class="ra-item ${checked?'selected':''}" data-idx="${i}" onclick="toggleRA('${containerId}',${i})">
-        <div class="ra-checkbox">${checked?'✓':''}</div>
-        <div class="ra-text">${esc(ra)}</div></div>`;
+  function removeTag(ctx, index) {
+    getCtxTags(ctx).splice(index, 1);
+    renderTags(ctx);
+  }
+
+  function tagKeydown(e, ctx) {
+    const input = e.target;
+    if (e.key === 'Enter' || e.key === ',') {
+      e.preventDefault();
+      addTag(ctx, input.value);
+      input.value = '';
+    } else if (e.key === 'Backspace' && input.value === '') {
+      const tags = getCtxTags(ctx);
+      if (tags.length) { tags.pop(); renderTags(ctx); }
+    }
+  }
+
+  function tagBlur(e, ctx) {
+    const input = e.target;
+    if (input.value.trim()) { addTag(ctx, input.value); input.value = ''; }
+  }
+
+  // ── IMAGE UPLOAD ───────────────────────────────────────────────────
+  // Store base64 data URLs per context
+  const imgData = { crear: null, editar: null };
+
+  function handleFile(e, ctx) {
+    const file = e.target.files[0];
+    if (!file) return;
+    loadImageFile(file, ctx);
+  }
+
+  function loadImageFile(file, ctx) {
+    if (file.size > 5 * 1024 * 1024) { showToast('⚠️ La imagen supera los 5 MB'); return; }
+    const reader = new FileReader();
+    reader.onload = function(ev) {
+      imgData[ctx] = ev.target.result;
+      setImgPreview(ctx, ev.target.result, file.name);
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function setImgPreview(ctx, src, name) {
+    const preview = document.getElementById(ctx + '-img-preview');
+    const emoji   = document.getElementById(ctx + '-img-emoji');
+    const nameEl  = document.getElementById(ctx + '-img-name');
+    const clearBtn= document.getElementById(ctx + '-img-clear');
+    emoji.style.display = 'none';
+    // Remove previous img if any
+    const existing = preview.querySelector('img');
+    if (existing) existing.remove();
+    const img = document.createElement('img');
+    img.src = src;
+    preview.appendChild(img);
+    nameEl.textContent = name || '';
+    clearBtn.style.display = 'inline-block';
+  }
+
+  function clearImg(e, ctx) {
+    e.stopPropagation();
+    imgData[ctx] = null;
+    const preview = document.getElementById(ctx + '-img-preview');
+    const emoji   = document.getElementById(ctx + '-img-emoji');
+    const nameEl  = document.getElementById(ctx + '-img-name');
+    const clearBtn= document.getElementById(ctx + '-img-clear');
+    const existing = preview.querySelector('img');
+    if (existing) existing.remove();
+    emoji.style.display = '';
+    nameEl.textContent = '';
+    clearBtn.style.display = 'none';
+    document.getElementById(ctx + '-imagen').value = '';
+  }
+
+  function resetImg(ctx) {
+    imgData[ctx] = null;
+    const preview = document.getElementById(ctx + '-img-preview');
+    const emoji   = document.getElementById(ctx + '-img-emoji');
+    const nameEl  = document.getElementById(ctx + '-img-name');
+    const clearBtn= document.getElementById(ctx + '-img-clear');
+    const existing = preview.querySelector('img');
+    if (existing) existing.remove();
+    emoji.style.display = '';
+    nameEl.textContent = '';
+    clearBtn.style.display = 'none';
+    document.getElementById(ctx + '-imagen').value = '';
+  }
+
+  function dragOver(e, ctx) {
+    e.preventDefault();
+    document.getElementById(ctx + '-drop-zone').classList.add('dragover');
+  }
+
+  function dragLeave(ctx) {
+    document.getElementById(ctx + '-drop-zone').classList.remove('dragover');
+  }
+
+  function dropFile(e, ctx) {
+    e.preventDefault();
+    document.getElementById(ctx + '-drop-zone').classList.remove('dragover');
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) loadImageFile(file, ctx);
+  }
+
+  // ── HIGHLIGHT TOGGLE ───────────────────────────────────────────────
+  function toggleHighlight(ctx) {
+    const cb = document.getElementById(ctx + '-highlight');
+    cb.checked = !cb.checked;
+    syncHighlightUI(ctx);
+  }
+
+  function syncHighlightUI(ctx) {
+    const cb    = document.getElementById(ctx + '-highlight');
+    const field = document.getElementById(ctx + '-highlight-field');
+    field.classList.toggle('on', cb.checked);
+  }
+
+  // ── RENDER CURSOS EN COLUMNAS POR SEMESTRE ─────────────────────────
+  function renderCursos(ctx) {
+    const container = document.getElementById(ctx + '-cursos-list');
+    const countEl   = document.getElementById(ctx + '-cursos-count');
+    const list      = getCtxCursos(ctx);
+    const semField  = document.getElementById(ctx + '-semestres');
+    const numSem    = Math.max(parseInt(semField?.value) || 0, ...list.map(c => c.sem), 0);
+
+    if (numSem === 0) {
+      container.innerHTML = `
+        <div class="sem-cols-empty">
+          <div class="sem-cols-empty-icon">📅</div>
+          <div class="sem-cols-empty-text">Indica cuántos semestres tiene el programa<br>para ver las columnas.</div>
+        </div>`;
+      countEl.textContent = '';
+      return;
+    }
+
+    const indexed = list.map((c, pos) => ({ ...c, pos }));
+    const cols = Array.from({ length: numSem }, (_, i) => {
+      const sem    = i + 1;
+      const cursos = indexed.filter(c => c.sem === sem);
+      return `
+        <div class="sem-col">
+          <div class="sem-col-header">
+            <div class="sem-col-title">Semestre ${sem}</div>
+            <div class="sem-col-pill">${cursos.length}</div>
+          </div>
+          <div class="sem-col-body">
+            ${cursos.map(c => {
+              const cur = catalogoCursos[c.catalogId];
+              return `
+                <div class="sem-col-course">
+                  <div class="sem-col-course-row">
+                    <span class="curso-badge">CRS-${String(c.catalogId + 1).padStart(2,'0')}</span>
+                    <button class="remove-curso-btn" onclick="removeCurso('${ctx}',${c.pos})" title="Quitar">✕</button>
+                  </div>
+                  <div class="sem-col-course-name">${esc(cur.nombre)}</div>
+                </div>`;
+            }).join('')}
+            <button class="sem-col-add-btn" onclick="abrirModalCurso('${ctx}',${sem})">+ Agregar</button>
+          </div>
+        </div>`;
     }).join('');
-    updateRACount(containerId);
+
+    container.innerHTML = `<div class="sem-cols-wrap"><div class="sem-cols">${cols}</div></div>`;
+    const n = list.length;
+    countEl.textContent = n ? `${n} curso${n !== 1 ? 's' : ''} asignado${n !== 1 ? 's' : ''}` : '';
   }
 
-  function toggleRA(containerId,idx){
-    const item=document.querySelector(`#${containerId} .ra-item[data-idx="${idx}"]`);
-    item.classList.toggle('selected');
-    item.querySelector('.ra-checkbox').textContent=item.classList.contains('selected')?'✓':'';
-    updateRACount(containerId);
+  function removeCurso(ctx, pos) {
+    getCtxCursos(ctx).splice(pos, 1);
+    renderCursos(ctx);
   }
 
-  function getSelectedRA(containerId){
-    return[...document.querySelectorAll(`#${containerId} .ra-item.selected`)].map(el=>parseInt(el.dataset.idx));
+  // ── MODAL CURSO ────────────────────────────────────────────────────
+  let modalCursoCtx = null, modalCursoSem = 1, modalCursoSelection = [];
+
+  function abrirModalCurso(ctx, sem) {
+    modalCursoCtx = ctx; modalCursoSem = sem; modalCursoSelection = [];
+    document.getElementById('modal-curso-title').textContent = `Agregar curso — Semestre ${sem}`;
+    document.getElementById('modal-curso-search').value = '';
+    buildModalCursoList('');
+    document.getElementById('modal-curso-overlay').classList.add('open');
   }
 
-  function updateRACount(containerId){
-    const countId=containerId==='crear-ra-list'?'crear-ra-count':'editar-ra-count';
-    const n=document.querySelectorAll(`#${containerId} .ra-item.selected`).length;
-    document.getElementById(countId).textContent=`${n} seleccionado${n!==1?'s':''}`;
+  function cerrarModalCurso() {
+    document.getElementById('modal-curso-overlay').classList.remove('open');
+    modalCursoCtx = null; modalCursoSelection = [];
   }
 
-  function filterRA(containerId,text){buildRAList(containerId,getSelectedRA(containerId),text)}
+  function buildModalCursoList(filterText) {
+    const assignedIds = getCtxCursos(modalCursoCtx).map(c => c.catalogId);
+    const list        = document.getElementById('modal-curso-list');
+    const items       = catalogoCursos.filter(c =>
+      !assignedIds.includes(c.id) &&
+      (!filterText || c.nombre.toLowerCase().includes(filterText.toLowerCase()))
+    );
+    if (!items.length) {
+      list.innerHTML = '<p style="font-size:12.5px;color:var(--muted);text-align:center;padding:20px 0">No hay más cursos disponibles.</p>';
+      return;
+    }
+    list.innerHTML = items.map(c => {
+      const sel = modalCursoSelection.includes(c.id);
+      return `
+        <div class="modal-item ${sel ? 'selected' : ''}" data-id="${c.id}" onclick="toggleModalCurso(${c.id})">
+          <div class="modal-checkbox">${sel ? '✓' : ''}</div>
+          <div class="modal-item-info">
+            <div class="modal-item-badge">CRS-${String(c.id + 1).padStart(2,'0')}</div>
+            <div class="modal-item-name">${esc(c.nombre)}</div>
+          </div>
+        </div>`;
+    }).join('');
+  }
 
-  function guardarCrear(){
-    const nombre=document.getElementById('crear-nombre').value.trim();
-    if(!nombre){shake('crear-nombre');return}
-    programas.push({id:nextId++,nombre,
-      tipo:document.getElementById('crear-tipo').value,
-      creditos:parseInt(document.getElementById('crear-creditos').value)||0,
-      semestres:parseInt(document.getElementById('crear-semestres').value)||0,
-      desc:document.getElementById('crear-desc').value.trim(),
-      tags:document.getElementById('crear-tags').value.trim(),
-      cursos:getCursosDeTabla('crear-cursos-body'),
-      ras:getSelectedRA('crear-ra-list')});
+  function toggleModalCurso(id) {
+    modalCursoSelection = modalCursoSelection.includes(id)
+      ? modalCursoSelection.filter(x => x !== id)
+      : [...modalCursoSelection, id];
+    const item = document.querySelector(`#modal-curso-list .modal-item[data-id="${id}"]`);
+    if (item) {
+      const sel = modalCursoSelection.includes(id);
+      item.classList.toggle('selected', sel);
+      item.querySelector('.modal-checkbox').textContent = sel ? '✓' : '';
+    }
+  }
+
+  function filterModalCurso() { buildModalCursoList(document.getElementById('modal-curso-search').value); }
+
+  function confirmarModalCurso() {
+    if (!modalCursoSelection.length) { cerrarModalCurso(); return; }
+    const list = getCtxCursos(modalCursoCtx);
+    modalCursoSelection.forEach(id => list.push({ catalogId: id, sem: modalCursoSem }));
+    const ctx = modalCursoCtx;
+    cerrarModalCurso();
+    renderCursos(ctx);
+  }
+
+  // ── PRECIO FORMATEADO ──────────────────────────────────────────────
+  function formatPrecio(val) {
+    if (!val) return '';
+    return '$ ' + Number(val).toLocaleString('es-CO');
+  }
+
+  // ── VIEWS ──────────────────────────────────────────────────────────
+  function showView(id) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    if (id === 'view-crear') {
+      ['crear-nombre','crear-creditos','crear-semestres','crear-desc','crear-graduate',
+       'crear-snies','crear-precio','crear-imagen'].forEach(x => document.getElementById(x).value = '');
+      document.getElementById('crear-tipo').value = 'MAESTRIA';
+      document.getElementById('crear-modalidad').value = 'presencial';
+      document.getElementById('crear-highlight').checked = false;
+      syncHighlightUI('crear');
+      resetImg('crear');
+      setCtxCursos('crear', []);
+      setCtxTags('crear', []);
+      renderTags('crear');
+      renderCursos('crear');
+    }
+    if (id === 'view-lista') renderList();
+
+    document.getElementById('crear-semestres').addEventListener('input', () => renderCursos('crear'));
+    document.getElementById('editar-semestres').addEventListener('input', () => renderCursos('editar'));
+  }
+
+  // ── LISTA ──────────────────────────────────────────────────────────
+  function renderList(filter = '') {
+    const list    = document.getElementById('progList');
+    const empty   = document.getElementById('emptyState');
+    const countEl = document.getElementById('countBar');
+    const filtered = filter
+      ? programas.filter(p => p.nombre.toLowerCase().includes(filter.toLowerCase()))
+      : programas;
+
+    countEl.innerHTML = `Mostrando <strong>${filtered.length}</strong> de <strong>${programas.length}</strong> programas`;
+    if (!filtered.length) { list.innerHTML = ''; empty.style.display = 'block'; return; }
+
+    empty.style.display = 'none';
+    list.innerHTML = filtered.map(p => {
+      const imgHtml = p.image
+        ? `<img src="${esc(p.image)}" alt="" onerror="this.parentElement.innerHTML='<div class=prog-card-img-placeholder>🎓</div>'"/>`
+        : `<div class="prog-card-img-placeholder">🎓</div>`;
+      const tagHtml = (p.tags||[]).map(t => `<span class="prog-tag">${esc(t)}</span>`).join('');
+      const modBadge = modalidadBadge[p.modalidad] || 'badge-type';
+      const sniesHtml = p.snies ? `<span class="badge badge-snies">SNIES ${esc(p.snies)}</span>` : '';
+      const precioHtml = p.precio ? `<span class="badge badge-price">${formatPrecio(p.precio)}</span>` : '';
+      return `
+      <div class="prog-card ${p.highlight ? 'is-highlight' : ''}">
+        <div class="prog-card-img">${imgHtml}</div>
+        <div class="prog-card-body">
+          <div class="prog-left">
+            <span class="prog-index">P-${String(p.id).padStart(3,'0')}</span>
+            <div class="prog-info">
+              <div class="prog-name-row">
+                <div class="prog-name">${esc(p.nombre)}</div>
+                ${p.highlight ? '<span class="highlight-star" title="Destacado">⭐</span>' : ''}
+              </div>
+              <div class="prog-desc">${esc(p.desc)}</div>
+              <div class="prog-meta">
+                <span class="badge badge-type">${tipoLabel[p.tipo] || p.tipo}</span>
+                <span class="badge ${modBadge}">${modalidadLabel[p.modalidad] || p.modalidad}</span>
+                <span class="badge badge-credits">📚 ${p.creditos} créditos</span>
+                <span class="badge badge-semesters">🗓 ${p.semestres} sem.</span>
+                <span class="badge badge-courses">📋 ${p.cursos.length} curso${p.cursos.length !== 1 ? 's' : ''}</span>
+                ${sniesHtml}
+                ${precioHtml}
+              </div>
+              ${tagHtml ? `<div class="prog-tags">${tagHtml}</div>` : ''}
+            </div>
+          </div>
+          <div class="prog-actions">
+            <button class="edit-btn" onclick="abrirEditar(${p.id})">✏️ Editar</button>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  function filterList() { renderList(document.getElementById('searchInput').value); }
+
+  // ── GUARDAR CREAR ──────────────────────────────────────────────────
+  function guardarCrear() {
+    const nombre = document.getElementById('crear-nombre').value.trim();
+    if (!nombre) { shake('crear-nombre'); return; }
+
+    // commit any pending tag
+    const tagInput = document.getElementById('crear-tag-input');
+    if (tagInput.value.trim()) { addTag('crear', tagInput.value); tagInput.value = ''; }
+
+    programas.push({
+      id: nextId++, nombre,
+      tipo:             document.getElementById('crear-tipo').value,
+      creditos:         parseInt(document.getElementById('crear-creditos').value) || 0,
+      semestres:        parseInt(document.getElementById('crear-semestres').value) || 0,
+      modalidad:        document.getElementById('crear-modalidad').value,
+      snies:            document.getElementById('crear-snies').value.trim(),
+      precio:           parseInt(document.getElementById('crear-precio').value) || 0,
+      image:            imgData['crear'] || '',
+      desc:             document.getElementById('crear-desc').value.trim(),
+      graduate_profile: document.getElementById('crear-graduate').value.trim(),
+      tags:             [...crearTags],
+      highlight:        document.getElementById('crear-highlight').checked,
+      cursos:           crearCursos.map(c => ({ ...c })),
+    });
     showToast('✅ Programa creado correctamente');
     showView('view-lista');
   }
 
-  function abrirEditar(id){
-    const p=programas.find(x=>x.id===id);
-    if(!p) return;
-    editingId=id;
-    document.getElementById('editar-nombre').value=p.nombre;
-    document.getElementById('editar-tipo').value=p.tipo;
-    document.getElementById('editar-creditos').value=p.creditos;
-    document.getElementById('editar-semestres').value=p.semestres;
-    document.getElementById('editar-desc').value=p.desc;
-    document.getElementById('editar-tags').value=p.tags;
-    document.getElementById('editar-ra-search').value='';
-    renderCursosEnTabla('editar-cursos-body',p.cursos);
-    buildRAList('editar-ra-list',p.ras);
+  // ── EDITAR ─────────────────────────────────────────────────────────
+  function abrirEditar(id) {
+    const p = programas.find(x => x.id === id);
+    if (!p) return;
+    editingId = id;
+
+    document.getElementById('editar-nombre').value    = p.nombre;
+    document.getElementById('editar-tipo').value      = p.tipo;
+    document.getElementById('editar-creditos').value  = p.creditos;
+    document.getElementById('editar-semestres').value = p.semestres;
+    document.getElementById('editar-modalidad').value = p.modalidad || 'presencial';
+    document.getElementById('editar-snies').value     = p.snies || '';
+    document.getElementById('editar-precio').value    = p.precio || '';
+    document.getElementById('editar-imagen').value    = p.image || '';
+    document.getElementById('editar-desc').value      = p.desc;
+    document.getElementById('editar-graduate').value  = p.graduate_profile || '';
+    document.getElementById('editar-highlight').checked = !!p.highlight;
+    syncHighlightUI('editar');
+
+    // Image preview
+    resetImg('editar');
+    if (p.image) {
+      imgData['editar'] = p.image;
+      setImgPreview('editar', p.image, 'imagen guardada');
+    }
+
+    setCtxTags('editar', [...(p.tags || [])]);
+    renderTags('editar');
+    setCtxCursos('editar', p.cursos.map(c => ({ ...c })));
+    renderCursos('editar');
+
     showView('view-editar');
   }
 
-  function guardarEditar(){
-    const nombre=document.getElementById('editar-nombre').value.trim();
-    if(!nombre){shake('editar-nombre');return}
-    const idx=programas.findIndex(p=>p.id===editingId);
-    if(idx!==-1) programas[idx]={...programas[idx],nombre,
-      tipo:document.getElementById('editar-tipo').value,
-      creditos:parseInt(document.getElementById('editar-creditos').value)||0,
-      semestres:parseInt(document.getElementById('editar-semestres').value)||0,
-      desc:document.getElementById('editar-desc').value.trim(),
-      tags:document.getElementById('editar-tags').value.trim(),
-      cursos:getCursosDeTabla('editar-cursos-body'),
-      ras:getSelectedRA('editar-ra-list')};
+  function guardarEditar() {
+    const nombre = document.getElementById('editar-nombre').value.trim();
+    if (!nombre) { shake('editar-nombre'); return; }
+
+    const tagInput = document.getElementById('editar-tag-input');
+    if (tagInput.value.trim()) { addTag('editar', tagInput.value); tagInput.value = ''; }
+
+    const idx = programas.findIndex(p => p.id === editingId);
+    if (idx !== -1) {
+      programas[idx] = { ...programas[idx], nombre,
+        tipo:             document.getElementById('editar-tipo').value,
+        creditos:         parseInt(document.getElementById('editar-creditos').value) || 0,
+        semestres:        parseInt(document.getElementById('editar-semestres').value) || 0,
+        modalidad:        document.getElementById('editar-modalidad').value,
+        snies:            document.getElementById('editar-snies').value.trim(),
+        precio:           parseInt(document.getElementById('editar-precio').value) || 0,
+        image:            imgData['editar'] || '',
+        desc:             document.getElementById('editar-desc').value.trim(),
+        graduate_profile: document.getElementById('editar-graduate').value.trim(),
+        tags:             [...editarTags],
+        highlight:        document.getElementById('editar-highlight').checked,
+        cursos:           editarCursos.map(c => ({ ...c })),
+      };
+    }
     showToast('✏️ Programa actualizado correctamente');
     showView('view-lista');
   }
 
-  function esc(str){return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+  // ── UTILS ──────────────────────────────────────────────────────────
+  function esc(str) { return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-  function shake(inputId){
-    const el=document.getElementById(inputId);
-    el.style.borderColor='#ef4444';
-    el.style.boxShadow='0 0 0 3px rgba(239,68,68,.2)';
+  function shake(inputId) {
+    const el = document.getElementById(inputId);
+    el.style.borderColor = '#ef4444';
+    el.style.boxShadow   = '0 0 0 3px rgba(239,68,68,.2)';
     el.focus();
-    setTimeout(()=>{el.style.borderColor='';el.style.boxShadow=''},1800);
+    setTimeout(() => { el.style.borderColor = ''; el.style.boxShadow = ''; }, 1800);
   }
 
   let toastTimer;
-  function showToast(msg){
-    const t=document.getElementById('toast');
-    t.textContent=msg;t.classList.add('show');
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
     clearTimeout(toastTimer);
-    toastTimer=setTimeout(()=>t.classList.remove('show'),3000);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
   }
 
+  // ── INIT ───────────────────────────────────────────────────────────
   renderList();
-  buildRAList('crear-ra-list',[]);
+  renderCursos('crear');
+  document.getElementById('crear-semestres').addEventListener('input', () => renderCursos('crear'));
+  document.getElementById('editar-semestres').addEventListener('input', () => renderCursos('editar'));
 </script>
 </body>
 </html>
