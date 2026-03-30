@@ -11,7 +11,10 @@
       --brand-glow:rgba(84,84,233,.15);--bg:#f0f1fa;--white:#ffffff;
       --text:#12123a;--muted:#7878a0;--border:#e2e4f0;
       --radius:14px;--shadow:0 4px 20px rgba(84,84,233,.09);
-      --green:#10b981;--green-light:#d1fae5;--amber:#f59e0b;--amber-light:#fef3c7;
+      --green:#10b981;--green-light:#d1fae5;
+      --amber:#f59e0b;--amber-light:#fef3c7;
+      --purple:#8b5cf6;--purple-light:#ede9fe;
+      --sky:#0ea5e9;--sky-light:#e0f2fe;
     }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
@@ -47,7 +50,7 @@
     .count-bar{font-size:12px;color:var(--muted);font-weight:500;margin-bottom:14px}
     .count-bar strong{color:var(--text)}
 
-    /* TABLA LISTA CURSOS */
+    /* ── TABLA LISTA ── */
     .table-card{background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
     .lista-table{width:100%;border-collapse:collapse;font-size:13.5px}
     .lista-table th{text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;padding:12px 20px;border-bottom:1px solid var(--border);background:#fafbff}
@@ -59,8 +62,7 @@
     .curso-nombre{font-weight:600;font-size:14px}
     .curso-desc{font-size:12px;color:var(--muted);margin-top:2px}
     .badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:2px 9px;border-radius:20px}
-    .badge-padre{color:#7c3aed;background:#ede9fe}
-    .badge-hijo{color:var(--muted);background:var(--bg);border:1px solid var(--border)}
+    .badge-electiva{color:var(--brand);background:var(--brand-light)}
     .badge-credits{color:#0369a1;background:#e0f2fe}
     .badge-ra{color:#047857;background:var(--green-light)}
     .row-actions{display:flex;gap:6px;justify-content:center}
@@ -70,7 +72,7 @@
     .empty-state{text-align:center;padding:60px 20px;color:var(--muted)}
     .empty-state .icon{font-size:40px;margin-bottom:12px}
 
-    /* FORMULARIO */
+    /* ── FORMULARIO ── */
     .form-header{margin-bottom:28px}
     .form-header h1{font-size:22px;font-weight:700}
     .form-header p{font-size:13px;color:var(--muted);margin-top:4px}
@@ -89,24 +91,59 @@
     .field-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
     .field-row-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 
-    /* TABLA COMP/RAs */
+    /* ── IMAGE UPLOAD ── */
+    .img-drop-zone{border:2px dashed var(--border);border-radius:12px;display:flex;align-items:stretch;overflow:hidden;transition:border-color .2s,background .2s;background:var(--bg);cursor:pointer;min-height:96px}
+    .img-drop-zone:hover,.img-drop-zone.dragover{border-color:var(--brand);background:var(--brand-light)}
+    .img-drop-zone input[type=file]{display:none}
+    .img-preview-side{width:96px;flex-shrink:0;background:linear-gradient(135deg,var(--brand-light),#dde0ff);display:flex;align-items:center;justify-content:center;font-size:28px;border-right:1.5px solid var(--border);overflow:hidden;position:relative}
+    .img-preview-side img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+    .img-drop-text{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:20px}
+    .img-drop-icon{font-size:22px;line-height:1}
+    .img-drop-label{font-size:13px;font-weight:600;color:var(--text)}
+    .img-drop-sub{font-size:11.5px;color:var(--muted)}
+    .img-filename{font-size:12px;color:var(--brand);font-weight:600;margin-top:2px;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .img-clear-btn{background:none;border:1.5px solid var(--border);border-radius:7px;padding:4px 10px;font-family:inherit;font-size:11.5px;color:var(--muted);cursor:pointer;margin-top:4px;transition:all .15s}
+    .img-clear-btn:hover{border-color:#ef4444;color:#ef4444;background:#fff1f1}
+
+    /* ── TOGGLE (iselective) ── */
+    .toggle-field{display:flex;align-items:center;gap:14px;padding:12px 16px;border:1.5px solid var(--border);border-radius:10px;background:var(--white);cursor:pointer;transition:border-color .2s,background .2s;user-select:none}
+    .toggle-field:hover{border-color:var(--brand);background:var(--brand-light)}
+    .toggle-field.on{border-color:var(--brand);background:var(--brand-light)}
+    .toggle{position:relative;width:44px;height:24px;flex-shrink:0}
+    .toggle input{opacity:0;width:0;height:0;position:absolute}
+    .toggle-slider{position:absolute;inset:0;background:#d0d2e8;border-radius:24px;cursor:pointer;transition:.25s}
+    .toggle-slider::before{content:'';position:absolute;width:18px;height:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.25s;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+    .toggle input:checked+.toggle-slider{background:var(--brand)}
+    .toggle input:checked+.toggle-slider::before{transform:translateX(20px)}
+    .toggle-text{flex:1}
+    .toggle-text strong{font-size:13.5px;font-weight:600;color:var(--text);display:block}
+    .toggle-text span{font-size:12px;color:var(--muted)}
+
+    /* ── CHIPS DISPLAY (worlds) ── */
+    .chip-wrap{display:flex;flex-wrap:wrap;gap:6px;min-height:34px;align-items:flex-start;padding:4px 0}
+    .chip-item{display:inline-flex;align-items:center;gap:5px;padding:4px 5px 4px 11px;background:var(--sky-light);color:var(--sky);border-radius:20px;font-size:12px;font-weight:600;white-space:nowrap}
+    .chip-remove{background:none;border:none;cursor:pointer;color:var(--sky);font-size:13px;line-height:1;padding:0 3px;display:flex;align-items:center;opacity:.7;border-radius:50%;transition:opacity .15s}
+    .chip-remove:hover{opacity:1;background:rgba(14,165,233,.15)}
+    .chip-empty{font-size:12.5px;color:var(--muted);font-style:italic;padding:6px 0}
+
+    /* ── TABLA COMP/RAs ── */
     .comp-table{width:100%;border-collapse:collapse;font-size:13px}
     .comp-table th{text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;padding:8px 14px;border-bottom:1px solid var(--border);background:#fafbff}
-    .comp-table th.center{text-align:center;width:50px}
+    .comp-table th.center{text-align:center;width:46px}
     .comp-table td{padding:10px 14px;border-bottom:1px solid var(--border);vertical-align:middle}
     .comp-table td.center{text-align:center}
     .comp-table tr:last-child td{border-bottom:none}
     .comp-table tr:hover td{background:#fafbff}
-    .comp-nombre{font-weight:600;font-size:13px;color:var(--text)}
-    .comp-tipo{font-size:11px;color:var(--muted);margin-top:2px}
+    .comp-nombre{font-weight:600;font-size:12.5px;color:var(--text)}
+    .comp-ra-name{font-size:12.5px;color:var(--text)}
 
     .check-cell{width:22px;height:22px;border-radius:5px;border:1.5px solid var(--border);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;background:var(--white);user-select:none}
     .check-cell.on{background:var(--brand);border-color:var(--brand);color:#fff;font-size:12px}
 
-    .add-comp-btn{display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:9px;border:1.5px dashed var(--border);background:transparent;font-family:inherit;font-size:13px;color:var(--muted);cursor:pointer;width:100%;margin-top:4px;transition:all .2s}
+    .add-comp-btn{display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:9px;border:1.5px dashed var(--border);background:transparent;font-family:inherit;font-size:13px;color:var(--muted);cursor:pointer;width:100%;transition:all .2s}
     .add-comp-btn:hover{border-color:var(--brand);color:var(--brand);background:var(--brand-light)}
 
-    /* MODAL selector Comp/RA */
+    /* ── MODAL ── */
     .modal-overlay{display:none;position:fixed;inset:0;background:rgba(18,18,58,.45);z-index:200;align-items:center;justify-content:center}
     .modal-overlay.open{display:flex}
     .modal{background:var(--white);border-radius:var(--radius);box-shadow:0 20px 60px rgba(18,18,58,.25);width:520px;max-height:80vh;display:flex;flex-direction:column;overflow:hidden}
@@ -114,6 +151,14 @@
     .modal-header h3{font-size:16px;font-weight:700}
     .modal-close{background:none;border:none;font-size:20px;color:var(--muted);cursor:pointer;line-height:1}
     .modal-close:hover{color:var(--text)}
+    /* Indicador de pasos (modal Comp/RA) */
+    .modal-steps{padding:10px 20px;border-bottom:1px solid var(--border);display:flex;gap:8px;align-items:center;font-size:12px}
+    .modal-step{padding:3px 11px;border-radius:20px;font-weight:600;color:var(--muted);transition:all .15s}
+    .modal-step.active{background:var(--brand);color:#fff}
+    .modal-step.done{background:var(--green-light);color:var(--green)}
+    .modal-step-sep{color:var(--border);font-size:14px}
+    /* Banner competencia seleccionada */
+    .modal-comp-banner{padding:10px 20px;border-bottom:1px solid var(--border);background:var(--brand-light);font-size:12.5px;color:var(--brand);font-weight:600;display:flex;align-items:center;gap:8px}
     .modal-search{padding:12px 20px;border-bottom:1px solid var(--border)}
     .modal-search input{width:100%;padding:9px 14px;border:1.5px solid var(--border);border-radius:9px;font-family:inherit;font-size:13px;color:var(--text);background:var(--bg);outline:none;transition:border-color .2s}
     .modal-search input:focus{border-color:var(--brand)}
@@ -126,12 +171,14 @@
     .modal-item.selected{border-color:var(--brand);background:var(--brand-light)}
     .modal-checkbox{width:18px;height:18px;border:2px solid var(--border);border-radius:5px;display:grid;place-items:center;flex-shrink:0;margin-top:1px;transition:all .15s;background:var(--white)}
     .modal-item.selected .modal-checkbox{background:var(--brand);border-color:var(--brand);color:#fff;font-size:11px}
+    .modal-radio{border-radius:50%}  /* para single-select */
     .modal-item-info{flex:1}
     .modal-item-name{font-size:13px;font-weight:600;color:var(--text)}
     .modal-item-sub{font-size:11.5px;color:var(--muted);margin-top:2px}
-    .modal-footer{padding:16px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px}
+    .modal-footer{padding:16px 20px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:10px}
+    .modal-footer-right{display:flex;gap:8px}
 
-    /* Barra guardar */
+    /* ── SAVE BAR ── */
     .save-bar{background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 28px;display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:4px}
     .save-bar p{font-size:13px;color:var(--muted)}
     .save-bar-actions{display:flex;gap:10px}
@@ -171,9 +218,7 @@
       <button class="btn btn-primary" onclick="showView('view-crear')">+ Agregar curso</button>
     </div>
   </div>
-
   <div class="count-bar" id="countBar"></div>
-
   <div class="table-card">
     <table class="lista-table" id="listaTable">
       <thead>
@@ -181,8 +226,8 @@
           <th>Curso</th>
           <th class="center" style="width:80px">Créditos</th>
           <th class="center" style="width:80px">Horas</th>
-          <th class="center" style="width:90px">Tipo</th>
-          <th class="center" style="width:80px">Comp/RAs</th>
+          <th class="center" style="width:90px">Electiva</th>
+          <th class="center" style="width:90px">Comp/RAs</th>
           <th class="center" style="width:100px">Acciones</th>
         </tr>
       </thead>
@@ -199,7 +244,7 @@
 <div class="view" id="view-crear">
   <div class="form-header">
     <h1>Agregar nuevo curso</h1>
-    <p>Completa la información del curso y asigna las competencias o resultados de aprendizaje con su nivel I/F/V.</p>
+    <p>Completa la información del curso, asigna competencias/RAs y configura sus áreas.</p>
   </div>
 
   <div class="form-card">
@@ -221,13 +266,6 @@
       </div>
       <div class="field-row-2">
         <div class="field">
-          <label>Tipo de curso</label>
-          <select id="crear-tipo">
-            <option value="padre">Padre (is_father)</option>
-            <option value="hijo">Hijo / Electiva</option>
-          </select>
-        </div>
-        <div class="field">
           <label>Modalidad</label>
           <select id="crear-modalidad">
             <option value="Virtual">Virtual</option>
@@ -235,19 +273,69 @@
             <option value="Híbrido">Híbrido</option>
           </select>
         </div>
+        <div class="field">
+          <label>Tipo de curso</label>
+          <label class="toggle-field" id="crear-elective-field" onclick="toggleElective('crear')">
+            <label class="toggle" onclick="event.stopPropagation()">
+              <input type="checkbox" id="crear-iselective" onchange="syncElective('crear')"/>
+              <span class="toggle-slider"></span>
+            </label>
+            <div class="toggle-text">
+              <strong>Curso electivo</strong>
+              <span>El estudiante elige entre varias opciones</span>
+            </div>
+          </label>
+        </div>
       </div>
       <div class="field">
         <label>Descripción</label>
         <textarea id="crear-desc" placeholder="Describe el propósito general del curso…"></textarea>
       </div>
       <div class="field">
-        <label>Objetivos terminales</label>
-        <textarea id="crear-obj" placeholder="Al finalizar el curso el estudiante será capaz de…"></textarea>
+        <label>Objetivo general</label>
+        <textarea id="crear-general-obj" placeholder="Al finalizar el curso el estudiante será capaz de…"></textarea>
       </div>
     </div>
   </div>
 
-  <!-- Tabla Comp/RAs -->
+  <!-- Imagen del curso -->
+  <div class="form-card">
+    <div class="form-card-header"><span class="dot" style="background:var(--sky)"></span> Imagen del curso</div>
+    <div class="form-card-body">
+      <div class="field">
+        <label>Imagen</label>
+        <div class="img-drop-zone" id="crear-drop-zone"
+          onclick="document.getElementById('crear-imagen').click()"
+          ondragover="dragOver(event,'crear')" ondragleave="dragLeave('crear')" ondrop="dropFile(event,'crear')">
+          <input type="file" id="crear-imagen" accept="image/*" onchange="handleFile(event,'crear')"/>
+          <div class="img-preview-side" id="crear-img-preview"><span id="crear-img-emoji">📚</span></div>
+          <div class="img-drop-text">
+            <span class="img-drop-icon">📁</span>
+            <span class="img-drop-label">Haz clic o arrastra una imagen aquí</span>
+            <span class="img-drop-sub">PNG, JPG, WEBP — máx. 5 MB</span>
+            <span class="img-filename" id="crear-img-name"></span>
+            <button class="img-clear-btn" id="crear-img-clear" style="display:none" onclick="clearImg(event,'crear')">✕ Quitar imagen</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Áreas / Worlds -->
+  <div class="form-card">
+    <div class="form-card-header"><span class="dot" style="background:var(--sky)"></span> Áreas / Worlds</div>
+    <div class="form-card-body">
+      <div class="field">
+        <label>Áreas seleccionadas</label>
+        <div class="chip-wrap" id="crear-worlds-wrap">
+          <span class="chip-empty">Sin áreas seleccionadas</span>
+        </div>
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="abrirModalWorlds('crear')">+ Agregar área</button>
+    </div>
+  </div>
+
+  <!-- Competencias y RAs -->
   <div class="form-card">
     <div class="form-card-header">
       <span class="dot" style="background:#10b981"></span> Competencias y Resultados de Aprendizaje
@@ -257,8 +345,8 @@
       <table class="comp-table">
         <thead>
           <tr>
-            <th>Competencia / Resultado de aprendizaje</th>
-            <th>Tipo</th>
+            <th>Competencia</th>
+            <th>Resultado de Aprendizaje</th>
             <th class="center">I</th>
             <th class="center">F</th>
             <th class="center">V</th>
@@ -268,7 +356,7 @@
         <tbody id="crear-comp-body"></tbody>
       </table>
       <div style="padding:12px 16px">
-        <button class="add-comp-btn" onclick="abrirModal('crear')">+ Agregar competencia / RA</button>
+        <button class="add-comp-btn" onclick="abrirModalCompRA('crear')">+ Agregar competencia / RA</button>
       </div>
     </div>
   </div>
@@ -286,7 +374,7 @@
 <div class="view" id="view-editar">
   <div class="form-header">
     <h1>Editar curso</h1>
-    <p>Modifica la información del curso y sus competencias o resultados de aprendizaje.</p>
+    <p>Modifica la información del curso, sus competencias y áreas.</p>
   </div>
 
   <div class="form-card">
@@ -308,13 +396,6 @@
       </div>
       <div class="field-row-2">
         <div class="field">
-          <label>Tipo de curso</label>
-          <select id="editar-tipo">
-            <option value="padre">Padre (is_father)</option>
-            <option value="hijo">Hijo / Electiva</option>
-          </select>
-        </div>
-        <div class="field">
           <label>Modalidad</label>
           <select id="editar-modalidad">
             <option value="Virtual">Virtual</option>
@@ -322,15 +403,63 @@
             <option value="Híbrido">Híbrido</option>
           </select>
         </div>
+        <div class="field">
+          <label>Tipo de curso</label>
+          <label class="toggle-field" id="editar-elective-field" onclick="toggleElective('editar')">
+            <label class="toggle" onclick="event.stopPropagation()">
+              <input type="checkbox" id="editar-iselective" onchange="syncElective('editar')"/>
+              <span class="toggle-slider"></span>
+            </label>
+            <div class="toggle-text">
+              <strong>Curso electivo</strong>
+              <span>El estudiante elige entre varias opciones</span>
+            </div>
+          </label>
+        </div>
       </div>
       <div class="field">
         <label>Descripción</label>
         <textarea id="editar-desc" placeholder="Descripción…"></textarea>
       </div>
       <div class="field">
-        <label>Objetivos terminales</label>
-        <textarea id="editar-obj" placeholder="Objetivos terminales…"></textarea>
+        <label>Objetivo general</label>
+        <textarea id="editar-general-obj" placeholder="Objetivo general del curso…"></textarea>
       </div>
+    </div>
+  </div>
+
+  <div class="form-card">
+    <div class="form-card-header"><span class="dot" style="background:var(--sky)"></span> Imagen del curso</div>
+    <div class="form-card-body">
+      <div class="field">
+        <label>Imagen</label>
+        <div class="img-drop-zone" id="editar-drop-zone"
+          onclick="document.getElementById('editar-imagen').click()"
+          ondragover="dragOver(event,'editar')" ondragleave="dragLeave('editar')" ondrop="dropFile(event,'editar')">
+          <input type="file" id="editar-imagen" accept="image/*" onchange="handleFile(event,'editar')"/>
+          <div class="img-preview-side" id="editar-img-preview"><span id="editar-img-emoji">📚</span></div>
+          <div class="img-drop-text">
+            <span class="img-drop-icon">📁</span>
+            <span class="img-drop-label">Haz clic o arrastra una imagen aquí</span>
+            <span class="img-drop-sub">PNG, JPG, WEBP — máx. 5 MB</span>
+            <span class="img-filename" id="editar-img-name"></span>
+            <button class="img-clear-btn" id="editar-img-clear" style="display:none" onclick="clearImg(event,'editar')">✕ Quitar imagen</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-card">
+    <div class="form-card-header"><span class="dot" style="background:var(--sky)"></span> Áreas / Worlds</div>
+    <div class="form-card-body">
+      <div class="field">
+        <label>Áreas seleccionadas</label>
+        <div class="chip-wrap" id="editar-worlds-wrap">
+          <span class="chip-empty">Sin áreas seleccionadas</span>
+        </div>
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="abrirModalWorlds('editar')">+ Agregar área</button>
     </div>
   </div>
 
@@ -343,8 +472,8 @@
       <table class="comp-table">
         <thead>
           <tr>
-            <th>Competencia / Resultado de aprendizaje</th>
-            <th>Tipo</th>
+            <th>Competencia</th>
+            <th>Resultado de Aprendizaje</th>
             <th class="center">I</th>
             <th class="center">F</th>
             <th class="center">V</th>
@@ -354,7 +483,7 @@
         <tbody id="editar-comp-body"></tbody>
       </table>
       <div style="padding:12px 16px">
-        <button class="add-comp-btn" onclick="abrirModal('editar')">+ Agregar competencia / RA</button>
+        <button class="add-comp-btn" onclick="abrirModalCompRA('editar')">+ Agregar competencia / RA</button>
       </div>
     </div>
   </div>
@@ -368,20 +497,56 @@
   </div>
 </div>
 
-<!-- ═══ MODAL selector Comp/RA ═══ -->
-<div class="modal-overlay" id="modal-overlay">
+<!-- ═══ MODAL Comp/RA — 2 pasos ═══ -->
+<div class="modal-overlay" id="modal-comp-overlay">
   <div class="modal">
     <div class="modal-header">
-      <h3>Seleccionar Competencia / RA</h3>
-      <button class="modal-close" onclick="cerrarModal()">✕</button>
+      <h3 id="modal-comp-title">Seleccionar competencia</h3>
+      <button class="modal-close" onclick="cerrarModalComp()">✕</button>
+    </div>
+    <!-- Indicador de pasos -->
+    <div class="modal-steps">
+      <span class="modal-step active" id="modal-step1-pill">1. Competencia</span>
+      <span class="modal-step-sep">›</span>
+      <span class="modal-step" id="modal-step2-pill">2. Resultado de Aprendizaje</span>
+    </div>
+    <!-- Banner de competencia seleccionada (visible en paso 2) -->
+    <div class="modal-comp-banner" id="modal-comp-banner" style="display:none">
+      🎯 <span id="modal-comp-banner-text"></span>
     </div>
     <div class="modal-search">
-      <input type="text" id="modal-search" placeholder="Buscar competencia o resultado…" oninput="filterModal()"/>
+      <input type="text" id="modal-comp-search" placeholder="Buscar competencia…" oninput="filterModalComp()"/>
     </div>
-    <div class="modal-list" id="modal-list"></div>
+    <div class="modal-list" id="modal-comp-list"></div>
     <div class="modal-footer">
-      <button class="btn btn-ghost btn-sm" onclick="cerrarModal()">Cancelar</button>
-      <button class="btn btn-primary btn-sm" onclick="confirmarModal()">✓ Agregar seleccionados</button>
+      <div>
+        <button class="btn btn-ghost btn-sm" id="modal-comp-back" style="display:none" onclick="backToStep1()">← Atrás</button>
+      </div>
+      <div class="modal-footer-right">
+        <button class="btn btn-ghost btn-sm" onclick="cerrarModalComp()">Cancelar</button>
+        <button class="btn btn-primary btn-sm" id="modal-comp-confirm" onclick="confirmarModalComp()">Siguiente →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODAL Worlds ═══ -->
+<div class="modal-overlay" id="modal-worlds-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Agregar áreas / worlds</h3>
+      <button class="modal-close" onclick="cerrarModalWorlds()">✕</button>
+    </div>
+    <div class="modal-search">
+      <input type="text" id="modal-worlds-search" placeholder="Buscar área…" oninput="filterModalWorlds()"/>
+    </div>
+    <div class="modal-list" id="modal-worlds-list"></div>
+    <div class="modal-footer">
+      <div></div>
+      <div class="modal-footer-right">
+        <button class="btn btn-ghost btn-sm" onclick="cerrarModalWorlds()">Cancelar</button>
+        <button class="btn btn-primary btn-sm" onclick="confirmarModalWorlds()">✓ Agregar seleccionados</button>
+      </div>
     </div>
   </div>
 </div>
@@ -389,98 +554,434 @@
 <div class="toast" id="toast"></div>
 
 <script>
-  // ── DATOS ──────────────────────────────────────────────────────────
-  const catalogoComps = [
-    {id:'c1', nombre:'Formulación y coordinación de proyectos', tipo:'Competencia'},
-    {id:'c2', nombre:'Gerencia de Proyectos', tipo:'Competencia'},
-    {id:'c3', nombre:'Power Skills para Gerentes', tipo:'Competencia'},
-    {id:'c4', nombre:'Solución de problemas', tipo:'Competencia'},
-    {id:'c5', nombre:'Gestión de la Innovación Tecnológica', tipo:'Competencia'},
-    {id:'c6', nombre:'Transformación Digital', tipo:'Competencia'},
-    {id:'c7', nombre:'Metodologías Ágiles e Innovadoras', tipo:'Competencia'},
-    {id:'ra1', nombre:'Desarrollar una estrategia de comunicación escrita', tipo:'Resultado de Aprendizaje'},
-    {id:'ra2', nombre:'Desarrollar un framework de procesos ágiles', tipo:'Resultado de Aprendizaje'},
-    {id:'ra3', nombre:'Evaluar y diagnosticar el nivel de madurez digital', tipo:'Resultado de Aprendizaje'},
-    {id:'ra4', nombre:'Liderar procesos de transformación digital', tipo:'Resultado de Aprendizaje'},
-    {id:'ra5', nombre:'Formulación de proyectos', tipo:'Resultado de Aprendizaje'},
-    {id:'ra6', nombre:'Liderazgo, Power Skills y Cultura', tipo:'Resultado de Aprendizaje'},
-    {id:'ra7', nombre:'Herramientas digitales para la gerencia de proyectos', tipo:'Resultado de Aprendizaje'},
-    {id:'ra8', nombre:'Pensamiento sistémico', tipo:'Resultado de Aprendizaje'},
-    {id:'ra9', nombre:'Oralidad', tipo:'Resultado de Aprendizaje'},
-    {id:'ra10',nombre:'Escritura', tipo:'Resultado de Aprendizaje'},
-    {id:'ra11',nombre:'Decidir considerando impactos', tipo:'Resultado de Aprendizaje'},
+  // ── CATÁLOGOS ─────────────────────────────────────────────────────────
+  const competencias = [
+    {id:'c1', nombre:'Formulación y coordinación de proyectos'},
+    {id:'c2', nombre:'Gerencia de Proyectos'},
+    {id:'c3', nombre:'Power Skills para Gerentes'},
+    {id:'c4', nombre:'Solución de problemas'},
+    {id:'c5', nombre:'Gestión de la Innovación Tecnológica'},
+    {id:'c6', nombre:'Transformación Digital'},
+    {id:'c7', nombre:'Metodologías Ágiles e Innovadoras'},
   ];
 
+  // Cada RA está vinculado a una competencia
+  const learningResults = [
+    {id:'ra1',  nombre:'Comunicación escrita profesional',       competencyId:'c3'},
+    {id:'ra2',  nombre:'Framework de procesos ágiles',           competencyId:'c7'},
+    {id:'ra3',  nombre:'Diagnóstico de madurez digital',         competencyId:'c6'},
+    {id:'ra4',  nombre:'Liderazgo de transformación digital',    competencyId:'c6'},
+    {id:'ra5',  nombre:'Formulación de proyectos',               competencyId:'c1'},
+    {id:'ra6',  nombre:'Liderazgo y Power Skills',               competencyId:'c3'},
+    {id:'ra7',  nombre:'Herramientas digitales para gerencia',   competencyId:'c2'},
+    {id:'ra8',  nombre:'Pensamiento sistémico',                  competencyId:'c4'},
+    {id:'ra9',  nombre:'Oralidad efectiva',                      competencyId:'c3'},
+    {id:'ra10', nombre:'Escritura técnica',                      competencyId:'c3'},
+    {id:'ra11', nombre:'Decisiones con impacto ético',           competencyId:'c4'},
+    {id:'ra12', nombre:'Gestión de riesgos en proyectos',        competencyId:'c2'},
+    {id:'ra13', nombre:'Innovación empresarial',                 competencyId:'c5'},
+  ];
+
+  const catalogoWorlds = [
+    {id:1, name:'Tecnología e Innovación'},
+    {id:2, name:'Negocios y Gestión'},
+    {id:3, name:'Ciencias de Datos'},
+    {id:4, name:'Liderazgo y Desarrollo Humano'},
+    {id:5, name:'Sostenibilidad'},
+    {id:6, name:'Emprendimiento'},
+    {id:7, name:'Derecho y Gobernanza'},
+    {id:8, name:'Salud y Bienestar'},
+  ];
+
+  // ── DATOS MOCK ────────────────────────────────────────────────────────
   let cursos = [
-    {id:1, nombre:'Fundamentos de Gerencia de Proyectos', creditos:3, horas:48, tipo:'hijo', modalidad:'Virtual',
+    {id:1, nombre:'Fundamentos de Gerencia de Proyectos', creditos:3, horas:48,
+     modalidad:'Virtual', iselective:false, image:'',
      desc:'Introduce los conceptos fundamentales de la gerencia de proyectos según el estándar PMI.',
-     obj:'Al finalizar el estudiante identificará los grupos de proceso y áreas de conocimiento del PMBoK.',
-     comps:[
-       {id:'c2', nombre:'Gerencia de Proyectos', tipo:'Competencia', i:true, f:false, v:false},
-       {id:'ra5', nombre:'Formulación de proyectos', tipo:'Resultado de Aprendizaje', i:true, f:false, v:false},
+     general_objective:'Al finalizar, el estudiante identificará los grupos de proceso y áreas de conocimiento del PMBoK.',
+     worlds:[{id:2, name:'Negocios y Gestión'}],
+     courseCompetencyResults:[
+       {competencyId:'c2', competencyName:'Gerencia de Proyectos',
+        learningResultId:'ra7', learningResultName:'Herramientas digitales para gerencia',
+        introduce:true, strengthen:false, value:false},
+       {competencyId:'c1', competencyName:'Formulación y coordinación de proyectos',
+        learningResultId:'ra5', learningResultName:'Formulación de proyectos',
+        introduce:true, strengthen:false, value:false},
      ]},
-    {id:2, nombre:'Liderazgo, Power Skills y Cultura I', creditos:3, horas:48, tipo:'padre', modalidad:'Virtual',
+    {id:2, nombre:'Liderazgo, Power Skills y Cultura I', creditos:3, horas:48,
+     modalidad:'Virtual', iselective:false, image:'',
      desc:'Desarrolla habilidades de liderazgo, comunicación y gestión del talento humano.',
-     obj:'El estudiante aplicará técnicas de liderazgo adaptativo en contextos organizacionales complejos.',
-     comps:[
-       {id:'c3', nombre:'Power Skills para Gerentes', tipo:'Competencia', i:false, f:true, v:false},
-       {id:'ra6', nombre:'Liderazgo, Power Skills y Cultura', tipo:'Resultado de Aprendizaje', i:false, f:true, v:false},
-       {id:'ra9', nombre:'Oralidad', tipo:'Resultado de Aprendizaje', i:true, f:false, v:false},
+     general_objective:'El estudiante aplicará técnicas de liderazgo adaptativo en contextos organizacionales complejos.',
+     worlds:[{id:4, name:'Liderazgo y Desarrollo Humano'}],
+     courseCompetencyResults:[
+       {competencyId:'c3', competencyName:'Power Skills para Gerentes',
+        learningResultId:'ra6', learningResultName:'Liderazgo y Power Skills',
+        introduce:false, strengthen:true, value:false},
+       {competencyId:'c3', competencyName:'Power Skills para Gerentes',
+        learningResultId:'ra9', learningResultName:'Oralidad efectiva',
+        introduce:true, strengthen:false, value:false},
      ]},
-    {id:3, nombre:'Herramientas digitales para la gerencia I', creditos:2, horas:32, tipo:'padre', modalidad:'Virtual',
+    {id:3, nombre:'Herramientas Digitales para la Gerencia I', creditos:2, horas:32,
+     modalidad:'Virtual', iselective:true, image:'',
      desc:'Introduce herramientas digitales para la gestión y seguimiento de proyectos.',
-     obj:'El estudiante utilizará herramientas como Jira, Trello y MS Project para gestionar proyectos.',
-     comps:[
-       {id:'ra7', nombre:'Herramientas digitales para la gerencia de proyectos', tipo:'Resultado de Aprendizaje', i:true, f:false, v:false},
+     general_objective:'El estudiante utilizará herramientas como Jira y MS Project para gestionar proyectos.',
+     worlds:[{id:1, name:'Tecnología e Innovación'},{id:2, name:'Negocios y Gestión'}],
+     courseCompetencyResults:[
+       {competencyId:'c2', competencyName:'Gerencia de Proyectos',
+        learningResultId:'ra7', learningResultName:'Herramientas digitales para gerencia',
+        introduce:true, strengthen:false, value:false},
      ]},
   ];
 
-  let nextId=4, editingId=null, modalContext=null, modalSelected=[];
+  let nextId = 4, editingId = null;
 
-  // ── VISTAS ──────────────────────────────────────────────────────────
+  // ── IMAGEN ────────────────────────────────────────────────────────────
+  const imgData = { crear: null, editar: null };
+
+  function handleFile(e, ctx){
+    const file = e.target.files[0];
+    if(file) loadImageFile(file, ctx);
+  }
+  function loadImageFile(file, ctx){
+    if(file.size > 5*1024*1024){ showToast('⚠️ Imagen mayor a 5 MB'); return; }
+    const reader = new FileReader();
+    reader.onload = ev => { imgData[ctx] = ev.target.result; setImgPreview(ctx, ev.target.result, file.name); };
+    reader.readAsDataURL(file);
+  }
+  function setImgPreview(ctx, src, name){
+    const preview = document.getElementById(ctx+'-img-preview');
+    document.getElementById(ctx+'-img-emoji').style.display = 'none';
+    const existing = preview.querySelector('img');
+    if(existing) existing.remove();
+    const img = document.createElement('img');
+    img.src = src;
+    preview.appendChild(img);
+    document.getElementById(ctx+'-img-name').textContent = name || '';
+    document.getElementById(ctx+'-img-clear').style.display = 'inline-block';
+  }
+  function clearImg(e, ctx){
+    e.stopPropagation();
+    imgData[ctx] = null;
+    const preview = document.getElementById(ctx+'-img-preview');
+    const existing = preview.querySelector('img');
+    if(existing) existing.remove();
+    document.getElementById(ctx+'-img-emoji').style.display = '';
+    document.getElementById(ctx+'-img-name').textContent = '';
+    document.getElementById(ctx+'-img-clear').style.display = 'none';
+    document.getElementById(ctx+'-imagen').value = '';
+  }
+  function resetImg(ctx){
+    imgData[ctx] = null;
+    const preview = document.getElementById(ctx+'-img-preview');
+    const existing = preview.querySelector('img');
+    if(existing) existing.remove();
+    document.getElementById(ctx+'-img-emoji').style.display = '';
+    document.getElementById(ctx+'-img-name').textContent = '';
+    document.getElementById(ctx+'-img-clear').style.display = 'none';
+    document.getElementById(ctx+'-imagen').value = '';
+  }
+  function dragOver(e, ctx){ e.preventDefault(); document.getElementById(ctx+'-drop-zone').classList.add('dragover'); }
+  function dragLeave(ctx){ document.getElementById(ctx+'-drop-zone').classList.remove('dragover'); }
+  function dropFile(e, ctx){
+    e.preventDefault();
+    document.getElementById(ctx+'-drop-zone').classList.remove('dragover');
+    const file = e.dataTransfer.files[0];
+    if(file && file.type.startsWith('image/')) loadImageFile(file, ctx);
+  }
+
+  // ── TOGGLE ELECTIVA ──────────────────────────────────────────────────
+  function toggleElective(ctx){
+    const cb = document.getElementById(ctx+'-iselective');
+    cb.checked = !cb.checked;
+    syncElective(ctx);
+  }
+  function syncElective(ctx){
+    const cb = document.getElementById(ctx+'-iselective');
+    document.getElementById(ctx+'-elective-field').classList.toggle('on', cb.checked);
+  }
+
+  // ── WORLDS DISPLAY ────────────────────────────────────────────────────
+  let crearWorlds = [], editarWorlds = [];
+  function getCtxWorlds(ctx){ return ctx==='crear' ? crearWorlds : editarWorlds; }
+  function setCtxWorlds(ctx, arr){ if(ctx==='crear') crearWorlds=arr; else editarWorlds=arr; }
+
+  function renderWorldsDisplay(ctx){
+    const wrap = document.getElementById(ctx+'-worlds-wrap');
+    const list = getCtxWorlds(ctx);
+    if(!list.length){ wrap.innerHTML='<span class="chip-empty">Sin áreas seleccionadas</span>'; return; }
+    wrap.innerHTML = list.map((w,i)=>
+      `<span class="chip-item">${esc(w.name)}<button class="chip-remove" onclick="removeWorld('${ctx}',${i})" title="Quitar">×</button></span>`
+    ).join('');
+  }
+  function removeWorld(ctx, index){
+    getCtxWorlds(ctx).splice(index, 1);
+    renderWorldsDisplay(ctx);
+  }
+
+  // ── MODAL WORLDS ──────────────────────────────────────────────────────
+  let worldsCtx = null, worldsSelected = [];
+
+  function abrirModalWorlds(ctx){
+    worldsCtx = ctx; worldsSelected = [];
+    document.getElementById('modal-worlds-search').value = '';
+    buildWorldsList('');
+    document.getElementById('modal-worlds-overlay').classList.add('open');
+  }
+  function cerrarModalWorlds(){
+    document.getElementById('modal-worlds-overlay').classList.remove('open');
+    worldsCtx = null; worldsSelected = [];
+  }
+  function buildWorldsList(filter){
+    const listEl = document.getElementById('modal-worlds-list');
+    const assigned = getCtxWorlds(worldsCtx).map(w=>w.id);
+    const items = catalogoWorlds.filter(w=>
+      !assigned.includes(w.id) &&
+      (!filter || w.name.toLowerCase().includes(filter.toLowerCase()))
+    );
+    if(!items.length){
+      listEl.innerHTML = '<p style="font-size:12.5px;color:var(--muted);text-align:center;padding:20px 0">No hay más áreas disponibles.</p>';
+      return;
+    }
+    listEl.innerHTML = items.map(w=>{
+      const sel = worldsSelected.includes(w.id);
+      return `<div class="modal-item ${sel?'selected':''}" data-id="${w.id}" onclick="toggleWorldModal(${w.id})">
+        <div class="modal-checkbox">${sel?'✓':''}</div>
+        <div class="modal-item-info"><div class="modal-item-name">${esc(w.name)}</div></div>
+      </div>`;
+    }).join('');
+  }
+  function filterModalWorlds(){ buildWorldsList(document.getElementById('modal-worlds-search').value); }
+  function toggleWorldModal(id){
+    worldsSelected = worldsSelected.includes(id)
+      ? worldsSelected.filter(x=>x!==id)
+      : [...worldsSelected, id];
+    buildWorldsList(document.getElementById('modal-worlds-search').value);
+  }
+  function confirmarModalWorlds(){
+    if(!worldsSelected.length){ cerrarModalWorlds(); return; }
+    const list = getCtxWorlds(worldsCtx);
+    worldsSelected.forEach(id=>{
+      const w = catalogoWorlds.find(w=>w.id===id);
+      if(w) list.push({id:w.id, name:w.name});
+    });
+    cerrarModalWorlds();
+    renderWorldsDisplay(worldsCtx);
+  }
+
+  // ── MODAL COMP/RA — 2 PASOS ───────────────────────────────────────────
+  // Paso 1: elegir competencia (single-select)
+  // Paso 2: elegir RAs de esa competencia (multi-select)
+  let compCtx = null, compStep = 1, selectedComp = null, selectedRAs = [];
+
+  function abrirModalCompRA(ctx){
+    compCtx = ctx; compStep = 1; selectedComp = null; selectedRAs = [];
+    applyModalCompStep(1);
+    document.getElementById('modal-comp-search').value = '';
+    buildCompList1('');
+    document.getElementById('modal-comp-overlay').classList.add('open');
+  }
+  function cerrarModalComp(){
+    document.getElementById('modal-comp-overlay').classList.remove('open');
+    compCtx = null; selectedComp = null; selectedRAs = [];
+  }
+
+  function applyModalCompStep(step){
+    compStep = step;
+    document.getElementById('modal-step1-pill').className = 'modal-step ' + (step===1?'active':(step>1?'done':''));
+    document.getElementById('modal-step2-pill').className = 'modal-step ' + (step===2?'active':'');
+    const banner = document.getElementById('modal-comp-banner');
+    banner.style.display = step===2 ? 'flex' : 'none';
+    if(step===2 && selectedComp)
+      document.getElementById('modal-comp-banner-text').textContent = selectedComp.nombre;
+    document.getElementById('modal-comp-back').style.display    = step===2 ? 'inline-flex' : 'none';
+    document.getElementById('modal-comp-confirm').textContent   = step===1 ? 'Siguiente →' : '✓ Agregar';
+    document.getElementById('modal-comp-title').textContent     = step===1 ? 'Seleccionar competencia' : 'Seleccionar resultado de aprendizaje';
+    document.getElementById('modal-comp-search').placeholder   = step===1 ? 'Buscar competencia…' : 'Buscar resultado…';
+    document.getElementById('modal-comp-search').value = '';
+  }
+
+  function buildCompList1(filter){
+    const listEl = document.getElementById('modal-comp-list');
+    const items = competencias.filter(c=>
+      !filter || c.nombre.toLowerCase().includes(filter.toLowerCase())
+    );
+    if(!items.length){ listEl.innerHTML='<p style="font-size:12.5px;color:var(--muted);text-align:center;padding:20px 0">No hay competencias.</p>'; return; }
+    listEl.innerHTML = items.map(c=>{
+      const sel = selectedComp?.id === c.id;
+      const raCount = learningResults.filter(r=>r.competencyId===c.id).length;
+      return `<div class="modal-item ${sel?'selected':''}" data-id="${c.id}" onclick="selectCompStep1('${c.id}')">
+        <div class="modal-checkbox modal-radio">${sel?'✓':''}</div>
+        <div class="modal-item-info">
+          <div class="modal-item-name">${esc(c.nombre)}</div>
+          <div class="modal-item-sub">${raCount} resultado${raCount!==1?'s':''} de aprendizaje</div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  function buildCompList2(filter){
+    const listEl = document.getElementById('modal-comp-list');
+    if(!selectedComp){ listEl.innerHTML=''; return; }
+    // Excluir RAs ya asignados a esta competencia en la tabla
+    const assignedRAs = getAssignedRAsForComp(compCtx, selectedComp.id);
+    const items = learningResults.filter(r=>
+      r.competencyId === selectedComp.id &&
+      !assignedRAs.includes(r.id) &&
+      (!filter || r.nombre.toLowerCase().includes(filter.toLowerCase()))
+    );
+    if(!items.length){
+      listEl.innerHTML='<p style="font-size:12.5px;color:var(--muted);text-align:center;padding:20px 0">No hay resultados disponibles para esta competencia.</p>';
+      return;
+    }
+    listEl.innerHTML = items.map(r=>{
+      const sel = selectedRAs.includes(r.id);
+      return `<div class="modal-item ${sel?'selected':''}" data-id="${r.id}" onclick="toggleRAStep2('${r.id}')">
+        <div class="modal-checkbox">${sel?'✓':''}</div>
+        <div class="modal-item-info"><div class="modal-item-name">${esc(r.nombre)}</div></div>
+      </div>`;
+    }).join('');
+  }
+
+  function selectCompStep1(id){
+    selectedComp = competencias.find(c=>c.id===id) || null;
+    buildCompList1(document.getElementById('modal-comp-search').value);
+  }
+  function toggleRAStep2(id){
+    selectedRAs = selectedRAs.includes(id)
+      ? selectedRAs.filter(x=>x!==id)
+      : [...selectedRAs, id];
+    buildCompList2(document.getElementById('modal-comp-search').value);
+  }
+  function filterModalComp(){
+    const f = document.getElementById('modal-comp-search').value;
+    if(compStep===1) buildCompList1(f); else buildCompList2(f);
+  }
+  function backToStep1(){
+    selectedRAs = [];
+    applyModalCompStep(1);
+    buildCompList1('');
+  }
+  function confirmarModalComp(){
+    if(compStep===1){
+      if(!selectedComp) return;
+      applyModalCompStep(2);
+      buildCompList2('');
+    } else {
+      if(!selectedRAs.length){ cerrarModalComp(); return; }
+      const tbodyId = `${compCtx}-comp-body`;
+      selectedRAs.forEach(raId=>{
+        const ra = learningResults.find(r=>r.id===raId);
+        if(ra) addCCRRow(tbodyId, {
+          competencyId: selectedComp.id, competencyName: selectedComp.nombre,
+          learningResultId: ra.id, learningResultName: ra.nombre,
+          introduce: false, strengthen: false, value: false,
+        });
+      });
+      cerrarModalComp();
+    }
+  }
+
+  // RAs ya asignadas a una competencia en la tabla
+  function getAssignedRAsForComp(ctx, compId){
+    return Array.from(document.querySelectorAll(`#${ctx}-comp-body tr`))
+      .filter(tr=>tr.dataset.compId===compId)
+      .map(tr=>tr.dataset.raId);
+  }
+
+  // ── TABLA COMP/RA ─────────────────────────────────────────────────────
+  function addCCRRow(tbodyId, entry){
+    const tbody = document.getElementById(tbodyId);
+    const tr = document.createElement('tr');
+    const rowId = 'r' + Date.now() + Math.random().toString(36).slice(2,5);
+    tr.id = rowId;
+    tr.dataset.compId = entry.competencyId;
+    tr.dataset.raId   = entry.learningResultId;
+    tr.innerHTML = `
+      <td><div class="comp-nombre">${esc(entry.competencyName)}</div></td>
+      <td><div class="comp-ra-name">${esc(entry.learningResultName)}</div></td>
+      <td class="center"><span class="check-cell ${entry.introduce?'on':''}"  onclick="toggleCheck(this)">${entry.introduce?'✓':''}</span></td>
+      <td class="center"><span class="check-cell ${entry.strengthen?'on':''}" onclick="toggleCheck(this)">${entry.strengthen?'✓':''}</span></td>
+      <td class="center"><span class="check-cell ${entry.value?'on':''}"      onclick="toggleCheck(this)">${entry.value?'✓':''}</span></td>
+      <td class="center">
+        <button onclick="document.getElementById('${rowId}').remove()"
+          style="background:none;border:none;cursor:pointer;font-size:15px;color:var(--muted)" title="Quitar">✕</button>
+      </td>`;
+    tbody.appendChild(tr);
+  }
+
+  function toggleCheck(el){
+    el.classList.toggle('on');
+    el.textContent = el.classList.contains('on') ? '✓' : '';
+  }
+
+  // Leer courseCompetencyResults desde la tabla
+  function getCCRsFromTable(tbodyId){
+    return Array.from(document.querySelectorAll(`#${tbodyId} tr`)).map(tr=>{
+      const checks = tr.querySelectorAll('.check-cell');
+      return {
+        competencyId:       tr.dataset.compId,
+        competencyName:     competencias.find(c=>c.id===tr.dataset.compId)?.nombre || '',
+        learningResultId:   tr.dataset.raId,
+        learningResultName: learningResults.find(r=>r.id===tr.dataset.raId)?.nombre || '',
+        introduce:  checks[0]?.classList.contains('on') || false,
+        strengthen: checks[1]?.classList.contains('on') || false,
+        value:      checks[2]?.classList.contains('on') || false,
+      };
+    });
+  }
+
+  // ── VISTAS ────────────────────────────────────────────────────────────
   function showView(id){
     document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
     document.getElementById(id).classList.add('active');
-    window.scrollTo({top:0,behavior:'smooth'});
+    window.scrollTo({top:0, behavior:'smooth'});
     if(id==='view-crear'){
-      ['crear-nombre','crear-creditos','crear-horas','crear-desc','crear-obj'].forEach(x=>document.getElementById(x).value='');
-      document.getElementById('crear-tipo').value='hijo';
-      document.getElementById('crear-modalidad').value='Virtual';
-      document.getElementById('crear-comp-body').innerHTML='';
+      ['crear-nombre','crear-creditos','crear-horas','crear-desc','crear-general-obj']
+        .forEach(x=>document.getElementById(x).value='');
+      document.getElementById('crear-modalidad').value = 'Virtual';
+      document.getElementById('crear-iselective').checked = false;
+      syncElective('crear');
+      resetImg('crear');
+      setCtxWorlds('crear', []);
+      renderWorldsDisplay('crear');
+      document.getElementById('crear-comp-body').innerHTML = '';
     }
     if(id==='view-lista') renderList();
   }
 
-  // ── LISTA ──────────────────────────────────────────────────────────
+  // ── LISTA ─────────────────────────────────────────────────────────────
   function renderList(filter=''){
-    const tbody=document.getElementById('listaBody');
-    const empty=document.getElementById('emptyState');
-    const countEl=document.getElementById('countBar');
-    const filtered=filter?cursos.filter(c=>c.nombre.toLowerCase().includes(filter.toLowerCase())):cursos;
-    countEl.innerHTML=`Mostrando <strong>${filtered.length}</strong> de <strong>${cursos.length}</strong> cursos`;
+    const tbody  = document.getElementById('listaBody');
+    const empty  = document.getElementById('emptyState');
+    const countEl= document.getElementById('countBar');
+    const table  = document.getElementById('listaTable');
+    const filtered = filter
+      ? cursos.filter(c=>c.nombre.toLowerCase().includes(filter.toLowerCase()))
+      : cursos;
 
+    countEl.innerHTML = `Mostrando <strong>${filtered.length}</strong> de <strong>${cursos.length}</strong> cursos`;
     if(!filtered.length){
-      tbody.innerHTML='';empty.style.display='block';
-      document.getElementById('listaTable').style.display='none';return;
+      tbody.innerHTML=''; empty.style.display='block'; table.style.display='none'; return;
     }
-    empty.style.display='none';
-    document.getElementById('listaTable').style.display='table';
+    empty.style.display='none'; table.style.display='table';
 
-    tbody.innerHTML=filtered.map(c=>`
+    tbody.innerHTML = filtered.map(c=>`
       <tr>
         <td>
           <div class="curso-nombre">${esc(c.nombre)}</div>
-          <div class="curso-desc">${esc(c.modalidad)} · ${esc(c.horas)} horas</div>
+          <div class="curso-desc">${esc(c.modalidad)} · ${c.horas} horas</div>
         </td>
         <td class="center"><span class="badge badge-credits">${c.creditos}</span></td>
         <td class="center" style="color:var(--muted);font-size:13px">${c.horas}h</td>
         <td class="center">
-          ${c.tipo==='padre'
-            ?'<span class="badge badge-padre">Padre</span>'
-            :'<span class="badge badge-hijo">Electiva</span>'}
+          ${c.iselective
+            ? '<span class="badge badge-electiva">Electiva</span>'
+            : '<span style="color:var(--muted);font-size:12px">—</span>'}
         </td>
         <td class="center">
-          ${c.comps.length?`<span class="badge badge-ra">${c.comps.length} asoc.</span>`:'<span style="color:var(--muted);font-size:12px">—</span>'}
+          ${c.courseCompetencyResults.length
+            ? `<span class="badge badge-ra">${c.courseCompetencyResults.length} asoc.</span>`
+            : '<span style="color:var(--muted);font-size:12px">—</span>'}
         </td>
         <td class="center">
           <div class="row-actions">
@@ -491,200 +992,98 @@
       </tr>`).join('');
   }
 
-  function filterList(){renderList(document.getElementById('searchInput').value)}
+  function filterList(){ renderList(document.getElementById('searchInput').value); }
 
   function eliminarCurso(id){
     if(!confirm('¿Eliminar este curso?')) return;
-    cursos=cursos.filter(c=>c.id!==id);
+    cursos = cursos.filter(c=>c.id!==id);
     renderList(document.getElementById('searchInput').value);
     showToast('🗑 Curso eliminado');
   }
 
-  // ── TABLA COMP/RA en formulario ─────────────────────────────────────
-  function renderCompRow(tbodyId, comp){
-    const tbody=document.getElementById(tbodyId);
-    const tr=document.createElement('tr');
-    const rowId='cr'+comp.id+Date.now();
-    tr.id=rowId;
-    tr.dataset.compId=comp.id;
-    tr.innerHTML=`
-      <td>
-        <div class="comp-nombre">${esc(comp.nombre)}</div>
-      </td>
-      <td>
-        <span class="badge" style="${comp.tipo==='Competencia'?'color:#5454E9;background:#eeeeff':'color:#047857;background:#d1fae5'}">${esc(comp.tipo)}</span>
-      </td>
-      <td class="center"><span class="check-cell ${comp.i?'on':''}" onclick="toggleCheck(this)">${comp.i?'✓':''}</span></td>
-      <td class="center"><span class="check-cell ${comp.f?'on':''}" onclick="toggleCheck(this)">${comp.f?'✓':''}</span></td>
-      <td class="center"><span class="check-cell ${comp.v?'on':''}" onclick="toggleCheck(this)">${comp.v?'✓':''}</span></td>
-      <td class="center"><button onclick="document.getElementById('${rowId}').remove()" style="background:none;border:none;cursor:pointer;font-size:15px;color:var(--muted)" title="Quitar">✕</button></td>`;
-    tbody.appendChild(tr);
-  }
-
-  function toggleCheck(el){
-    el.classList.toggle('on');
-    el.textContent=el.classList.contains('on')?'✓':'';
-  }
-
-  function getCompsDeTabla(tbodyId){
-    return Array.from(document.querySelectorAll(`#${tbodyId} tr`)).map(tr=>{
-      const compId=tr.dataset.compId;
-      const comp=catalogoComps.find(c=>c.id===compId);
-      const checks=tr.querySelectorAll('.check-cell');
-      return{
-        id:compId,
-        nombre:comp?.nombre||'',
-        tipo:comp?.tipo||'',
-        i:checks[0]?.classList.contains('on')||false,
-        f:checks[1]?.classList.contains('on')||false,
-        v:checks[2]?.classList.contains('on')||false,
-      };
-    });
-  }
-
-  function getIdsEnTabla(tbodyId){
-    return Array.from(document.querySelectorAll(`#${tbodyId} tr`)).map(tr=>tr.dataset.compId);
-  }
-
-  // ── MODAL ───────────────────────────────────────────────────────────
-  function abrirModal(context){
-    modalContext=context;
-    const yaAsignados=getIdsEnTabla(`${context}-comp-body`);
-    modalSelected=[...yaAsignados];
-    document.getElementById('modal-search').value='';
-    renderModal('');
-    document.getElementById('modal-overlay').classList.add('open');
-  }
-
-  function cerrarModal(){
-    document.getElementById('modal-overlay').classList.remove('open');
-    modalContext=null;
-    modalSelected=[];
-  }
-
-  function renderModal(filter){
-    const list=document.getElementById('modal-list');
-    const items=filter
-      ?catalogoComps.filter(c=>c.nombre.toLowerCase().includes(filter.toLowerCase()))
-      :catalogoComps;
-    list.innerHTML=items.map(c=>{
-      const sel=modalSelected.includes(c.id);
-      return`<div class="modal-item ${sel?'selected':''}" data-id="${c.id}" onclick="toggleModal('${c.id}')">
-        <div class="modal-checkbox">${sel?'✓':''}</div>
-        <div class="modal-item-info">
-          <div class="modal-item-name">${esc(c.nombre)}</div>
-          <div class="modal-item-sub">${esc(c.tipo)}</div>
-        </div>
-      </div>`;
-    }).join('');
-  }
-
-  function filterModal(){renderModal(document.getElementById('modal-search').value)}
-
-  function toggleModal(id){
-    const item=document.querySelector(`#modal-list .modal-item[data-id="${id}"]`);
-    if(modalSelected.includes(id)){
-      modalSelected=modalSelected.filter(x=>x!==id);
-      item.classList.remove('selected');
-      item.querySelector('.modal-checkbox').textContent='';
-    } else {
-      modalSelected.push(id);
-      item.classList.add('selected');
-      item.querySelector('.modal-checkbox').textContent='✓';
-    }
-  }
-
-  function confirmarModal(){
-    if(!modalContext) return;
-    const tbodyId=`${modalContext}-comp-body`;
-    const yaEnTabla=getIdsEnTabla(tbodyId);
-    // Quitar los que se desmarcaron
-    Array.from(document.querySelectorAll(`#${tbodyId} tr`)).forEach(tr=>{
-      if(!modalSelected.includes(tr.dataset.compId)) tr.remove();
-    });
-    // Agregar los nuevos
-    modalSelected.filter(id=>!yaEnTabla.includes(id)).forEach(id=>{
-      const comp=catalogoComps.find(c=>c.id===id);
-      if(comp) renderCompRow(tbodyId,{...comp,i:false,f:false,v:false});
-    });
-    cerrarModal();
-  }
-
-  // ── GUARDAR ─────────────────────────────────────────────────────────
+  // ── GUARDAR ───────────────────────────────────────────────────────────
   function guardarCrear(){
-    const nombre=document.getElementById('crear-nombre').value.trim();
-    if(!nombre){shake('crear-nombre');return}
+    const nombre = document.getElementById('crear-nombre').value.trim();
+    if(!nombre){ shake('crear-nombre'); return; }
     cursos.push({
-      id:nextId++, nombre,
-      creditos:parseInt(document.getElementById('crear-creditos').value)||0,
-      horas:parseInt(document.getElementById('crear-horas').value)||0,
-      tipo:document.getElementById('crear-tipo').value,
-      modalidad:document.getElementById('crear-modalidad').value,
-      desc:document.getElementById('crear-desc').value.trim(),
-      obj:document.getElementById('crear-obj').value.trim(),
-      comps:getCompsDeTabla('crear-comp-body'),
+      id: nextId++, nombre,
+      creditos:  parseInt(document.getElementById('crear-creditos').value) || 0,
+      horas:     parseInt(document.getElementById('crear-horas').value) || 0,
+      modalidad: document.getElementById('crear-modalidad').value,
+      iselective: document.getElementById('crear-iselective').checked,
+      image:     imgData['crear'] || '',
+      desc:      document.getElementById('crear-desc').value.trim(),
+      general_objective: document.getElementById('crear-general-obj').value.trim(),
+      worlds:    crearWorlds.map(w=>({...w})),
+      courseCompetencyResults: getCCRsFromTable('crear-comp-body'),
     });
     showToast('✅ Curso creado correctamente');
     showView('view-lista');
   }
 
   function abrirEditar(id){
-    const c=cursos.find(x=>x.id===id);
+    const c = cursos.find(x=>x.id===id);
     if(!c) return;
-    editingId=id;
-    document.getElementById('editar-nombre').value=c.nombre;
-    document.getElementById('editar-creditos').value=c.creditos;
-    document.getElementById('editar-horas').value=c.horas;
-    document.getElementById('editar-tipo').value=c.tipo;
-    document.getElementById('editar-modalidad').value=c.modalidad;
-    document.getElementById('editar-desc').value=c.desc;
-    document.getElementById('editar-obj').value=c.obj;
-    const tbody=document.getElementById('editar-comp-body');
-    tbody.innerHTML='';
-    c.comps.forEach(comp=>renderCompRow('editar-comp-body',comp));
+    editingId = id;
+    document.getElementById('editar-nombre').value       = c.nombre;
+    document.getElementById('editar-creditos').value     = c.creditos;
+    document.getElementById('editar-horas').value        = c.horas;
+    document.getElementById('editar-modalidad').value    = c.modalidad;
+    document.getElementById('editar-desc').value         = c.desc;
+    document.getElementById('editar-general-obj').value  = c.general_objective || '';
+    document.getElementById('editar-iselective').checked = !!c.iselective;
+    syncElective('editar');
+    resetImg('editar');
+    if(c.image){ imgData['editar']=c.image; setImgPreview('editar', c.image, 'imagen guardada'); }
+    setCtxWorlds('editar', (c.worlds||[]).map(w=>({...w})));
+    renderWorldsDisplay('editar');
+    const tbody = document.getElementById('editar-comp-body');
+    tbody.innerHTML = '';
+    (c.courseCompetencyResults||[]).forEach(entry=>addCCRRow('editar-comp-body', entry));
     showView('view-editar');
   }
 
   function guardarEditar(){
-    const nombre=document.getElementById('editar-nombre').value.trim();
-    if(!nombre){shake('editar-nombre');return}
-    const idx=cursos.findIndex(c=>c.id===editingId);
-    if(idx!==-1) cursos[idx]={...cursos[idx],nombre,
-      creditos:parseInt(document.getElementById('editar-creditos').value)||0,
-      horas:parseInt(document.getElementById('editar-horas').value)||0,
-      tipo:document.getElementById('editar-tipo').value,
-      modalidad:document.getElementById('editar-modalidad').value,
-      desc:document.getElementById('editar-desc').value.trim(),
-      obj:document.getElementById('editar-obj').value.trim(),
-      comps:getCompsDeTabla('editar-comp-body'),
+    const nombre = document.getElementById('editar-nombre').value.trim();
+    if(!nombre){ shake('editar-nombre'); return; }
+    const idx = cursos.findIndex(c=>c.id===editingId);
+    if(idx !== -1) cursos[idx] = { ...cursos[idx], nombre,
+      creditos:  parseInt(document.getElementById('editar-creditos').value) || 0,
+      horas:     parseInt(document.getElementById('editar-horas').value) || 0,
+      modalidad: document.getElementById('editar-modalidad').value,
+      iselective: document.getElementById('editar-iselective').checked,
+      image:     imgData['editar'] || '',
+      desc:      document.getElementById('editar-desc').value.trim(),
+      general_objective: document.getElementById('editar-general-obj').value.trim(),
+      worlds:    editarWorlds.map(w=>({...w})),
+      courseCompetencyResults: getCCRsFromTable('editar-comp-body'),
     };
     showToast('✏️ Curso actualizado correctamente');
     showView('view-lista');
   }
 
-  // ── UTILS ───────────────────────────────────────────────────────────
-  function esc(str){return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+  // ── UTILS ─────────────────────────────────────────────────────────────
+  function esc(str){ return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
   function shake(inputId){
-    const el=document.getElementById(inputId);
-    el.style.borderColor='#ef4444';
-    el.style.boxShadow='0 0 0 3px rgba(239,68,68,.2)';
+    const el = document.getElementById(inputId);
+    el.style.borderColor = '#ef4444';
+    el.style.boxShadow   = '0 0 0 3px rgba(239,68,68,.2)';
     el.focus();
-    setTimeout(()=>{el.style.borderColor='';el.style.boxShadow=''},1800);
+    setTimeout(()=>{ el.style.borderColor=''; el.style.boxShadow=''; }, 1800);
   }
 
   let toastTimer;
   function showToast(msg){
-    const t=document.getElementById('toast');
-    t.textContent=msg;t.classList.add('show');
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
     clearTimeout(toastTimer);
-    toastTimer=setTimeout(()=>t.classList.remove('show'),3000);
+    toastTimer = setTimeout(()=>t.classList.remove('show'), 3000);
   }
 
-  // Cerrar modal al click fuera
-  document.getElementById('modal-overlay').addEventListener('click',function(e){
-    if(e.target===this) cerrarModal();
-  });
+  // Cerrar modals al hacer click fuera
+  document.getElementById('modal-comp-overlay').addEventListener('click', function(e){ if(e.target===this) cerrarModalComp(); });
+  document.getElementById('modal-worlds-overlay').addEventListener('click', function(e){ if(e.target===this) cerrarModalWorlds(); });
 
   renderList();
 </script>

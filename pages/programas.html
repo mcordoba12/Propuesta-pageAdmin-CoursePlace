@@ -204,6 +204,13 @@
     .toast{position:fixed;bottom:28px;right:28px;background:#12123a;color:#fff;padding:13px 20px;border-radius:12px;font-size:13.5px;font-weight:500;display:flex;align-items:center;gap:9px;box-shadow:0 8px 28px rgba(18,18,58,.35);transform:translateY(80px);opacity:0;transition:all .3s cubic-bezier(.4,0,.2,1);z-index:999}
     .toast.show{transform:translateY(0);opacity:1}
 
+    /* ── COMPETENCIAS CHIPS ── */
+    .comp-selected-wrap{display:flex;flex-wrap:wrap;gap:6px;min-height:36px;align-items:flex-start;padding:4px 0}
+    .comp-chip{display:inline-flex;align-items:center;gap:5px;padding:4px 5px 4px 11px;background:var(--purple-light);color:var(--purple);border-radius:20px;font-size:12px;font-weight:600;white-space:nowrap}
+    .comp-chip-remove{background:none;border:none;cursor:pointer;color:var(--purple);font-size:13px;line-height:1;padding:0 3px;display:flex;align-items:center;opacity:.7;border-radius:50%;transition:opacity .15s,background .15s}
+    .comp-chip-remove:hover{opacity:1;background:rgba(139,92,246,.15)}
+    .comp-empty{font-size:12.5px;color:var(--muted);font-style:italic}
+
     @media(max-width:900px){
       .field-row,.field-row-2{grid-template-columns:1fr 1fr}
       header{padding:0 20px}
@@ -375,6 +382,48 @@
     </div>
   </div>
 
+  <!-- Competencias -->
+  <div class="form-card">
+    <div class="form-card-header"><span class="dot" style="background:var(--purple)"></span> Competencias del programa</div>
+    <div class="form-card-body">
+      <div class="field">
+        <label>Competencias seleccionadas</label>
+        <div class="comp-selected-wrap" id="crear-comp-wrap">
+          <span class="comp-empty">Sin competencias seleccionadas</span>
+        </div>
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="openSelectionModal('competencias','crear')">+ Agregar competencias</button>
+    </div>
+  </div>
+
+  <!-- Worlds -->
+  <div class="form-card">
+    <div class="form-card-header"><span class="dot" style="background:var(--sky)"></span> Áreas / Worlds</div>
+    <div class="form-card-body">
+      <div class="field">
+        <label>Áreas seleccionadas</label>
+        <div class="comp-selected-wrap" id="crear-worlds-wrap">
+          <span class="comp-empty">Sin áreas seleccionadas</span>
+        </div>
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="openSelectionModal('worlds','crear')">+ Agregar área</button>
+    </div>
+  </div>
+
+  <!-- Programa padre -->
+  <div class="form-card">
+    <div class="form-card-header"><span class="dot" style="background:var(--muted)"></span> Programa relacionado <span style="font-weight:400;color:var(--muted);font-size:12px;margin-left:4px">(opcional)</span></div>
+    <div class="form-card-body">
+      <div class="field">
+        <label>Programa padre</label>
+        <div class="comp-selected-wrap" id="crear-parent-wrap">
+          <span class="comp-empty">Sin programa padre seleccionado</span>
+        </div>
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="openSelectionModal('parent','crear')">+ Seleccionar programa</button>
+    </div>
+  </div>
+
   <div class="save-bar">
     <p>Revisa toda la información antes de guardar.</p>
     <div class="save-bar-actions">
@@ -515,6 +564,48 @@
     </div>
   </div>
 
+  <!-- Competencias -->
+  <div class="form-card">
+    <div class="form-card-header"><span class="dot" style="background:var(--purple)"></span> Competencias del programa</div>
+    <div class="form-card-body">
+      <div class="field">
+        <label>Competencias seleccionadas</label>
+        <div class="comp-selected-wrap" id="editar-comp-wrap">
+          <span class="comp-empty">Sin competencias seleccionadas</span>
+        </div>
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="openSelectionModal('competencias','editar')">+ Agregar competencias</button>
+    </div>
+  </div>
+
+  <!-- Worlds -->
+  <div class="form-card">
+    <div class="form-card-header"><span class="dot" style="background:var(--sky)"></span> Áreas / Worlds</div>
+    <div class="form-card-body">
+      <div class="field">
+        <label>Áreas seleccionadas</label>
+        <div class="comp-selected-wrap" id="editar-worlds-wrap">
+          <span class="comp-empty">Sin áreas seleccionadas</span>
+        </div>
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="openSelectionModal('worlds','editar')">+ Agregar área</button>
+    </div>
+  </div>
+
+  <!-- Programa padre -->
+  <div class="form-card">
+    <div class="form-card-header"><span class="dot" style="background:var(--muted)"></span> Programa relacionado <span style="font-weight:400;color:var(--muted);font-size:12px;margin-left:4px">(opcional)</span></div>
+    <div class="form-card-body">
+      <div class="field">
+        <label>Programa padre</label>
+        <div class="comp-selected-wrap" id="editar-parent-wrap">
+          <span class="comp-empty">Sin programa padre seleccionado</span>
+        </div>
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="openSelectionModal('parent','editar')">+ Seleccionar programa</button>
+    </div>
+  </div>
+
   <div class="save-bar">
     <p>Revisa los cambios antes de guardar.</p>
     <div class="save-bar-actions">
@@ -524,20 +615,20 @@
   </div>
 </div>
 
-<!-- ═══ MODAL: Agregar curso ═══ -->
-<div class="modal-overlay" id="modal-curso-overlay">
+<!-- ═══ MODAL GENÉRICO: Cursos y Competencias ═══ -->
+<div class="modal-overlay" id="modal-sel-overlay">
   <div class="modal">
     <div class="modal-header">
-      <h3 id="modal-curso-title">Agregar curso — Semestre 1</h3>
-      <button class="modal-close" onclick="cerrarModalCurso()">✕</button>
+      <h3 id="modal-sel-title">Seleccionar</h3>
+      <button class="modal-close" onclick="cerrarModal()">✕</button>
     </div>
     <div class="modal-search">
-      <input type="text" id="modal-curso-search" placeholder="Buscar curso por nombre…" oninput="filterModalCurso()"/>
+      <input type="text" id="modal-sel-search" placeholder="Buscar…" oninput="filterModal()"/>
     </div>
-    <div class="modal-list" id="modal-curso-list"></div>
+    <div class="modal-list" id="modal-sel-list"></div>
     <div class="modal-footer">
-      <button class="btn btn-ghost btn-sm" onclick="cerrarModalCurso()">Cancelar</button>
-      <button class="btn btn-primary btn-sm" onclick="confirmarModalCurso()">✓ Agregar seleccionados</button>
+      <button class="btn btn-ghost btn-sm" onclick="cerrarModal()">Cancelar</button>
+      <button class="btn btn-primary btn-sm" onclick="confirmarModal()">✓ Agregar seleccionados</button>
     </div>
   </div>
 </div>
@@ -599,16 +690,58 @@
 
   let nextId = 4, editingId = null;
 
+  // ── CATÁLOGO DE COMPETENCIAS ────────────────────────────────────────
+  const catalogoCompetencias = [
+    { id:1,  nombre:'Gestión estratégica de proyectos' },
+    { id:2,  nombre:'Pensamiento crítico y analítico' },
+    { id:3,  nombre:'Liderazgo y gestión de equipos' },
+    { id:4,  nombre:'Innovación y creatividad' },
+    { id:5,  nombre:'Comunicación efectiva y negociación' },
+    { id:6,  nombre:'Ética profesional y responsabilidad social' },
+    { id:7,  nombre:'Análisis de datos y toma de decisiones' },
+    { id:8,  nombre:'Transformación digital y tecnología' },
+    { id:9,  nombre:'Gestión del cambio organizacional' },
+    { id:10, nombre:'Emprendimiento e innovación empresarial' },
+    { id:11, nombre:'Sostenibilidad y responsabilidad ambiental' },
+    { id:12, nombre:'Metodologías ágiles y gestión adaptativa' },
+  ];
+
+  // ── CATÁLOGO DE WORLDS ──────────────────────────────────────────────
+  const catalogoWorlds = [
+    { id:1, name:'Tecnología e Innovación' },
+    { id:2, name:'Negocios y Gestión' },
+    { id:3, name:'Ciencias de Datos' },
+    { id:4, name:'Liderazgo y Desarrollo Humano' },
+    { id:5, name:'Sostenibilidad' },
+    { id:6, name:'Emprendimiento' },
+    { id:7, name:'Derecho y Gobernanza' },
+    { id:8, name:'Salud y Bienestar' },
+  ];
+
   // ── ESTADO DE CURSOS Y TAGS POR CONTEXTO ───────────────────────────
   let crearCursos  = [];
   let editarCursos = [];
   let crearTags    = [];
   let editarTags   = [];
 
+  // ── ESTADO DE COMPETENCIAS, WORLDS Y PARENT POR CONTEXTO ───────────
+  let crearCompetencias  = [];
+  let editarCompetencias = [];
+  let crearWorlds        = [];
+  let editarWorlds       = [];
+  let crearParent        = null;   // { id, nombre } | null
+  let editarParent       = null;
+
   function getCtxCursos(ctx) { return ctx === 'crear' ? crearCursos : editarCursos; }
   function setCtxCursos(ctx, arr) { if(ctx === 'crear') crearCursos = arr; else editarCursos = arr; }
   function getCtxTags(ctx) { return ctx === 'crear' ? crearTags : editarTags; }
   function setCtxTags(ctx, arr) { if(ctx === 'crear') crearTags = arr; else editarTags = arr; }
+  function getCtxCompetencias(ctx) { return ctx === 'crear' ? crearCompetencias : editarCompetencias; }
+  function setCtxCompetencias(ctx, arr) { if(ctx === 'crear') crearCompetencias = arr; else editarCompetencias = arr; }
+  function getCtxWorlds(ctx) { return ctx === 'crear' ? crearWorlds : editarWorlds; }
+  function setCtxWorlds(ctx, arr) { if(ctx === 'crear') crearWorlds = arr; else editarWorlds = arr; }
+  function getCtxParent(ctx) { return ctx === 'crear' ? crearParent : editarParent; }
+  function setCtxParent(ctx, val) { if(ctx === 'crear') crearParent = val; else editarParent = val; }
 
   // ── TAG INPUT ──────────────────────────────────────────────────────
   function focusTagInput(ctx) {
@@ -810,67 +943,195 @@
     renderCursos(ctx);
   }
 
-  // ── MODAL CURSO ────────────────────────────────────────────────────
-  let modalCursoCtx = null, modalCursoSem = 1, modalCursoSelection = [];
+  // ── MODAL GENÉRICO (Cursos y Competencias) ─────────────────────────
+  let modalType = null, modalCtx = null, modalSem = 1, modalSelection = [];
 
-  function abrirModalCurso(ctx, sem) {
-    modalCursoCtx = ctx; modalCursoSem = sem; modalCursoSelection = [];
-    document.getElementById('modal-curso-title').textContent = `Agregar curso — Semestre ${sem}`;
-    document.getElementById('modal-curso-search').value = '';
-    buildModalCursoList('');
-    document.getElementById('modal-curso-overlay').classList.add('open');
+  // type: 'cursos' | 'competencias' | 'worlds' | 'parent'
+  function openSelectionModal(type, ctx, sem = 1) {
+    modalType = type; modalCtx = ctx; modalSem = sem;
+    // Para parent (selección única) precargamos el valor actual para mostrarlo seleccionado
+    if (type === 'parent') {
+      const cur = getCtxParent(ctx);
+      modalSelection = cur ? [cur.id] : [];
+    } else {
+      modalSelection = [];
+    }
+    const titles = {
+      cursos: `Agregar curso — Semestre ${sem}`,
+      competencias: 'Agregar competencias',
+      worlds: 'Agregar áreas / worlds',
+      parent: 'Seleccionar programa padre',
+    };
+    const placeholders = {
+      cursos: 'Buscar curso por nombre…',
+      competencias: 'Buscar competencia…',
+      worlds: 'Buscar área…',
+      parent: 'Buscar programa…',
+    };
+    document.getElementById('modal-sel-title').textContent = titles[type];
+    document.getElementById('modal-sel-search').placeholder = placeholders[type];
+    document.getElementById('modal-sel-search').value = '';
+    buildModalList('');
+    document.getElementById('modal-sel-overlay').classList.add('open');
   }
 
-  function cerrarModalCurso() {
-    document.getElementById('modal-curso-overlay').classList.remove('open');
-    modalCursoCtx = null; modalCursoSelection = [];
+  // Alias para compatibilidad con renderCursos (sem-col-add-btn)
+  function abrirModalCurso(ctx, sem) { openSelectionModal('cursos', ctx, sem); }
+
+  function cerrarModal() {
+    document.getElementById('modal-sel-overlay').classList.remove('open');
+    modalType = null; modalCtx = null; modalSelection = [];
   }
 
-  function buildModalCursoList(filterText) {
-    const assignedIds = getCtxCursos(modalCursoCtx).map(c => c.catalogId);
-    const list        = document.getElementById('modal-curso-list');
-    const items       = catalogoCursos.filter(c =>
+  function buildModalList(filterText) {
+    const listEl = document.getElementById('modal-sel-list');
+    let catalog, assignedIds, badgePrefix, emptyMsg, nameKey, singleSelect;
+
+    if (modalType === 'cursos') {
+      catalog = catalogoCursos; nameKey = 'nombre'; singleSelect = false;
+      assignedIds = getCtxCursos(modalCtx).map(c => c.catalogId);
+      badgePrefix = 'CRS'; emptyMsg = 'No hay más cursos disponibles.';
+    } else if (modalType === 'competencias') {
+      catalog = catalogoCompetencias; nameKey = 'nombre'; singleSelect = false;
+      assignedIds = getCtxCompetencias(modalCtx).map(c => c.id);
+      badgePrefix = 'COMP'; emptyMsg = 'No hay más competencias disponibles.';
+    } else if (modalType === 'worlds') {
+      catalog = catalogoWorlds; nameKey = 'name'; singleSelect = false;
+      assignedIds = getCtxWorlds(modalCtx).map(w => w.id);
+      badgePrefix = 'WLD'; emptyMsg = 'No hay más áreas disponibles.';
+    } else {
+      // parent — selección única, muestra todos menos el programa actual
+      catalog = programas.filter(p => modalCtx !== 'editar' || p.id !== editingId);
+      nameKey = 'nombre'; singleSelect = true; assignedIds = [];
+      badgePrefix = 'P'; emptyMsg = 'No hay programas disponibles.';
+    }
+
+    const items = catalog.filter(c =>
       !assignedIds.includes(c.id) &&
-      (!filterText || c.nombre.toLowerCase().includes(filterText.toLowerCase()))
+      (!filterText || (c[nameKey]||'').toLowerCase().includes(filterText.toLowerCase()))
     );
+
     if (!items.length) {
-      list.innerHTML = '<p style="font-size:12.5px;color:var(--muted);text-align:center;padding:20px 0">No hay más cursos disponibles.</p>';
+      listEl.innerHTML = `<p style="font-size:12.5px;color:var(--muted);text-align:center;padding:20px 0">${emptyMsg}</p>`;
       return;
     }
-    list.innerHTML = items.map(c => {
-      const sel = modalCursoSelection.includes(c.id);
+
+    listEl.innerHTML = items.map(c => {
+      const sel = modalSelection.includes(c.id);
+      const badge = `${badgePrefix}-${String(c.id).padStart(2,'0')}`;
       return `
-        <div class="modal-item ${sel ? 'selected' : ''}" data-id="${c.id}" onclick="toggleModalCurso(${c.id})">
+        <div class="modal-item ${sel ? 'selected' : ''}" data-id="${c.id}" onclick="toggleModalItem(${c.id})">
           <div class="modal-checkbox">${sel ? '✓' : ''}</div>
           <div class="modal-item-info">
-            <div class="modal-item-badge">CRS-${String(c.id + 1).padStart(2,'0')}</div>
-            <div class="modal-item-name">${esc(c.nombre)}</div>
+            <div class="modal-item-badge">${badge}</div>
+            <div class="modal-item-name">${esc(c[nameKey])}</div>
           </div>
         </div>`;
     }).join('');
   }
 
-  function toggleModalCurso(id) {
-    modalCursoSelection = modalCursoSelection.includes(id)
-      ? modalCursoSelection.filter(x => x !== id)
-      : [...modalCursoSelection, id];
-    const item = document.querySelector(`#modal-curso-list .modal-item[data-id="${id}"]`);
-    if (item) {
-      const sel = modalCursoSelection.includes(id);
-      item.classList.toggle('selected', sel);
-      item.querySelector('.modal-checkbox').textContent = sel ? '✓' : '';
+  function toggleModalItem(id) {
+    if (modalType === 'parent') {
+      // Single-select: toggle o deselecciona el mismo
+      modalSelection = modalSelection.includes(id) ? [] : [id];
+    } else {
+      modalSelection = modalSelection.includes(id)
+        ? modalSelection.filter(x => x !== id)
+        : [...modalSelection, id];
+    }
+    // Re-render para reflejar el estado correcto (especialmente single-select)
+    buildModalList(document.getElementById('modal-sel-search').value);
+  }
+
+  function filterModal() { buildModalList(document.getElementById('modal-sel-search').value); }
+
+  function confirmarModal() {
+    const ctx = modalCtx;
+    if (modalType === 'cursos') {
+      if (!modalSelection.length) { cerrarModal(); return; }
+      const list = getCtxCursos(ctx);
+      modalSelection.forEach(id => list.push({ catalogId: id, sem: modalSem }));
+      cerrarModal(); renderCursos(ctx);
+    } else if (modalType === 'competencias') {
+      if (!modalSelection.length) { cerrarModal(); return; }
+      const list = getCtxCompetencias(ctx);
+      modalSelection.forEach(id => {
+        const comp = catalogoCompetencias.find(c => c.id === id);
+        if (comp) list.push({ id: comp.id, nombre: comp.nombre });
+      });
+      cerrarModal(); renderCompetencias(ctx);
+    } else if (modalType === 'worlds') {
+      if (!modalSelection.length) { cerrarModal(); return; }
+      const list = getCtxWorlds(ctx);
+      modalSelection.forEach(id => {
+        const w = catalogoWorlds.find(w => w.id === id);
+        if (w) list.push({ id: w.id, name: w.name });
+      });
+      cerrarModal(); renderWorldsDisplay(ctx);
+    } else if (modalType === 'parent') {
+      // Permite confirmar sin selección para limpiar el padre
+      const id = modalSelection[0] || null;
+      const prog = id ? programas.find(p => p.id === id) : null;
+      setCtxParent(ctx, prog ? { id: prog.id, nombre: prog.nombre } : null);
+      cerrarModal(); renderParentDisplay(ctx);
     }
   }
 
-  function filterModalCurso() { buildModalCursoList(document.getElementById('modal-curso-search').value); }
+  // ── COMPETENCIAS ────────────────────────────────────────────────────
+  function renderCompetencias(ctx) {
+    const wrap = document.getElementById(ctx + '-comp-wrap');
+    const list = getCtxCompetencias(ctx);
+    if (!list.length) {
+      wrap.innerHTML = '<span class="comp-empty">Sin competencias seleccionadas</span>';
+      return;
+    }
+    wrap.innerHTML = list.map((c, i) =>
+      `<span class="comp-chip">${esc(c.nombre)}<button class="comp-chip-remove" onclick="removeCompetencia('${ctx}',${i})" title="Eliminar">×</button></span>`
+    ).join('');
+  }
 
-  function confirmarModalCurso() {
-    if (!modalCursoSelection.length) { cerrarModalCurso(); return; }
-    const list = getCtxCursos(modalCursoCtx);
-    modalCursoSelection.forEach(id => list.push({ catalogId: id, sem: modalCursoSem }));
-    const ctx = modalCursoCtx;
-    cerrarModalCurso();
-    renderCursos(ctx);
+  function removeCompetencia(ctx, index) {
+    getCtxCompetencias(ctx).splice(index, 1);
+    renderCompetencias(ctx);
+  }
+
+  // ── WORLDS DISPLAY (chips removibles) ───────────────────────────────
+  function renderWorldsDisplay(ctx) {
+    const wrap = document.getElementById(ctx + '-worlds-wrap');
+    const list = getCtxWorlds(ctx);
+    if (!list.length) {
+      wrap.innerHTML = '<span class="comp-empty">Sin áreas seleccionadas</span>';
+      return;
+    }
+    wrap.innerHTML = list.map((w, i) =>
+      `<span class="comp-chip" style="background:var(--sky-light);color:var(--sky)">${esc(w.name)}<button class="comp-chip-remove" style="color:var(--sky)" onclick="removeWorld('${ctx}',${i})" title="Quitar">×</button></span>`
+    ).join('');
+  }
+
+  function removeWorld(ctx, index) {
+    getCtxWorlds(ctx).splice(index, 1);
+    renderWorldsDisplay(ctx);
+  }
+
+  // ── PARENT DISPLAY (chip único removible / cambiable) ────────────────
+  function renderParentDisplay(ctx) {
+    const wrap = document.getElementById(ctx + '-parent-wrap');
+    const parent = getCtxParent(ctx);
+    if (!parent) {
+      wrap.innerHTML = '<span class="comp-empty">Sin programa padre seleccionado</span>';
+      return;
+    }
+    wrap.innerHTML = `
+      <span class="comp-chip" style="background:var(--bg);color:var(--text);border:1.5px solid var(--border)">
+        <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);margin-right:5px">P-${String(parent.id).padStart(3,'0')}</span>
+        ${esc(parent.nombre)}
+        <button class="comp-chip-remove" style="color:var(--muted)" onclick="clearParent('${ctx}')" title="Quitar">×</button>
+      </span>`;
+  }
+
+  function clearParent(ctx) {
+    setCtxParent(ctx, null);
+    renderParentDisplay(ctx);
   }
 
   // ── PRECIO FORMATEADO ──────────────────────────────────────────────
@@ -895,8 +1156,14 @@
       resetImg('crear');
       setCtxCursos('crear', []);
       setCtxTags('crear', []);
+      setCtxCompetencias('crear', []);
+      setCtxWorlds('crear', []);
+      setCtxParent('crear', null);
       renderTags('crear');
       renderCursos('crear');
+      renderCompetencias('crear');
+      renderWorldsDisplay('crear');
+      renderParentDisplay('crear');
     }
     if (id === 'view-lista') renderList();
 
@@ -964,7 +1231,6 @@
     const nombre = document.getElementById('crear-nombre').value.trim();
     if (!nombre) { shake('crear-nombre'); return; }
 
-    // commit any pending tag
     const tagInput = document.getElementById('crear-tag-input');
     if (tagInput.value.trim()) { addTag('crear', tagInput.value); tagInput.value = ''; }
 
@@ -982,6 +1248,9 @@
       tags:             [...crearTags],
       highlight:        document.getElementById('crear-highlight').checked,
       cursos:           crearCursos.map(c => ({ ...c })),
+      competencias:     crearCompetencias.map(c => ({ ...c })),
+      worlds:           crearWorlds.map(w => ({ ...w })),
+      parentProgramId:  crearParent?.id ?? null,
     });
     showToast('✅ Programa creado correctamente');
     showView('view-lista');
@@ -1017,6 +1286,14 @@
     renderTags('editar');
     setCtxCursos('editar', p.cursos.map(c => ({ ...c })));
     renderCursos('editar');
+    setCtxCompetencias('editar', (p.competencias || []).map(c => ({ ...c })));
+    renderCompetencias('editar');
+    setCtxWorlds('editar', (p.worlds || []).map(w => ({ ...w })));
+    renderWorldsDisplay('editar');
+    // Cargar programa padre: buscar el objeto completo desde el array
+    const parentProg = p.parentProgramId ? programas.find(x => x.id === p.parentProgramId) : null;
+    setCtxParent('editar', parentProg ? { id: parentProg.id, nombre: parentProg.nombre } : null);
+    renderParentDisplay('editar');
 
     showView('view-editar');
   }
@@ -1043,6 +1320,9 @@
         tags:             [...editarTags],
         highlight:        document.getElementById('editar-highlight').checked,
         cursos:           editarCursos.map(c => ({ ...c })),
+        competencias:     editarCompetencias.map(c => ({ ...c })),
+        worlds:           editarWorlds.map(w => ({ ...w })),
+        parentProgramId:  editarParent?.id ?? null,
       };
     }
     showToast('✏️ Programa actualizado correctamente');
@@ -1072,6 +1352,9 @@
   // ── INIT ───────────────────────────────────────────────────────────
   renderList();
   renderCursos('crear');
+  renderCompetencias('crear');
+  renderWorldsDisplay('crear');
+  renderParentDisplay('crear');
   document.getElementById('crear-semestres').addEventListener('input', () => renderCursos('crear'));
   document.getElementById('editar-semestres').addEventListener('input', () => renderCursos('editar'));
 </script>
