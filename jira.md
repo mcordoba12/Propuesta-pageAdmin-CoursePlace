@@ -19,94 +19,6 @@
 
 ---
 
-# EP-01 — Autenticación y Control de Acceso
-
-**Descripción:** Implementar el sistema de login, gestión de sesiones y control de roles para que solo los administradores autorizados accedan al panel de administración.
-**Prioridad:** Critical
-**Estado:** To Do
-
----
-
-### US-01.1 — Inicio de Sesión del Administrador
-
-**Como** administrador del sistema,
-**Quiero** poder ingresar con mis credenciales (correo y contraseña),
-**Para** acceder de forma segura al panel de administración.
-
-**Criterios de Aceptación:**
-- El formulario de login tiene campos de correo y contraseña.
-- Se muestra un mensaje de error si las credenciales son incorrectas.
-- Se genera un token de sesión al autenticar correctamente.
-- Redirige al dashboard después de un login exitoso.
-- El campo contraseña muestra/oculta caracteres.
-
-**Prioridad:** Critical | **SP:** 5
-
-#### Subtareas:
-
-| ID      | Descripción                                              | SP |
-|---------|----------------------------------------------------------|----|
-| ST-01.1.1 | Diseñar la vista/página de login con formulario         | 2  |
-| ST-01.1.2 | Implementar validación de campos (email, contraseña)    | 1  |
-| ST-01.1.3 | Integrar llamada a API de autenticación (POST /auth/login) | 3 |
-| ST-01.1.4 | Manejar y almacenar el token JWT en el cliente          | 2  |
-| ST-01.1.5 | Redirigir al dashboard post-login                       | 1  |
-| ST-01.1.6 | Mostrar mensajes de error según respuesta de API        | 1  |
-
----
-
-### US-01.2 — Cierre de Sesión
-
-**Como** administrador autenticado,
-**Quiero** poder cerrar mi sesión desde cualquier pantalla,
-**Para** proteger el acceso al panel cuando no lo esté usando.
-
-**Criterios de Aceptación:**
-- Botón de "Cerrar sesión" visible en el header.
-- Al cerrar sesión, se elimina el token del cliente.
-- Redirige a la página de login.
-- Las rutas protegidas no son accesibles sin sesión activa.
-
-**Prioridad:** Critical | **SP:** 3
-
-#### Subtareas:
-
-| ID      | Descripción                                              | SP |
-|---------|----------------------------------------------------------|----|
-| ST-01.2.1 | Agregar botón "Cerrar sesión" en el componente Header   | 1  |
-| ST-01.2.2 | Limpiar token de sesión al cerrar sesión                | 1  |
-| ST-01.2.3 | Implementar guard de rutas para redirigir a login       | 2  |
-| ST-01.2.4 | Manejar expiración automática de sesión (timeout)       | 2  |
-
----
-
-### US-01.3 — Recuperación de Contraseña
-
-**Como** administrador,
-**Quiero** poder recuperar mi contraseña olvidada mediante mi correo,
-**Para** no perder acceso al sistema.
-
-**Criterios de Aceptación:**
-- Enlace "¿Olvidaste tu contraseña?" en el login.
-- Formulario para ingresar correo registrado.
-- Se envía email con enlace de recuperación.
-- El enlace expira en 30 minutos.
-
-**Prioridad:** Medium | **SP:** 5
-
-#### Subtareas:
-
-| ID      | Descripción                                              | SP |
-|---------|----------------------------------------------------------|----|
-| ST-01.3.1 | Diseñar vista de recuperación de contraseña             | 2  |
-| ST-01.3.2 | Integrar API de envío de email (POST /auth/recovery)    | 3  |
-| ST-01.3.3 | Diseñar vista de restablecimiento (con token URL)       | 2  |
-| ST-01.3.4 | Validar y actualizar nueva contraseña vía API           | 2  |
-
----
-
----
-
 # EP-02 — Dashboard y Navegación Principal
 
 **Descripción:** Panel central de la aplicación que sirve como punto de entrada y navegación hacia todas las secciones funcionales del sistema de gestión académica.
@@ -122,11 +34,33 @@
 **Para** navegar eficientemente entre las áreas del sistema.
 
 **Criterios de Aceptación:**
-- El dashboard muestra tarjetas de acceso para las 5 secciones: Competencias, Resultados de Aprendizaje, Programas, Cursos y Micro Aprendizajes.
-- Cada tarjeta muestra nombre, descripción e icono representativo.
-- Las tarjetas tienen efecto hover con animación visual.
-- El header muestra el logo, nombre del sistema y avatar del usuario.
-- El diseño es responsive (desktop y móvil).
+
+```gherkin
+Scenario: Tarjetas de acceso visibles en el dashboard
+  Given que el administrador ha iniciado sesión
+  When accede al dashboard principal
+  Then se muestran tarjetas de acceso para las 5 secciones: Competencias, Resultados de Aprendizaje, Programas, Cursos y Micro Aprendizajes
+
+Scenario: Información en cada tarjeta
+  Given que el administrador está en el dashboard
+  When visualiza una tarjeta de sección
+  Then la tarjeta muestra nombre, descripción e icono representativo
+
+Scenario: Animación hover en tarjetas
+  Given que el administrador está en el dashboard
+  When coloca el cursor sobre una tarjeta
+  Then la tarjeta muestra un efecto hover con animación visual
+
+Scenario: Header con información del sistema
+  Given que el administrador está en el dashboard
+  When observa el encabezado de la página
+  Then el header muestra el logo, el nombre del sistema y el avatar del usuario
+
+Scenario: Diseño responsive del dashboard
+  Given que el administrador accede al dashboard
+  When lo visualiza desde un dispositivo móvil o desktop
+  Then el diseño se adapta correctamente al tamaño de pantalla
+```
 
 **Prioridad:** High | **SP:** 3
 
@@ -148,9 +82,23 @@
 **Para** tener una visión rápida del estado del catálogo académico.
 
 **Criterios de Aceptación:**
-- Cada tarjeta del dashboard muestra el número total de registros de su sección.
-- Los contadores se actualizan en tiempo real desde la API.
-- Los datos se muestran formateados (ej.: "12 Competencias").
+
+```gherkin
+Scenario: Contador de registros por sección
+  Given que el administrador está en el dashboard
+  When la página termina de cargar
+  Then cada tarjeta muestra el número total de registros de su sección
+
+Scenario: Actualización en tiempo real de contadores
+  Given que el administrador está en el dashboard
+  When se agrega o elimina un registro en cualquier sección
+  Then el contador de esa tarjeta se actualiza automáticamente desde la API
+
+Scenario: Formato de los contadores
+  Given que el administrador está en el dashboard
+  When visualiza un contador de sección
+  Then el dato se muestra formateado, por ejemplo "12 Competencias"
+```
 
 **Prioridad:** Medium | **SP:** 3
 
@@ -171,11 +119,33 @@
 **Para** saber en qué sección estoy y poder regresar fácilmente al inicio.
 
 **Criterios de Aceptación:**
-- El header muestra el logo de CoursePlace.
-- Muestra el título de la sección activa.
-- Incluye botón "← Inicio" funcional en todas las páginas interiores.
-- Muestra el avatar y nombre del usuario autenticado.
-- Es sticky (permanece visible al hacer scroll).
+
+```gherkin
+Scenario: Logo en el header
+  Given que el administrador está en cualquier página
+  When observa el header
+  Then se muestra el logo de CoursePlace
+
+Scenario: Título de sección activa
+  Given que el administrador está en una sección interior
+  When observa el header
+  Then se muestra el título de la sección activa
+
+Scenario: Botón de regreso al inicio
+  Given que el administrador está en una página interior
+  When hace clic en el botón "← Inicio"
+  Then es redirigido al dashboard principal
+
+Scenario: Información del usuario autenticado
+  Given que el administrador está autenticado
+  When observa el header
+  Then se muestran el avatar y nombre del usuario autenticado
+
+Scenario: Header sticky al hacer scroll
+  Given que el administrador está en una página con contenido largo
+  When hace scroll hacia abajo
+  Then el header permanece visible en la parte superior de la pantalla
+```
 
 **Prioridad:** High | **SP:** 3
 
@@ -206,10 +176,28 @@
 **Para** conocer el catálogo completo y acceder rápidamente a cada una.
 
 **Criterios de Aceptación:**
-- Se listan todas las competencias con: índice (C-001), nombre, descripción y número de RAs asignados.
-- Se muestra un contador total de competencias.
-- Se muestra un "empty state" cuando no hay registros.
-- Las competencias tienen botón de acción "Editar".
+
+```gherkin
+Scenario: Visualización del listado de competencias
+  Given que existen competencias registradas en el sistema
+  When el administrador accede a la sección de Competencias
+  Then se listan todas las competencias con: índice (C-001), nombre, descripción y número de RAs asignados
+
+Scenario: Contador total de competencias
+  Given que el administrador está en la vista de Competencias
+  When la página carga el listado
+  Then se muestra un contador con el total de competencias registradas
+
+Scenario: Empty state sin registros
+  Given que no existe ninguna competencia registrada
+  When el administrador accede a la sección de Competencias
+  Then se muestra un mensaje de "empty state" indicando que no hay registros
+
+Scenario: Botón de edición por competencia
+  Given que el administrador está viendo el listado de competencias
+  When visualiza una tarjeta de competencia
+  Then la tarjeta tiene un botón de acción "Editar"
+```
 
 **Prioridad:** High | **SP:** 3
 
@@ -231,11 +219,33 @@
 **Para** encontrar rápidamente la que necesito modificar.
 
 **Criterios de Aceptación:**
-- Campo de búsqueda visible en la vista de listado.
-- La búsqueda filtra en tiempo real (sin necesidad de presionar Enter).
-- La búsqueda es case-insensitive.
-- Se actualiza el contador según los resultados filtrados.
-- Muestra "empty state" si no hay coincidencias.
+
+```gherkin
+Scenario: Campo de búsqueda visible
+  Given que el administrador está en la vista de Competencias
+  When carga la página
+  Then se muestra un campo de búsqueda en la parte superior del listado
+
+Scenario: Filtrado en tiempo real
+  Given que el administrador está en la vista de Competencias
+  When escribe texto en el campo de búsqueda
+  Then el listado se filtra inmediatamente sin necesidad de presionar Enter
+
+Scenario: Búsqueda case-insensitive
+  Given que el administrador escribe texto en el buscador
+  When usa mayúsculas o minúsculas indistintamente
+  Then se muestran resultados coincidentes sin importar el caso
+
+Scenario: Contador actualizado según resultados filtrados
+  Given que el administrador ha aplicado un filtro de búsqueda
+  When el listado muestra los resultados
+  Then el contador de competencias refleja el número de resultados filtrados
+
+Scenario: Empty state sin coincidencias
+  Given que el administrador busca un término que no existe
+  When no hay competencias que coincidan con la búsqueda
+  Then se muestra el componente de "empty state"
+```
 
 **Prioridad:** High | **SP:** 2
 
@@ -255,13 +265,38 @@
 **Para** ampliar el catálogo de competencias del programa académico.
 
 **Criterios de Aceptación:**
-- Formulario con campo Nombre (obligatorio) y Descripción (opcional).
-- El nombre no puede estar vacío al guardar (validación con feedback visual).
-- Permite asociar Resultados de Aprendizaje mediante un modal de multi-selección.
-- El modal de RAs tiene buscador interno.
-- Los RAs seleccionados se muestran como badges numerados.
-- Al guardar, aparece una notificación de éxito (toast).
-- El formulario se resetea después de crear.
+
+```gherkin
+Scenario: Campos del formulario de creación
+  Given que el administrador accede al formulario de nueva competencia
+  When visualiza el formulario
+  Then encuentra un campo Nombre (obligatorio) y un campo Descripción (opcional)
+
+Scenario: Validación del campo nombre vacío
+  Given que el administrador deja el campo Nombre vacío
+  When intenta guardar la competencia
+  Then se muestra un mensaje de error visual indicando que el nombre es obligatorio
+
+Scenario: Modal de selección múltiple de RAs
+  Given que el administrador está completando el formulario
+  When hace clic para asociar Resultados de Aprendizaje
+  Then se abre un modal de multi-selección con buscador interno
+
+Scenario: Visualización de RAs seleccionados
+  Given que el administrador ha seleccionado RAs en el modal
+  When confirma la selección
+  Then los RAs seleccionados se muestran como badges numerados en el formulario
+
+Scenario: Toast de éxito al crear
+  Given que el administrador ha completado correctamente el formulario
+  When guarda la nueva competencia
+  Then aparece una notificación de éxito (toast)
+
+Scenario: Reseteo del formulario tras crear
+  Given que el administrador acaba de crear una competencia exitosamente
+  When el toast de confirmación aparece
+  Then el formulario se resetea y queda listo para un nuevo registro
+```
 
 **Prioridad:** High | **SP:** 5
 
@@ -284,12 +319,33 @@
 **Para** actualizar su nombre, descripción o los RAs asociados.
 
 **Criterios de Aceptación:**
-- Al hacer clic en "Editar", el formulario carga los datos actuales.
-- Permite modificar nombre, descripción y RAs.
-- Los RAs previamente asignados aparecen ya marcados en el modal.
-- Se puede agregar o quitar RAs.
-- Al guardar, aparece un toast de confirmación.
-- Regresa a la vista de listado tras guardar.
+
+```gherkin
+Scenario: Carga de datos en el formulario de edición
+  Given que el administrador hace clic en "Editar" sobre una competencia
+  When se abre el formulario de edición
+  Then los campos nombre, descripción y RAs se pre-cargan con los datos actuales
+
+Scenario: RAs previos pre-seleccionados en el modal
+  Given que el administrador abre el modal de RAs en modo edición
+  When visualiza la lista de RAs disponibles
+  Then los RAs previamente asignados aparecen ya marcados
+
+Scenario: Modificar RAs asociados
+  Given que el administrador está en el modal de RAs en modo edición
+  When agrega o quita RAs de la selección
+  Then los cambios se reflejan en los badges del formulario
+
+Scenario: Toast de confirmación al guardar cambios
+  Given que el administrador ha realizado cambios en la competencia
+  When guarda los cambios
+  Then aparece un toast de confirmación de actualización
+
+Scenario: Regreso al listado tras guardar
+  Given que el administrador ha guardado los cambios de una competencia
+  When el proceso finaliza exitosamente
+  Then es redirigido a la vista de listado de competencias
+```
 
 **Prioridad:** High | **SP:** 5
 
@@ -311,10 +367,28 @@
 **Para** mantener el catálogo limpio y actualizado.
 
 **Criterios de Aceptación:**
-- Botón "Eliminar" disponible en la tarjeta de cada competencia.
-- Aparece un modal de confirmación antes de eliminar.
-- Al confirmar, la competencia se elimina y se refresca la lista.
-- Se muestra un toast de confirmación de eliminación.
+
+```gherkin
+Scenario: Botón de eliminar disponible por competencia
+  Given que el administrador está en el listado de competencias
+  When visualiza una tarjeta de competencia
+  Then la tarjeta muestra un botón "Eliminar"
+
+Scenario: Modal de confirmación antes de eliminar
+  Given que el administrador hace clic en "Eliminar" sobre una competencia
+  When el sistema procesa la acción
+  Then se muestra un modal de confirmación antes de ejecutar la eliminación
+
+Scenario: Eliminación y refresco del listado
+  Given que el administrador confirma la eliminación en el modal
+  When el sistema elimina la competencia
+  Then la competencia desaparece del listado y la lista se refresca automáticamente
+
+Scenario: Toast de confirmación de eliminación
+  Given que el administrador confirma la eliminación
+  When la competencia es eliminada exitosamente
+  Then se muestra un toast de confirmación de eliminación
+```
 
 **Prioridad:** Medium | **SP:** 3
 
@@ -346,10 +420,28 @@
 **Para** conocer todos los RAs definidos y sus competencias asociadas.
 
 **Criterios de Aceptación:**
-- Lista todos los RAs con: índice (RA-001), nombre, descripción y badge de competencias asociadas.
-- Muestra contador total de RAs.
-- Empty state cuando no hay registros.
-- Cada RA tiene botón "Editar".
+
+```gherkin
+Scenario: Visualización del listado de RAs
+  Given que existen RAs registrados en el sistema
+  When el administrador accede a la sección de Resultados de Aprendizaje
+  Then se listan todos los RAs con: índice (RA-001), nombre, descripción y badge de competencias asociadas
+
+Scenario: Contador total de RAs
+  Given que el administrador está en la vista de Resultados de Aprendizaje
+  When la página carga el listado
+  Then se muestra un contador con el total de RAs registrados
+
+Scenario: Empty state sin registros
+  Given que no existe ningún RA registrado
+  When el administrador accede a la sección de Resultados de Aprendizaje
+  Then se muestra un mensaje de "empty state"
+
+Scenario: Botón de edición por RA
+  Given que el administrador está viendo el listado de RAs
+  When visualiza una tarjeta de RA
+  Then la tarjeta tiene un botón "Editar"
+```
 
 **Prioridad:** High | **SP:** 3
 
@@ -370,9 +462,18 @@
 **Para** localizarlos rápidamente en el listado.
 
 **Criterios de Aceptación:**
-- Campo de búsqueda con filtrado en tiempo real.
-- Búsqueda en nombre y descripción.
-- Actualiza contador según resultados.
+
+```gherkin
+Scenario: Filtrado en tiempo real de RAs
+  Given que el administrador está en la vista de Resultados de Aprendizaje
+  When escribe texto en el campo de búsqueda
+  Then el listado se filtra inmediatamente mostrando coincidencias en nombre y descripción
+
+Scenario: Contador actualizado según búsqueda
+  Given que el administrador ha aplicado un filtro de búsqueda en RAs
+  When el listado muestra los resultados filtrados
+  Then el contador refleja el número de RAs encontrados
+```
 
 **Prioridad:** High | **SP:** 2
 
@@ -391,11 +492,33 @@
 **Para** ampliar los objetivos de aprendizaje del programa.
 
 **Criterios de Aceptación:**
-- Formulario con Nombre (obligatorio) y Descripción (opcional).
-- Modal de multi-selección de competencias con buscador.
-- Las competencias seleccionadas se muestran como badges.
-- Validación visual si el nombre está vacío.
-- Toast de confirmación al crear.
+
+```gherkin
+Scenario: Campos del formulario de creación de RA
+  Given que el administrador accede al formulario de nuevo RA
+  When visualiza el formulario
+  Then encuentra un campo Nombre (obligatorio) y un campo Descripción (opcional)
+
+Scenario: Modal de selección múltiple de competencias
+  Given que el administrador está completando el formulario de RA
+  When hace clic para asociar competencias
+  Then se abre un modal de multi-selección con buscador interno
+
+Scenario: Competencias seleccionadas como badges
+  Given que el administrador ha seleccionado competencias en el modal
+  When confirma la selección
+  Then las competencias seleccionadas se muestran como badges en el formulario
+
+Scenario: Validación del nombre vacío
+  Given que el administrador deja el campo Nombre vacío
+  When intenta guardar el RA
+  Then se muestra feedback visual indicando que el nombre es obligatorio
+
+Scenario: Toast de confirmación al crear RA
+  Given que el administrador ha completado correctamente el formulario
+  When guarda el nuevo RA
+  Then aparece un toast de confirmación
+```
 
 **Prioridad:** High | **SP:** 5
 
@@ -417,10 +540,28 @@
 **Para** actualizar su información y sus competencias asociadas.
 
 **Criterios de Aceptación:**
-- Formulario pre-cargado con los datos del RA seleccionado.
-- Las competencias asociadas aparecen pre-seleccionadas.
-- Permite agregar/quitar competencias.
-- Toast de confirmación al guardar.
+
+```gherkin
+Scenario: Formulario pre-cargado con datos del RA
+  Given que el administrador hace clic en "Editar" sobre un RA
+  When se abre el formulario de edición
+  Then los campos nombre y descripción se pre-cargan con los datos actuales del RA
+
+Scenario: Competencias asociadas pre-seleccionadas
+  Given que el administrador abre el modal de competencias en modo edición
+  When visualiza la lista de competencias disponibles
+  Then las competencias previamente asociadas al RA aparecen ya marcadas
+
+Scenario: Modificar competencias asociadas
+  Given que el administrador está en el modal de competencias en modo edición
+  When agrega o quita competencias de la selección
+  Then los cambios se reflejan en los badges del formulario
+
+Scenario: Toast de confirmación al guardar cambios del RA
+  Given que el administrador ha realizado cambios en un RA
+  When guarda los cambios
+  Then aparece un toast de confirmación de actualización
+```
 
 **Prioridad:** High | **SP:** 5
 
@@ -441,9 +582,23 @@
 **Para** mantener actualizado el catálogo de aprendizaje.
 
 **Criterios de Aceptación:**
-- Botón "Eliminar" en la tarjeta de cada RA.
-- Modal de confirmación antes de eliminar.
-- Toast de confirmación tras la eliminación.
+
+```gherkin
+Scenario: Botón de eliminar disponible por RA
+  Given que el administrador está en el listado de RAs
+  When visualiza una tarjeta de RA
+  Then la tarjeta muestra un botón "Eliminar"
+
+Scenario: Modal de confirmación antes de eliminar RA
+  Given que el administrador hace clic en "Eliminar" sobre un RA
+  When el sistema procesa la acción
+  Then se muestra un modal de confirmación antes de ejecutar la eliminación
+
+Scenario: Toast de confirmación tras eliminar RA
+  Given que el administrador confirma la eliminación de un RA
+  When el sistema lo elimina exitosamente
+  Then se muestra un toast de confirmación de eliminación
+```
 
 **Prioridad:** Medium | **SP:** 3
 
@@ -474,10 +629,28 @@
 **Para** tener una visión general del catálogo de cursos disponibles.
 
 **Criterios de Aceptación:**
-- Tabla con columnas: Nombre, Créditos, Horas, Modalidad, Electiva, Comp/RAs, Acciones.
-- Badge visual para tipo (Electivo/Obligatorio), créditos, RAs asignados.
-- Buscador en tiempo real.
-- Botones de "Editar" y "Eliminar" por fila.
+
+```gherkin
+Scenario: Tabla de cursos con columnas completas
+  Given que existen cursos registrados en el sistema
+  When el administrador accede a la sección de Cursos
+  Then se muestra una tabla con columnas: Nombre, Créditos, Horas, Modalidad, Electiva, Comp/RAs, Acciones
+
+Scenario: Badges visuales por tipo y asignaciones
+  Given que el administrador está viendo la tabla de cursos
+  When visualiza una fila de curso
+  Then se muestran badges para tipo (Electivo/Obligatorio), créditos y RAs asignados
+
+Scenario: Buscador en tiempo real de cursos
+  Given que el administrador está en la vista de Cursos
+  When escribe texto en el buscador
+  Then la tabla se filtra en tiempo real mostrando los cursos coincidentes
+
+Scenario: Botones de acción por fila
+  Given que el administrador está viendo la tabla de cursos
+  When visualiza una fila
+  Then cada fila tiene botones de "Editar" y "Eliminar"
+```
 
 **Prioridad:** High | **SP:** 3
 
@@ -498,10 +671,28 @@
 **Para** ampliar el catálogo de cursos del programa.
 
 **Criterios de Aceptación:**
-- Campos: Nombre (obligatorio), Créditos, Horas, Modalidad (Virtual/Presencial/Híbrido), Descripción, Objetivo General.
-- Toggle para marcar como Curso Electivo.
-- Todos los campos obligatorios son validados antes de guardar.
-- Toast de éxito al crear.
+
+```gherkin
+Scenario: Campos del formulario de creación de curso
+  Given que el administrador accede al formulario de nuevo curso
+  When visualiza el formulario
+  Then encuentra campos: Nombre (obligatorio), Créditos, Horas, Modalidad (Virtual/Presencial/Híbrido), Descripción y Objetivo General
+
+Scenario: Toggle de curso electivo
+  Given que el administrador está completando el formulario de curso
+  When activa el toggle "Curso Electivo"
+  Then el curso queda marcado como electivo
+
+Scenario: Validación de campos obligatorios
+  Given que el administrador deja campos obligatorios vacíos
+  When intenta guardar el curso
+  Then se muestran mensajes de error visual en cada campo faltante
+
+Scenario: Toast de éxito al crear curso
+  Given que el administrador ha completado correctamente el formulario
+  When guarda el nuevo curso
+  Then aparece un toast de éxito
+```
 
 **Prioridad:** High | **SP:** 5
 
@@ -523,12 +714,38 @@
 **Para** que los estudiantes puedan identificarlo visualmente en el catálogo.
 
 **Criterios de Aceptación:**
-- Zona de drag & drop o click para seleccionar imagen.
-- Formatos aceptados: PNG, JPG, WEBP.
-- Límite de tamaño: 5MB.
-- Se muestra preview de la imagen seleccionada.
-- Botón para eliminar imagen seleccionada.
-- Mensaje de error si el formato o tamaño no es válido.
+
+```gherkin
+Scenario: Zona de carga de imagen
+  Given que el administrador está en el formulario de curso
+  When visualiza la sección de imagen
+  Then encuentra una zona de drag & drop o clic para seleccionar imagen
+
+Scenario: Formatos de imagen aceptados
+  Given que el administrador intenta subir una imagen
+  When selecciona un archivo con formato PNG, JPG o WEBP
+  Then el archivo es aceptado por el sistema
+
+Scenario: Límite de tamaño de imagen
+  Given que el administrador intenta subir una imagen mayor a 5MB
+  When el sistema valida el archivo
+  Then se muestra un mensaje de error indicando que el tamaño supera el límite
+
+Scenario: Preview de imagen seleccionada
+  Given que el administrador ha seleccionado una imagen válida
+  When el archivo es procesado
+  Then se muestra una vista previa de la imagen en el formulario
+
+Scenario: Eliminar imagen seleccionada
+  Given que el administrador tiene una imagen cargada en el formulario
+  When hace clic en el botón para eliminar la imagen
+  Then la imagen se elimina y la zona de carga queda vacía
+
+Scenario: Error por formato no válido
+  Given que el administrador intenta subir un archivo con formato no permitido
+  When el sistema valida el archivo
+  Then se muestra un mensaje de error indicando el formato no válido
+```
 
 **Prioridad:** Medium | **SP:** 5
 
@@ -551,10 +768,28 @@
 **Para** clasificarlo temáticamente dentro del catálogo académico.
 
 **Criterios de Aceptación:**
-- Listado de áreas disponibles: Datos, Frontend, Backend, Cloud, Mobile, IA, Design.
-- Selección múltiple mediante chips/checkboxes.
-- Las áreas seleccionadas se muestran como chips removibles.
-- Persiste la selección al editar el curso.
+
+```gherkin
+Scenario: Listado de áreas disponibles
+  Given que el administrador está en el formulario de curso
+  When accede al selector de áreas de conocimiento
+  Then ve las áreas disponibles: Datos, Frontend, Backend, Cloud, Mobile, IA, Design
+
+Scenario: Selección múltiple de áreas
+  Given que el administrador está en el selector de áreas
+  When selecciona varias áreas mediante chips o checkboxes
+  Then todas las áreas seleccionadas quedan marcadas
+
+Scenario: Chips removibles de áreas seleccionadas
+  Given que el administrador ha seleccionado áreas de conocimiento
+  When visualiza la sección de áreas en el formulario
+  Then las áreas seleccionadas se muestran como chips removibles
+
+Scenario: Persistencia de áreas al editar curso
+  Given que el administrador abre un curso existente en modo edición
+  When visualiza el selector de áreas
+  Then las áreas previamente asignadas aparecen ya seleccionadas
+```
 
 **Prioridad:** Medium | **SP:** 3
 
@@ -575,11 +810,33 @@
 **Para** definir el mapa curricular y el aporte de cada curso al perfil de egreso.
 
 **Criterios de Aceptación:**
-- Modal de 2 pasos: Paso 1 selecciona competencia, Paso 2 selecciona RAs de esa competencia.
-- Se puede agregar múltiples pares Competencia-RA.
-- Tabla resultante muestra: Competencia, RA, y checkboxes I/F/V (Introduce / Fortalece / Valora).
-- Se puede eliminar una asociación de la tabla.
-- Persiste la configuración al editar.
+
+```gherkin
+Scenario: Modal de dos pasos para asociar Competencia-RA
+  Given que el administrador está en el formulario de curso
+  When abre el modal de asociación de Competencias y RAs
+  Then el modal presenta 2 pasos: Paso 1 selecciona competencia y Paso 2 selecciona RAs de esa competencia
+
+Scenario: Múltiples pares Competencia-RA
+  Given que el administrador ha completado una asociación Competencia-RA
+  When agrega otra asociación
+  Then puede agregar múltiples pares Competencia-RA independientes
+
+Scenario: Tabla de asociaciones con niveles de dominio
+  Given que el administrador ha agregado asociaciones Competencia-RA
+  When visualiza la tabla resultante
+  Then muestra columnas: Competencia, RA, y checkboxes I/F/V (Introduce / Fortalece / Valora)
+
+Scenario: Eliminar asociación de la tabla
+  Given que el administrador está viendo la tabla de asociaciones
+  When hace clic en eliminar una fila
+  Then la asociación es removida de la tabla
+
+Scenario: Persistencia de asociaciones al editar
+  Given que el administrador abre un curso existente en modo edición
+  When visualiza la tabla de asociaciones
+  Then las asociaciones previamente configuradas aparecen pre-cargadas
+```
 
 **Prioridad:** High | **SP:** 8
 
@@ -603,9 +860,23 @@
 **Para** mantener actualizado el catálogo académico.
 
 **Criterios de Aceptación:**
-- Al hacer clic en "Editar", el formulario se pre-carga con todos los datos del curso.
-- Se pueden modificar todos los campos, imagen, áreas y Competencias/RAs.
-- Toast de confirmación al guardar cambios.
+
+```gherkin
+Scenario: Pre-carga de datos al editar curso
+  Given que el administrador hace clic en "Editar" sobre un curso
+  When se abre el formulario de edición
+  Then todos los campos del curso se pre-cargan con sus datos actuales
+
+Scenario: Edición de todos los elementos del curso
+  Given que el administrador está en el formulario de edición de un curso
+  When modifica cualquier sección del formulario
+  Then puede actualizar campos, imagen, áreas de conocimiento y asociaciones Competencias/RAs
+
+Scenario: Toast de confirmación al guardar cambios del curso
+  Given que el administrador ha realizado cambios en un curso
+  When guarda los cambios
+  Then aparece un toast de confirmación
+```
 
 **Prioridad:** High | **SP:** 5
 
@@ -627,10 +898,23 @@
 **Para** remover cursos que ya no se ofrecen.
 
 **Criterios de Aceptación:**
-- Botón "Eliminar" en cada fila de la tabla.
-- Modal de confirmación antes de ejecutar.
-- Toast de confirmación tras eliminar.
-- La lista se actualiza inmediatamente.
+
+```gherkin
+Scenario: Botón de eliminar en la tabla de cursos
+  Given que el administrador está viendo la tabla de cursos
+  When visualiza una fila
+  Then la fila tiene un botón "Eliminar"
+
+Scenario: Modal de confirmación antes de eliminar curso
+  Given que el administrador hace clic en "Eliminar" sobre un curso
+  When el sistema procesa la acción
+  Then se muestra un modal de confirmación antes de ejecutar la eliminación
+
+Scenario: Toast de confirmación y actualización de lista
+  Given que el administrador confirma la eliminación de un curso
+  When el sistema lo elimina exitosamente
+  Then se muestra un toast de confirmación y la lista se actualiza inmediatamente
+```
 
 **Prioridad:** Medium | **SP:** 3
 
@@ -660,11 +944,33 @@
 **Para** tener una vista general de la oferta de posgrado.
 
 **Criterios de Aceptación:**
-- Lista de tarjetas con: imagen, nombre, descripción truncada, tipo, modalidad, créditos, semestres, SNIES, tags y número de cursos.
-- Badge de "Destacado" para programas marcados.
-- Buscador en tiempo real.
-- Contador total de programas.
-- Botón "Editar" por tarjeta.
+
+```gherkin
+Scenario: Tarjetas de programas con información completa
+  Given que existen programas registrados en el sistema
+  When el administrador accede a la sección de Programas
+  Then se muestra una lista de tarjetas con: imagen, nombre, descripción truncada, tipo, modalidad, créditos, semestres, SNIES, tags y número de cursos
+
+Scenario: Badge de programa destacado
+  Given que un programa está marcado como "Destacado"
+  When el administrador visualiza la tarjeta de ese programa
+  Then la tarjeta muestra un badge de "Destacado"
+
+Scenario: Buscador en tiempo real de programas
+  Given que el administrador está en la vista de Programas
+  When escribe texto en el buscador
+  Then el listado se filtra en tiempo real
+
+Scenario: Contador total de programas
+  Given que el administrador está en la vista de Programas
+  When la página carga el listado
+  Then se muestra un contador con el total de programas
+
+Scenario: Botón de edición por programa
+  Given que el administrador está viendo el listado de programas
+  When visualiza una tarjeta de programa
+  Then la tarjeta tiene un botón "Editar"
+```
 
 **Prioridad:** High | **SP:** 3
 
@@ -685,12 +991,38 @@
 **Para** registrar la oferta de posgrado en el sistema.
 
 **Criterios de Aceptación:**
-- Campos: Nombre (obligatorio), Descripción, Perfil del Egresado, Tipo (Maestría/Especialización/Certificación/Doctorado), Modalidad, SNIES.
-- Imagen de portada (drag & drop).
-- Tags/palabras clave (chip input con coma o Enter).
-- Toggle "Destacado".
-- Validación de campos obligatorios.
-- Toast de éxito al crear.
+
+```gherkin
+Scenario: Campos del formulario de creación de programa
+  Given que el administrador accede al formulario de nuevo programa
+  When visualiza el formulario
+  Then encuentra campos: Nombre (obligatorio), Descripción, Perfil del Egresado, Tipo (Maestría/Especialización/Certificación/Doctorado), Modalidad y SNIES
+
+Scenario: Imagen de portada con drag & drop
+  Given que el administrador está en el formulario de programa
+  When accede a la sección de imagen
+  Then puede arrastrar o seleccionar una imagen de portada
+
+Scenario: Campo de tags con chip input
+  Given que el administrador está en el formulario de programa
+  When escribe una palabra clave y presiona coma o Enter
+  Then la palabra se agrega como un chip/tag al campo de palabras clave
+
+Scenario: Toggle destacado en programa
+  Given que el administrador está completando el formulario de programa
+  When activa el toggle "Destacado"
+  Then el programa queda marcado para ser destacado
+
+Scenario: Validación de campos obligatorios del programa
+  Given que el administrador deja campos obligatorios vacíos
+  When intenta guardar el programa
+  Then se muestran mensajes de error visual en cada campo faltante
+
+Scenario: Toast de éxito al crear programa
+  Given que el administrador ha completado correctamente el formulario
+  When guarda el nuevo programa
+  Then aparece un toast de éxito
+```
 
 **Prioridad:** High | **SP:** 8
 
@@ -714,9 +1046,23 @@
 **Para** definir el perfil de competencias que desarrollarán los graduados.
 
 **Criterios de Aceptación:**
-- Modal de multi-selección con buscador.
-- Las competencias seleccionadas se muestran como chips removibles.
-- Persiste selección en modo edición.
+
+```gherkin
+Scenario: Modal de selección múltiple de competencias para programa
+  Given que el administrador está en el formulario de programa
+  When abre el selector de competencias
+  Then se muestra un modal de multi-selección con buscador interno
+
+Scenario: Chips de competencias seleccionadas en programa
+  Given que el administrador ha seleccionado competencias en el modal
+  When confirma la selección
+  Then las competencias seleccionadas se muestran como chips removibles en el formulario
+
+Scenario: Persistencia de competencias al editar programa
+  Given que el administrador abre un programa existente en modo edición
+  When visualiza la sección de competencias
+  Then las competencias previamente asociadas aparecen ya seleccionadas
+```
 
 **Prioridad:** High | **SP:** 3
 
@@ -737,9 +1083,23 @@
 **Para** clasificarlo temáticamente.
 
 **Criterios de Aceptación:**
-- Selector de áreas con multi-selección.
-- Chips removibles de áreas seleccionadas.
-- Persiste en modo edición.
+
+```gherkin
+Scenario: Selector de áreas con multi-selección para programa
+  Given que el administrador está en el formulario de programa
+  When accede al selector de áreas de conocimiento
+  Then puede seleccionar múltiples áreas simultáneamente
+
+Scenario: Chips removibles de áreas en programa
+  Given que el administrador ha seleccionado áreas de conocimiento
+  When visualiza la sección de áreas
+  Then las áreas seleccionadas se muestran como chips removibles
+
+Scenario: Persistencia de áreas al editar programa
+  Given que el administrador abre un programa existente en modo edición
+  When visualiza el selector de áreas
+  Then las áreas previamente asignadas aparecen ya seleccionadas
+```
 
 **Prioridad:** Medium | **SP:** 2
 
@@ -759,12 +1119,38 @@
 **Para** construir el plan de estudios estructurado del programa.
 
 **Criterios de Aceptación:**
-- Interfaz visual con una columna por semestre.
-- Cada semestre muestra sus cursos como tarjetas.
-- Botón para agregar cursos a cada semestre (modal selector desde catálogo).
-- Se puede eliminar un curso del semestre (sin eliminarlo del catálogo).
-- Contador total de cursos en el programa.
-- Los cambios se guardan junto con el programa.
+
+```gherkin
+Scenario: Layout visual por semestres
+  Given que el administrador está en la sección de estructura curricular
+  When visualiza el plan de estudios
+  Then se muestra una interfaz con una columna por semestre
+
+Scenario: Cursos dentro de cada semestre
+  Given que un semestre tiene cursos asignados
+  When el administrador visualiza esa columna
+  Then los cursos aparecen como tarjetas dentro del semestre
+
+Scenario: Agregar curso a un semestre
+  Given que el administrador está en la vista de estructura curricular
+  When hace clic en el botón de agregar cursos de un semestre
+  Then se abre un modal selector de cursos desde el catálogo
+
+Scenario: Eliminar curso de un semestre
+  Given que un semestre tiene cursos asignados
+  When el administrador elimina un curso de un semestre
+  Then el curso es removido de ese semestre pero permanece en el catálogo
+
+Scenario: Contador total de cursos en el programa
+  Given que el administrador está viendo la estructura curricular
+  When visualiza el resumen del programa
+  Then se muestra el total de cursos asignados al programa
+
+Scenario: Persistencia de la estructura al guardar
+  Given que el administrador ha configurado la estructura por semestres
+  When guarda el programa
+  Then la estructura semestral se guarda junto con los demás datos del programa
+```
 
 **Prioridad:** High | **SP:** 13
 
@@ -788,9 +1174,23 @@
 **Para** que aparezca resaltado en la plataforma estudiantil.
 
 **Criterios de Aceptación:**
-- Toggle de "Destacado" en el formulario del programa.
-- Icono de estrella en la tarjeta del listado cuando está destacado.
-- El estado persiste al editar.
+
+```gherkin
+Scenario: Toggle de destacado en el formulario del programa
+  Given que el administrador está en el formulario de programa
+  When activa o desactiva el toggle "Destacado"
+  Then el estado del programa cambia a destacado o no destacado
+
+Scenario: Indicador visual de programa destacado en el listado
+  Given que un programa está marcado como "Destacado"
+  When el administrador visualiza la tarjeta de ese programa en el listado
+  Then la tarjeta muestra un icono de estrella indicando que está destacado
+
+Scenario: Persistencia del estado destacado al editar
+  Given que el administrador abre un programa destacado en modo edición
+  When visualiza el formulario
+  Then el toggle "Destacado" aparece activado
+```
 
 **Prioridad:** Low | **SP:** 2
 
@@ -810,9 +1210,23 @@
 **Para** actualizar su información, estructura o cursos asignados.
 
 **Criterios de Aceptación:**
-- Formulario pre-cargado con todos los datos del programa.
-- Competencias, áreas, tags y semestres pre-cargados.
-- Toast de confirmación al guardar.
+
+```gherkin
+Scenario: Pre-carga completa de datos al editar programa
+  Given que el administrador hace clic en "Editar" sobre un programa
+  When se abre el formulario de edición
+  Then todos los campos del programa se pre-cargan con sus datos actuales
+
+Scenario: Pre-carga de elementos relacionados al editar
+  Given que el administrador está en el formulario de edición de un programa
+  When visualiza las secciones de selección
+  Then competencias, áreas, tags y semestres aparecen pre-cargados con los valores actuales
+
+Scenario: Toast de confirmación al guardar cambios del programa
+  Given que el administrador ha realizado cambios en un programa
+  When guarda los cambios
+  Then aparece un toast de confirmación
+```
 
 **Prioridad:** High | **SP:** 5
 
@@ -833,9 +1247,23 @@
 **Para** mantener actualizada la oferta registrada.
 
 **Criterios de Aceptación:**
-- Botón "Eliminar" en la tarjeta del programa.
-- Modal de confirmación antes de eliminar.
-- Toast de confirmación tras eliminar.
+
+```gherkin
+Scenario: Botón de eliminar en tarjeta de programa
+  Given que el administrador está en el listado de programas
+  When visualiza una tarjeta de programa
+  Then la tarjeta tiene un botón "Eliminar"
+
+Scenario: Modal de confirmación antes de eliminar programa
+  Given que el administrador hace clic en "Eliminar" sobre un programa
+  When el sistema procesa la acción
+  Then se muestra un modal de confirmación antes de ejecutar la eliminación
+
+Scenario: Toast de confirmación tras eliminar programa
+  Given que el administrador confirma la eliminación de un programa
+  When el sistema lo elimina exitosamente
+  Then se muestra un toast de confirmación
+```
 
 **Prioridad:** Medium | **SP:** 3
 
@@ -865,12 +1293,38 @@
 **Para** gestionar el catálogo de formación complementaria.
 
 **Criterios de Aceptación:**
-- Tabla con columnas: Nombre, Modalidad, Tipo, Destacado, Precio, Acciones.
-- Pills de colores por modalidad (Virtual/Híbrido) y tipo.
-- Badge "Destacado" cuando aplica.
-- Precio formateado con separador de miles.
-- Buscador en tiempo real.
-- Botones: Editar, Eliminar, Ver Lecciones.
+
+```gherkin
+Scenario: Tabla de micro aprendizajes con columnas completas
+  Given que existen micro aprendizajes registrados
+  When el administrador accede a la sección de Micro Aprendizajes
+  Then se muestra una tabla con columnas: Nombre, Modalidad, Tipo, Destacado, Precio, Acciones
+
+Scenario: Pills de colores por modalidad y tipo
+  Given que el administrador está viendo la tabla de micro aprendizajes
+  When visualiza una fila
+  Then se muestran pills de colores diferenciados por modalidad (Virtual/Híbrido) y tipo
+
+Scenario: Badge de destacado en la tabla
+  Given que un micro aprendizaje está marcado como "Destacado"
+  When el administrador visualiza su fila en la tabla
+  Then la fila muestra un badge "Destacado"
+
+Scenario: Precio formateado
+  Given que un micro aprendizaje tiene precio asignado
+  When el administrador visualiza la columna de precio
+  Then el precio se muestra formateado con separador de miles
+
+Scenario: Buscador en tiempo real de micro aprendizajes
+  Given que el administrador está en la vista de Micro Aprendizajes
+  When escribe texto en el buscador
+  Then la tabla se filtra en tiempo real
+
+Scenario: Botones de acción por fila en micro aprendizajes
+  Given que el administrador está viendo la tabla de micro aprendizajes
+  When visualiza una fila
+  Then cada fila tiene botones: Editar, Eliminar y Ver Lecciones
+```
 
 **Prioridad:** High | **SP:** 3
 
@@ -891,11 +1345,33 @@
 **Para** ampliar la oferta de formación complementaria.
 
 **Criterios de Aceptación:**
-- Campos: Nombre (obligatorio), Descripción (obligatorio), Modalidad, Tipo, Categoría, Precio.
-- Toggle "Destacado".
-- Precio debe ser >= 0.
-- Validación de todos los campos obligatorios con mensajes de error.
-- Toast de éxito al crear.
+
+```gherkin
+Scenario: Campos del formulario de creación de micro aprendizaje
+  Given que el administrador accede al formulario de nuevo micro aprendizaje
+  When visualiza el formulario
+  Then encuentra campos: Nombre (obligatorio), Descripción (obligatorio), Modalidad, Tipo, Categoría y Precio
+
+Scenario: Toggle de destacado en micro aprendizaje
+  Given que el administrador está completando el formulario
+  When activa el toggle "Destacado"
+  Then el micro aprendizaje queda marcado como destacado
+
+Scenario: Validación del precio
+  Given que el administrador ingresa un valor en el campo Precio
+  When el valor es menor a 0
+  Then se muestra un mensaje de error indicando que el precio debe ser mayor o igual a 0
+
+Scenario: Validación de campos obligatorios del micro aprendizaje
+  Given que el administrador deja campos obligatorios vacíos
+  When intenta guardar el micro aprendizaje
+  Then se muestran mensajes de error visual en cada campo faltante
+
+Scenario: Toast de éxito al crear micro aprendizaje
+  Given que el administrador ha completado correctamente el formulario
+  When guarda el nuevo micro aprendizaje
+  Then aparece un toast de éxito
+```
 
 **Prioridad:** High | **SP:** 5
 
@@ -917,9 +1393,23 @@
 **Para** actualizar su información.
 
 **Criterios de Aceptación:**
-- Formulario pre-cargado con los datos del módulo seleccionado.
-- Validación igual a la creación.
-- Toast de confirmación al guardar.
+
+```gherkin
+Scenario: Pre-carga de datos al editar micro aprendizaje
+  Given que el administrador hace clic en "Editar" sobre un micro aprendizaje
+  When se abre el formulario de edición
+  Then todos los campos se pre-cargan con los datos actuales del módulo
+
+Scenario: Validación en modo edición
+  Given que el administrador está editando un micro aprendizaje
+  When intenta guardar con campos obligatorios vacíos
+  Then se aplican las mismas validaciones que en la creación
+
+Scenario: Toast de confirmación al guardar cambios del micro aprendizaje
+  Given que el administrador ha realizado cambios en un micro aprendizaje
+  When guarda los cambios
+  Then aparece un toast de confirmación
+```
 
 **Prioridad:** High | **SP:** 3
 
@@ -940,9 +1430,23 @@
 **Para** remover módulos que ya no están disponibles.
 
 **Criterios de Aceptación:**
-- Botón "Eliminar" en la fila de la tabla.
-- Modal de confirmación antes de ejecutar.
-- Toast de confirmación tras eliminar.
+
+```gherkin
+Scenario: Botón de eliminar en la tabla de micro aprendizajes
+  Given que el administrador está viendo la tabla de micro aprendizajes
+  When visualiza una fila
+  Then la fila tiene un botón "Eliminar"
+
+Scenario: Modal de confirmación antes de eliminar micro aprendizaje
+  Given que el administrador hace clic en "Eliminar" sobre un micro aprendizaje
+  When el sistema procesa la acción
+  Then se muestra un modal de confirmación antes de ejecutar la eliminación
+
+Scenario: Toast de confirmación tras eliminar micro aprendizaje
+  Given que el administrador confirma la eliminación
+  When el sistema lo elimina exitosamente
+  Then se muestra un toast de confirmación
+```
 
 **Prioridad:** Medium | **SP:** 3
 
@@ -962,12 +1466,38 @@
 **Para** estructurar el contenido del módulo.
 
 **Criterios de Aceptación:**
-- Vista de "Estructura de Lecciones" accesible desde la tabla principal.
-- Lista de lecciones con: Nombre, Descripción, Duración en minutos.
-- Formulario para agregar nueva lección.
-- Botones Editar y Eliminar por lección.
-- Panel lateral con resumen del micro aprendizaje.
-- Breadcrumb de navegación: Micro Aprendizajes > [Nombre] > Lecciones.
+
+```gherkin
+Scenario: Acceso a la vista de lecciones
+  Given que el administrador está en la tabla de micro aprendizajes
+  When hace clic en "Ver Lecciones" de un módulo
+  Then se abre la vista de "Estructura de Lecciones" del micro aprendizaje seleccionado
+
+Scenario: Listado de lecciones con su información
+  Given que el administrador está en la vista de lecciones
+  When visualiza el listado
+  Then cada lección muestra: Nombre, Descripción y Duración en minutos
+
+Scenario: Formulario para agregar nueva lección
+  Given que el administrador está en la vista de lecciones
+  When accede al formulario de nueva lección
+  Then puede ingresar Nombre, Descripción y Duración en minutos
+
+Scenario: Botones de edición y eliminación por lección
+  Given que el administrador está viendo el listado de lecciones
+  When visualiza una lección
+  Then cada lección tiene botones Editar y Eliminar
+
+Scenario: Panel lateral con resumen del micro aprendizaje
+  Given que el administrador está en la vista de lecciones
+  When visualiza la pantalla completa
+  Then se muestra un panel lateral con el resumen del micro aprendizaje asociado
+
+Scenario: Breadcrumb de navegación contextual
+  Given que el administrador está en la vista de lecciones
+  When observa la navegación en la parte superior
+  Then se muestra el breadcrumb: Micro Aprendizajes > [Nombre del Módulo] > Lecciones
+```
 
 **Prioridad:** High | **SP:** 8
 
@@ -1000,12 +1530,43 @@
 **Para** que el frontend pueda hacer operaciones CRUD con persistencia real.
 
 **Criterios de Aceptación:**
-- `GET /api/competencias` — Lista todas las competencias.
-- `GET /api/competencias/:id` — Obtiene una competencia por ID.
-- `POST /api/competencias` — Crea competencia.
-- `PUT /api/competencias/:id` — Actualiza competencia.
-- `DELETE /api/competencias/:id` — Elimina competencia.
-- Respuestas con códigos HTTP correctos (200, 201, 404, 400).
+
+```gherkin
+Scenario: Listar todas las competencias
+  Given que existen competencias en la base de datos
+  When se hace una petición GET a /api/competencias
+  Then la respuesta retorna un listado de todas las competencias con código HTTP 200
+
+Scenario: Obtener competencia por ID
+  Given que existe una competencia con un ID específico
+  When se hace una petición GET a /api/competencias/:id
+  Then la respuesta retorna la competencia con código HTTP 200
+
+Scenario: Obtener competencia inexistente
+  Given que no existe una competencia con el ID solicitado
+  When se hace una petición GET a /api/competencias/:id
+  Then la respuesta retorna código HTTP 404
+
+Scenario: Crear nueva competencia
+  Given que el cliente envía datos válidos de competencia
+  When se hace una petición POST a /api/competencias
+  Then la competencia es creada y la respuesta retorna código HTTP 201
+
+Scenario: Actualizar competencia existente
+  Given que existe una competencia con un ID específico
+  When se hace una petición PUT a /api/competencias/:id con datos válidos
+  Then la competencia es actualizada y la respuesta retorna código HTTP 200
+
+Scenario: Eliminar competencia existente
+  Given que existe una competencia con un ID específico
+  When se hace una petición DELETE a /api/competencias/:id
+  Then la competencia es eliminada y la respuesta retorna código HTTP 200
+
+Scenario: Error por datos inválidos al crear o actualizar
+  Given que el cliente envía datos con campos obligatorios faltantes
+  When se hace una petición POST o PUT
+  Then la respuesta retorna código HTTP 400
+```
 
 **Prioridad:** Critical | **SP:** 5
 
@@ -1027,8 +1588,18 @@
 **Para** persistir y consultar los RAs del sistema.
 
 **Criterios de Aceptación:**
-- CRUD completo: `GET`, `POST`, `PUT`, `DELETE` en `/api/resultados`.
-- Soporte para filtrar por competencia asociada.
+
+```gherkin
+Scenario: CRUD completo de Resultados de Aprendizaje
+  Given que el sistema tiene la API de RAs configurada
+  When se realizan peticiones GET, POST, PUT y DELETE a /api/resultados
+  Then cada operación retorna el código HTTP correspondiente (200, 201, 404, 400)
+
+Scenario: Filtrar RAs por competencia asociada
+  Given que existen RAs asociados a una competencia específica
+  When se hace una petición GET a /api/resultados con filtro por competencia
+  Then la respuesta retorna únicamente los RAs de esa competencia
+```
 
 **Prioridad:** Critical | **SP:** 5
 
@@ -1050,9 +1621,23 @@
 **Para** persistir cursos con imágenes, áreas y asociaciones Competencia-RA.
 
 **Criterios de Aceptación:**
-- CRUD completo en `/api/cursos`.
-- Soporte para subida y almacenamiento de imágenes.
-- Endpoint para gestionar asociaciones Competencia-RA-Nivel.
+
+```gherkin
+Scenario: CRUD completo de Cursos
+  Given que el sistema tiene la API de Cursos configurada
+  When se realizan peticiones GET, POST, PUT y DELETE a /api/cursos
+  Then cada operación retorna el código HTTP correspondiente (200, 201, 404, 400)
+
+Scenario: Subida y almacenamiento de imágenes de cursos
+  Given que el cliente envía una imagen válida junto con los datos del curso
+  When se hace una petición POST o PUT a /api/cursos
+  Then la imagen es almacenada y su URL es retornada en la respuesta
+
+Scenario: Gestión de asociaciones Competencia-RA-Nivel
+  Given que existe un endpoint para gestionar asociaciones de cursos
+  When se hace una petición para crear, actualizar o eliminar una asociación Competencia-RA
+  Then la asociación es persistida con su nivel de dominio (I/F/V)
+```
 
 **Prioridad:** Critical | **SP:** 8
 
@@ -1075,9 +1660,23 @@
 **Para** persistir la información completa de los programas de posgrado.
 
 **Criterios de Aceptación:**
-- CRUD completo en `/api/programas`.
-- Soporte para estructura semestral (JSON anidado o tabla relacional).
-- Filtrado por tipo, modalidad y highlight.
+
+```gherkin
+Scenario: CRUD completo de Programas Académicos
+  Given que el sistema tiene la API de Programas configurada
+  When se realizan peticiones GET, POST, PUT y DELETE a /api/programas
+  Then cada operación retorna el código HTTP correspondiente (200, 201, 404, 400)
+
+Scenario: Persistencia de estructura semestral
+  Given que el cliente envía un programa con estructura de semestres y cursos
+  When se hace una petición POST o PUT a /api/programas
+  Then la estructura semestral es persistida correctamente
+
+Scenario: Filtrado de programas por criterios
+  Given que existen programas con distintos tipos, modalidades y estado destacado
+  When se hace una petición GET a /api/programas con parámetros de filtro (tipo, modalidad, destacado)
+  Then la respuesta retorna únicamente los programas que cumplen los criterios
+```
 
 **Prioridad:** Critical | **SP:** 8
 
@@ -1100,8 +1699,18 @@
 **Para** persistir el catálogo de formación complementaria.
 
 **Criterios de Aceptación:**
-- CRUD completo en `/api/microaprendizajes`.
-- Sub-recurso: `/api/microaprendizajes/:id/lecciones` con CRUD.
+
+```gherkin
+Scenario: CRUD completo de Micro Aprendizajes
+  Given que el sistema tiene la API de Micro Aprendizajes configurada
+  When se realizan peticiones GET, POST, PUT y DELETE a /api/microaprendizajes
+  Then cada operación retorna el código HTTP correspondiente (200, 201, 404, 400)
+
+Scenario: CRUD de lecciones como sub-recurso
+  Given que existe un micro aprendizaje con un ID específico
+  When se realizan peticiones GET, POST, PUT y DELETE a /api/microaprendizajes/:id/lecciones
+  Then las lecciones son gestionadas como sub-recurso del micro aprendizaje con los códigos HTTP correctos
+```
 
 **Prioridad:** Critical | **SP:** 8
 
@@ -1133,12 +1742,38 @@
 **Para** saber si las operaciones fueron exitosas o si ocurrió un error.
 
 **Criterios de Aceptación:**
-- Toast de éxito (verde) al crear o actualizar registros.
-- Toast de eliminación (rojo) al borrar un registro.
-- Toast de error (naranja) al fallar una operación.
-- El toast aparece en la esquina inferior derecha.
-- Se desvanece automáticamente después de 2.5 segundos.
-- Animación slide-up al aparecer.
+
+```gherkin
+Scenario: Toast de éxito al crear o actualizar
+  Given que el administrador crea o actualiza un registro exitosamente
+  When la operación finaliza
+  Then se muestra un toast verde de éxito
+
+Scenario: Toast de eliminación
+  Given que el administrador elimina un registro exitosamente
+  When la operación finaliza
+  Then se muestra un toast rojo de confirmación de eliminación
+
+Scenario: Toast de error al fallar una operación
+  Given que una operación falla en el sistema
+  When el error es detectado
+  Then se muestra un toast naranja indicando el error
+
+Scenario: Posición del toast
+  Given que se dispara cualquier toast
+  When aparece en pantalla
+  Then se muestra en la esquina inferior derecha de la pantalla
+
+Scenario: Auto-dismiss del toast
+  Given que un toast ha aparecido en pantalla
+  When han transcurrido 2.5 segundos
+  Then el toast se desvanece automáticamente
+
+Scenario: Animación de aparición del toast
+  Given que se dispara un toast
+  When aparece en pantalla
+  Then se muestra con una animación slide-up
+```
 
 **Prioridad:** High | **SP:** 3
 
@@ -1159,11 +1794,38 @@
 **Para** realizar selecciones de datos de forma cómoda en cualquier sección.
 
 **Criterios de Aceptación:**
-- Modal con overlay oscuro, encabezado, cuerpo scrollable y footer.
-- Buscador integrado dentro del modal.
-- Soporte para selección única y múltiple.
-- Botones "Cancelar" y "Confirmar" en el footer.
-- Se puede cerrar con Escape o clic en el overlay.
+
+```gherkin
+Scenario: Estructura del modal
+  Given que el administrador abre cualquier modal de selección
+  When el modal aparece en pantalla
+  Then tiene overlay oscuro, encabezado, cuerpo scrollable y footer
+
+Scenario: Buscador integrado en el modal
+  Given que el administrador está dentro de un modal
+  When escribe en el buscador interno
+  Then la lista de opciones se filtra en tiempo real
+
+Scenario: Soporte para selección única y múltiple
+  Given que el administrador está usando un modal
+  When el modal está configurado para selección única o múltiple
+  Then permite seleccionar uno o varios elementos según la configuración
+
+Scenario: Botones de acción en el footer del modal
+  Given que el administrador está dentro de un modal
+  When visualiza el footer
+  Then encuentra los botones "Cancelar" y "Confirmar"
+
+Scenario: Cerrar modal con Escape
+  Given que el administrador tiene un modal abierto
+  When presiona la tecla Escape
+  Then el modal se cierra sin guardar cambios
+
+Scenario: Cerrar modal con clic en overlay
+  Given que el administrador tiene un modal abierto
+  When hace clic en el overlay oscuro fuera del modal
+  Then el modal se cierra sin guardar cambios
+```
 
 **Prioridad:** High | **SP:** 5
 
@@ -1185,10 +1847,33 @@
 **Para** administrar el contenido desde cualquier lugar.
 
 **Criterios de Aceptación:**
-- El dashboard tiene layout de 1 columna en móvil y 3 en desktop.
-- Las tablas tienen scroll horizontal en pantallas pequeñas.
-- Los formularios se adaptan al ancho de la pantalla.
-- Los botones son suficientemente grandes para interacción táctil.
+
+```gherkin
+Scenario: Layout del dashboard en móvil
+  Given que el administrador accede al dashboard desde un móvil
+  When la página carga
+  Then el layout muestra 1 columna
+
+Scenario: Layout del dashboard en desktop
+  Given que el administrador accede al dashboard desde un desktop
+  When la página carga
+  Then el layout muestra 3 columnas
+
+Scenario: Scroll horizontal en tablas en pantallas pequeñas
+  Given que el administrador accede a una sección con tabla desde un dispositivo móvil
+  When la tabla no cabe en el ancho de la pantalla
+  Then la tabla tiene scroll horizontal disponible
+
+Scenario: Formularios adaptados al ancho de pantalla
+  Given que el administrador accede a un formulario desde cualquier dispositivo
+  When la pantalla es pequeña
+  Then el formulario se adapta correctamente al ancho disponible
+
+Scenario: Botones con tamaño adecuado para táctil
+  Given que el administrador usa la aplicación desde un dispositivo táctil
+  When visualiza los botones de acción
+  Then los botones son suficientemente grandes para interacción táctil
+```
 
 **Prioridad:** Medium | **SP:** 5
 
@@ -1209,10 +1894,28 @@
 **Para** saber exactamente qué campos necesitan corrección antes de guardar.
 
 **Criterios de Aceptación:**
-- Los campos obligatorios vacíos muestran borde rojo al intentar guardar.
-- Animación de "shake" para llamar la atención al campo con error.
-- Mensaje de error descriptivo debajo del campo.
-- El foco se mueve automáticamente al primer campo con error.
+
+```gherkin
+Scenario: Borde rojo en campo obligatorio vacío
+  Given que el administrador intenta guardar un formulario con campos obligatorios vacíos
+  When el sistema valida el formulario
+  Then los campos vacíos muestran un borde rojo
+
+Scenario: Animación shake en campo con error
+  Given que un campo tiene error de validación
+  When el sistema lo resalta
+  Then el campo ejecuta una animación de "shake" para llamar la atención
+
+Scenario: Mensaje de error descriptivo bajo el campo
+  Given que un campo tiene error de validación
+  When el administrador visualiza el campo
+  Then se muestra un mensaje de error descriptivo debajo del campo
+
+Scenario: Focus automático al primer campo con error
+  Given que el formulario tiene múltiples campos con error
+  When el sistema valida al intentar guardar
+  Then el foco se mueve automáticamente al primer campo con error
+```
 
 **Prioridad:** High | **SP:** 3
 
@@ -1233,9 +1936,23 @@
 **Para** saber que la aplicación está procesando y no está bloqueada.
 
 **Criterios de Aceptación:**
-- Skeleton loader o spinner al cargar listados.
-- Botones de guardado muestran estado "Guardando..." mientras procesan.
-- Los botones se deshabilitan durante el procesamiento.
+
+```gherkin
+Scenario: Skeleton loader o spinner al cargar listados
+  Given que el administrador navega a una sección con listado
+  When los datos aún están siendo obtenidos de la API
+  Then se muestra un skeleton loader o spinner en lugar del contenido
+
+Scenario: Estado "Guardando..." en botón de submit
+  Given que el administrador hace clic en guardar un formulario
+  When la petición a la API está en proceso
+  Then el botón de guardado muestra el texto "Guardando..."
+
+Scenario: Botones deshabilitados durante el procesamiento
+  Given que el administrador ha iniciado una operación de guardado
+  When la petición a la API está en proceso
+  Then los botones de acción se deshabilitan para evitar envíos duplicados
+```
 
 **Prioridad:** Medium | **SP:** 3
 
@@ -1256,7 +1973,6 @@
 
 | ID    | Épica                                     | User Stories | Subtareas | SP Total | Prioridad |
 |-------|-------------------------------------------|:------------:|:---------:|:--------:|-----------|
-| EP-01 | Autenticación y Control de Acceso         | 3            | 11        | 26       | Critical  |
 | EP-02 | Dashboard y Navegación Principal          | 3            | 10        | 18       | High      |
 | EP-03 | Gestión de Competencias                   | 5            | 21        | 23       | High      |
 | EP-04 | Gestión de Resultados de Aprendizaje      | 5            | 14        | 18       | High      |
@@ -1265,7 +1981,7 @@
 | EP-07 | Gestión de Micro Aprendizajes             | 5            | 18        | 35       | High      |
 | EP-08 | Persistencia de Datos y Backend           | 5            | 23        | 52       | Critical  |
 | EP-09 | Diseño del Sistema y Experiencia de Usuario | 5          | 17        | 24       | Medium    |
-| **TOTAL** |                                       | **46**       | **171**   | **295**  |           |
+| **TOTAL** |                                       | **43**       | **160**   | **269**  |           |
 
 ---
 
@@ -1273,7 +1989,7 @@
 
 | Prioridad  | Épicas | Story Points |
 |------------|:------:|:------------:|
-| Critical   | 2      | 78           |
+| Critical   | 1      | 52           |
 | High       | 6      | 193          |
 | Medium     | 1      | 24           |
 | Low        | 0      | —            |
@@ -1290,7 +2006,6 @@
 | Cursos                     | CRUD completo en UI         | Solo memoria |
 | Programas Académicos       | CRUD completo en UI         | Solo memoria |
 | Micro Aprendizajes         | CRUD completo en UI         | Solo memoria |
-| Autenticación              | No implementada             | —            |
 | Backend / API REST         | No implementado             | —            |
 
 ---
